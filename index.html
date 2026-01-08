@@ -181,43 +181,138 @@
                 </div>
 
                 <div id="advanced-options" class="advanced-options collapsed">
-                    <div class="slider-group">
-                        <div class="slider-header">
-                            <label for="weirdness-slider">Weirdness（實驗性）</label>
-                            <span id="weirdness-value">50%</span>
+                    <!-- MAX Mode 區塊 -->
+                    <div class="advanced-subsection">
+                        <h4 class="subsection-title">MAX Mode（高品質模式）</h4>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="max-mode-enabled">
+                                <span>啟用 MAX Mode</span>
+                            </label>
+                            <small>適合原聲/民謠/古典等有機音樂，可大幅提升音質和真實感</small>
                         </div>
-                        <input type="range" id="weirdness-slider" min="0" max="100" value="50" class="slider">
-                        <div class="slider-labels">
-                            <span>Safe 保守</span>
-                            <span>Chaos 瘋狂</span>
+                        <div id="max-mode-options" class="max-mode-options hidden">
+                            <div class="form-group">
+                                <label>品質參數</label>
+                                <div class="checkbox-grid">
+                                    <label class="checkbox-label"><input type="checkbox" name="max-params" value="QUALITY" checked> QUALITY</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="max-params" value="REALISM" checked> REALISM</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="max-params" value="REAL_INSTRUMENTS" checked> REAL_INSTRUMENTS</label>
+                                </div>
+                            </div>
                         </div>
-                        <small>控制 AI 創作的實驗程度。50% 為基準值，越高越不可預測</small>
                     </div>
 
-                    <div class="slider-group">
-                        <div class="slider-header">
-                            <label for="style-influence-slider">Style Influence（風格影響力）</label>
-                            <span id="style-influence-value">70%</span>
+                    <!-- START_ON 控制 -->
+                    <div class="advanced-subsection">
+                        <h4 class="subsection-title">歌曲起始控制</h4>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="skip-intro">
+                                <span>跳過前奏，直接從歌詞開始</span>
+                            </label>
+                            <small>使用 [START_ON] 標籤讓人聲立即開始</small>
                         </div>
-                        <input type="range" id="style-influence-slider" min="0" max="100" value="70" class="slider">
-                        <div class="slider-labels">
-                            <span>Loose 寬鬆</span>
-                            <span>Strict 嚴格</span>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="lyric-bleed-protection">
+                                <span>防止 Prompt 被唱出（Lyric Bleed Protection）</span>
+                            </label>
+                            <small>在歌詞開頭加入分隔符號，避免 prompt 內容被誤唱</small>
                         </div>
-                        <small>控制 Suno 多嚴格地遵循你的風格描述。建議 70-90%</small>
                     </div>
 
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="instrumental-only">
-                            <span>純音樂模式（無人聲）</span>
-                        </label>
+                    <!-- Realism 描述詞 -->
+                    <div class="advanced-subsection">
+                        <h4 class="subsection-title">真實感描述詞（適合原聲音樂）</h4>
+                        <div class="form-group">
+                            <label>錄音特徵</label>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag realism-tag" data-style="small room acoustics">小房間</button>
+                                <button type="button" class="style-tag realism-tag" data-style="close mic presence">近距麥克風</button>
+                                <button type="button" class="style-tag realism-tag" data-style="tape saturation">磁帶飽和</button>
+                                <button type="button" class="style-tag realism-tag" data-style="analog warmth">類比溫暖</button>
+                                <button type="button" class="style-tag realism-tag" data-style="one-take performance">一次錄音</button>
+                                <button type="button" class="style-tag realism-tag" data-style="natural dynamics">自然動態</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>人聲細節</label>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag realism-tag" data-style="breath detail">呼吸聲</button>
+                                <button type="button" class="style-tag realism-tag" data-style="vocal fry">氣泡音</button>
+                                <button type="button" class="style-tag realism-tag" data-style="natural timing drift">自然節拍</button>
+                                <button type="button" class="style-tag realism-tag" data-style="intimate whisper-to-belt">輕聲到飽滿</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>樂器細節</label>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag realism-tag" data-style="pick noise">撥弦聲</button>
+                                <button type="button" class="style-tag realism-tag" data-style="fret squeak">換把位聲</button>
+                                <button type="button" class="style-tag realism-tag" data-style="finger movement noise">手指移動聲</button>
+                                <button type="button" class="style-tag realism-tag" data-style="pedal noise">踏板聲</button>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="negative-prompt">排除元素（Negative Prompt）</label>
-                        <input type="text" id="negative-prompt" placeholder="例：no autotune, no electronic beats">
-                        <small>告訴 Suno 要避免的元素</small>
+                    <!-- 滑桿區 -->
+                    <div class="advanced-subsection">
+                        <h4 class="subsection-title">參數調整</h4>
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="weirdness-slider">Weirdness（實驗性）</label>
+                                <span id="weirdness-value">50%</span>
+                            </div>
+                            <input type="range" id="weirdness-slider" min="0" max="100" value="50" class="slider">
+                            <div class="slider-labels">
+                                <span>Safe 保守</span>
+                                <span>Chaos 瘋狂</span>
+                            </div>
+                            <small>0-30% 商業流行 | 40-60% 平衡 | 70-100% 實驗創新</small>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="style-influence-slider">Style Influence（風格影響力）</label>
+                                <span id="style-influence-value">70%</span>
+                            </div>
+                            <input type="range" id="style-influence-slider" min="0" max="100" value="70" class="slider">
+                            <div class="slider-labels">
+                                <span>Loose 寬鬆</span>
+                                <span>Strict 嚴格</span>
+                            </div>
+                            <small>模糊風格用 70-90% | 精確風格用 40-60%</small>
+                        </div>
+                    </div>
+
+                    <!-- 其他選項 -->
+                    <div class="advanced-subsection">
+                        <h4 class="subsection-title">其他選項</h4>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="instrumental-only">
+                                <span>純音樂模式（無人聲）</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="negative-prompt">排除元素（Exclude Styles）</label>
+                            <input type="text" id="negative-prompt" placeholder="例：Male Vocal, Electronic, Autotune">
+                            <small>直接列出要排除的元素，比使用 "no" 更可靠</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mastering-style">母帶處理風格</label>
+                            <select id="mastering-style">
+                                <option value="">選擇母帶風格...</option>
+                                <option value="natural dry close mixing">自然乾淨</option>
+                                <option value="polished professional sound with wide stereo image">專業拋光</option>
+                                <option value="tape saturation with analog warmth">類比溫暖</option>
+                                <option value="lo-fi intimacy with tape warmth">Lo-Fi 親密</option>
+                                <option value="punchy dynamics with hi-fi clarity">動態清晰</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -246,6 +341,18 @@
             <div class="editor-layout">
                 <div class="editor-sidebar">
                     <h3>快速插入標籤</h3>
+
+                    <!-- 進階 Meta Tags -->
+                    <div class="tag-category">
+                        <h4>進階結構標籤</h4>
+                        <div class="tag-buttons">
+                            <button class="tag-btn meta-tag" data-tag="[Chorus | anthemic chorus | stacked harmonies]">副歌+和聲</button>
+                            <button class="tag-btn meta-tag" data-tag="[Verse | emotional build-up]">主歌+情緒堆疊</button>
+                            <button class="tag-btn meta-tag" data-tag="[Bridge | key change | building energy]">橋段+轉調</button>
+                            <button class="tag-btn meta-tag" data-tag="[Drop | explosive energy | 808 sub bass]">電音Drop</button>
+                        </div>
+                    </div>
+
                     <div class="tag-category">
                         <h4>結構標籤</h4>
                         <div class="tag-buttons">
@@ -253,10 +360,13 @@
                             <button class="tag-btn" data-tag="[Verse]">[Verse]</button>
                             <button class="tag-btn" data-tag="[Pre-Chorus]">[Pre-Chorus]</button>
                             <button class="tag-btn" data-tag="[Chorus]">[Chorus]</button>
+                            <button class="tag-btn" data-tag="[Post-Chorus]">[Post-Chorus]</button>
                             <button class="tag-btn" data-tag="[Bridge]">[Bridge]</button>
                             <button class="tag-btn" data-tag="[Outro]">[Outro]</button>
                             <button class="tag-btn" data-tag="[Hook]">[Hook]</button>
                             <button class="tag-btn" data-tag="[Break]">[Break]</button>
+                            <button class="tag-btn" data-tag="[Breakdown]">[Breakdown]</button>
+                            <button class="tag-btn" data-tag="[Build]">[Build]</button>
                             <button class="tag-btn" data-tag="[Interlude]">[Interlude]</button>
                             <button class="tag-btn" data-tag="[End]">[End]</button>
                         </div>
@@ -270,6 +380,8 @@
                             <button class="tag-btn" data-tag="[Drum Break]">[Drum Break]</button>
                             <button class="tag-btn" data-tag="[Bass Drop]">[Bass Drop]</button>
                             <button class="tag-btn" data-tag="[Synth]">[Synth]</button>
+                            <button class="tag-btn" data-tag="[Strings]">[Strings]</button>
+                            <button class="tag-btn" data-tag="[808 sub bass]">[808]</button>
                         </div>
                     </div>
                     <div class="tag-category">
@@ -279,17 +391,55 @@
                             <button class="tag-btn" data-tag="[Female Vocal]">[Female Vocal]</button>
                             <button class="tag-btn" data-tag="[Duet]">[Duet]</button>
                             <button class="tag-btn" data-tag="[Harmony]">[Harmony]</button>
+                            <button class="tag-btn" data-tag="[stacked harmonies]">[Stacked Harmonies]</button>
                             <button class="tag-btn" data-tag="[Whisper]">[Whisper]</button>
                             <button class="tag-btn" data-tag="[Rap]">[Rap]</button>
+                            <button class="tag-btn" data-tag="[spoken word verse]">[Spoken Word]</button>
+                            <button class="tag-btn" data-tag="[raspy lead vocal]">[Raspy]</button>
+                            <button class="tag-btn" data-tag="[autotuned delivery]">[Autotune]</button>
+                            <button class="tag-btn" data-tag="[crowd-style vocals]">[群眾合唱]</button>
                         </div>
                     </div>
                     <div class="tag-category">
-                        <h4>效果標籤</h4>
+                        <h4>效果/能量標籤</h4>
                         <div class="tag-buttons">
                             <button class="tag-btn" data-tag="[Fade In]">[Fade In]</button>
                             <button class="tag-btn" data-tag="[Fade Out]">[Fade Out]</button>
                             <button class="tag-btn" data-tag="[Build Up]">[Build Up]</button>
                             <button class="tag-btn" data-tag="[Drop]">[Drop]</button>
+                            <button class="tag-btn" data-tag="[high energy]">[High Energy]</button>
+                            <button class="tag-btn" data-tag="[low energy]">[Low Energy]</button>
+                            <button class="tag-btn" data-tag="[building energy]">[Building]</button>
+                            <button class="tag-btn" data-tag="[explosive energy]">[Explosive]</button>
+                        </div>
+                    </div>
+                    <div class="tag-category">
+                        <h4>情緒標籤</h4>
+                        <div class="tag-buttons">
+                            <button class="tag-btn" data-tag="[melancholic]">[Melancholic]</button>
+                            <button class="tag-btn" data-tag="[euphoric]">[Euphoric]</button>
+                            <button class="tag-btn" data-tag="[nostalgic]">[Nostalgic]</button>
+                            <button class="tag-btn" data-tag="[dreamy]">[Dreamy]</button>
+                            <button class="tag-btn" data-tag="[aggressive]">[Aggressive]</button>
+                            <button class="tag-btn" data-tag="[peaceful]">[Peaceful]</button>
+                            <button class="tag-btn" data-tag="[mysterious]">[Mysterious]</button>
+                        </div>
+                    </div>
+                    <div class="tag-category">
+                        <h4>空間/效果</h4>
+                        <div class="tag-buttons">
+                            <button class="tag-btn" data-tag="[hall reverb]">[Hall Reverb]</button>
+                            <button class="tag-btn" data-tag="[room reverb]">[Room Reverb]</button>
+                            <button class="tag-btn" data-tag="[delay]">[Delay]</button>
+                            <button class="tag-btn" data-tag="[distortion]">[Distortion]</button>
+                            <button class="tag-btn" data-tag="[echo]">[Echo]</button>
+                        </div>
+                    </div>
+                    <div class="tag-category">
+                        <h4>工具標籤</h4>
+                        <div class="tag-buttons">
+                            <button class="tag-btn special-tag" data-tag="///*****///">防Bleed分隔</button>
+                            <button class="tag-btn special-tag" data-tag="[Chorus x2]">[Chorus x2]</button>
                         </div>
                     </div>
                 </div>

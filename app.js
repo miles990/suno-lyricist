@@ -214,6 +214,19 @@ const elements = {
     instrumentalOnly: document.getElementById('instrumental-only'),
     negativePrompt: document.getElementById('negative-prompt'),
 
+    // MAX Mode
+    maxModeEnabled: document.getElementById('max-mode-enabled'),
+    maxModeOptions: document.getElementById('max-mode-options'),
+    maxParams: document.querySelectorAll('input[name="max-params"]'),
+
+    // Start Control
+    skipIntro: document.getElementById('skip-intro'),
+    lyricBleedProtection: document.getElementById('lyric-bleed-protection'),
+
+    // Realism
+    realismTags: document.querySelectorAll('.realism-tag'),
+    masteringStyle: document.getElementById('mastering-style'),
+
     // Template Editor
     lyricsEditor: document.getElementById('lyrics-editor'),
     tagButtons: document.querySelectorAll('.tag-btn'),
@@ -289,6 +302,16 @@ function bindEvents() {
         elements.styleInfluenceValue.textContent = `${elements.styleInfluenceSlider.value}%`;
     });
 
+    // MAX Mode 切換
+    elements.maxModeEnabled.addEventListener('change', () => {
+        toggleMaxModeOptions();
+    });
+
+    // Realism 標籤（可多選）
+    elements.realismTags.forEach(btn => {
+        btn.addEventListener('click', () => toggleRealismTag(btn));
+    });
+
     // 編輯器工具列
     elements.loadTemplate.addEventListener('click', () => showModal());
     elements.clearEditor.addEventListener('click', () => {
@@ -315,6 +338,20 @@ function bindEvents() {
 // ===== 風格標籤切換 =====
 function toggleStyleTag(btn) {
     btn.classList.toggle('active');
+}
+
+// ===== Realism 標籤切換 =====
+function toggleRealismTag(btn) {
+    btn.classList.toggle('active');
+}
+
+// ===== MAX Mode 選項顯示/隱藏 =====
+function toggleMaxModeOptions() {
+    if (elements.maxModeEnabled.checked) {
+        elements.maxModeOptions.classList.remove('hidden');
+    } else {
+        elements.maxModeOptions.classList.add('hidden');
+    }
 }
 
 // ===== Advanced Options 展開/收合 =====
@@ -368,6 +405,16 @@ async function generateLyrics() {
         .filter(btn => btn.classList.contains('active'))
         .map(btn => btn.dataset.style);
 
+    // 收集 Realism 標籤
+    const selectedRealismTags = Array.from(elements.realismTags)
+        .filter(btn => btn.classList.contains('active'))
+        .map(btn => btn.dataset.style);
+
+    // 收集 MAX Mode 參數
+    const maxParams = Array.from(elements.maxParams)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
     const styleOptions = {
         stylePrompt: elements.stylePrompt.value.trim(),
         vocalStyle: elements.vocalStyle.value,
@@ -376,7 +423,14 @@ async function generateLyrics() {
         weirdness: parseInt(elements.weirdnessSlider.value, 10),
         styleInfluence: parseInt(elements.styleInfluenceSlider.value, 10),
         instrumentalOnly: elements.instrumentalOnly.checked,
-        negativePrompt: elements.negativePrompt.value.trim()
+        negativePrompt: elements.negativePrompt.value.trim(),
+        // 新增選項
+        maxModeEnabled: elements.maxModeEnabled.checked,
+        maxParams: maxParams,
+        skipIntro: elements.skipIntro.checked,
+        lyricBleedProtection: elements.lyricBleedProtection.checked,
+        realismTags: selectedRealismTags,
+        masteringStyle: elements.masteringStyle.value
     };
 
     // 構建 prompt
@@ -409,107 +463,169 @@ function buildPrompt(theme, genre, mood, language, structures, extraInstructions
     };
 
     const genreMap = {
-        'pop': '流行 Pop',
-        'rock': '搖滾 Rock',
-        'hip-hop': '嘻哈 Hip Hop',
-        'r&b': 'R&B',
-        'electronic': '電子 Electronic',
-        'jazz': '爵士 Jazz',
-        'country': '鄉村 Country',
-        'folk': '民謠 Folk',
-        'classical': '古典 Classical',
-        'k-pop': 'K-Pop',
-        'j-pop': 'J-Pop',
-        'c-pop': '華語流行 C-Pop',
-        'ballad': '抒情 Ballad',
-        'lo-fi': 'Lo-Fi',
-        'metal': '金屬 Metal'
+        'pop': 'pop',
+        'rock': 'rock',
+        'hip-hop': 'hip hop',
+        'r&b': 'r&b',
+        'electronic': 'electronic',
+        'jazz': 'jazz',
+        'country': 'country',
+        'folk': 'folk',
+        'classical': 'classical',
+        'k-pop': 'k-pop',
+        'j-pop': 'j-pop',
+        'c-pop': 'mandopop',
+        'ballad': 'ballad',
+        'lo-fi': 'lo-fi',
+        'metal': 'metal'
     };
 
     const moodMap = {
-        'happy': '快樂 Happy',
-        'sad': '悲傷 Sad',
-        'energetic': '活力 Energetic',
-        'romantic': '浪漫 Romantic',
-        'melancholic': '憂鬱 Melancholic',
-        'peaceful': '平靜 Peaceful',
-        'angry': '憤怒 Angry',
-        'nostalgic': '懷舊 Nostalgic',
-        'hopeful': '希望 Hopeful',
-        'dreamy': '夢幻 Dreamy'
+        'happy': 'happy',
+        'sad': 'sad',
+        'energetic': 'energetic',
+        'romantic': 'romantic',
+        'melancholic': 'melancholic',
+        'peaceful': 'peaceful',
+        'angry': 'angry',
+        'nostalgic': 'nostalgic',
+        'hopeful': 'hopeful',
+        'dreamy': 'dreamy'
     };
 
     const vocalMap = {
-        'male': '男聲 Male Vocal',
-        'female': '女聲 Female Vocal',
-        'duet': '對唱 Duet',
-        'choir': '合唱團 Choir',
-        'rap': '饒舌 Rap',
-        'whisper': '輕聲 Whisper',
-        'powerful': '有力 Powerful',
-        'soft': '柔和 Soft'
+        'male': 'male vocals',
+        'female': 'female vocals',
+        'duet': 'duet',
+        'choir': 'choir',
+        'rap': 'rap vocals',
+        'whisper': 'whisper vocals',
+        'powerful': 'powerful vocals',
+        'soft': 'soft vocals'
     };
 
     const tempoMap = {
-        'slow': '慢速 Slow (60-80 BPM)',
-        'medium': '中速 Medium (80-120 BPM)',
-        'fast': '快速 Fast (120-140 BPM)',
-        'very-fast': '極快 Very Fast (140+ BPM)'
+        'slow': '70 BPM',
+        'medium': '100 BPM',
+        'fast': '130 BPM',
+        'very-fast': '150 BPM'
     };
 
-    // 構建風格描述
-    let styleDescription = '';
-    if (styleOptions.stylePrompt) {
-        styleDescription += `\n- Style Prompt：${styleOptions.stylePrompt}`;
+    // 構建 Suno 風格的 Style Prompt（使用 colon+quotes 格式）
+    let stylePromptParts = [];
+
+    // 基本風格
+    if (genre) {
+        stylePromptParts.push(`genre: "${genreMap[genre]}"`);
     }
+
+    // 情緒
+    if (mood) {
+        stylePromptParts.push(`mood: "${moodMap[mood]}"`);
+    }
+
+    // 人聲風格
     if (styleOptions.vocalStyle) {
-        styleDescription += `\n- 人聲風格：${vocalMap[styleOptions.vocalStyle]}`;
+        stylePromptParts.push(`vocals: "${vocalMap[styleOptions.vocalStyle]}"`);
     }
+
+    // 速度
     if (styleOptions.tempo) {
-        styleDescription += `\n- 節奏速度：${tempoMap[styleOptions.tempo]}`;
+        stylePromptParts.push(`tempo: "${tempoMap[styleOptions.tempo]}"`);
     }
+
+    // 自訂風格描述
+    if (styleOptions.stylePrompt) {
+        stylePromptParts.push(`style: "${styleOptions.stylePrompt}"`);
+    }
+
+    // 樂器/風格元素
     if (styleOptions.selectedStyles.length > 0) {
-        styleDescription += `\n- 樂器/風格元素：${styleOptions.selectedStyles.join(', ')}`;
+        stylePromptParts.push(`instruments: "${styleOptions.selectedStyles.join(', ')}"`);
     }
 
-    // 構建進階選項描述
-    let advancedDescription = '';
-    if (styleOptions.weirdness !== 50) {
-        const weirdnessLevel = styleOptions.weirdness < 30 ? '保守安全' :
-                              styleOptions.weirdness > 70 ? '大膽實驗' : '中等';
-        advancedDescription += `\n- 創作風格：${weirdnessLevel}（Weirdness: ${styleOptions.weirdness}%）`;
+    // Realism 描述詞（用於原聲/民謠/古典音樂）
+    if (styleOptions.realismTags.length > 0) {
+        stylePromptParts.push(`production: "${styleOptions.realismTags.join(', ')}"`);
     }
+
+    // 母帶處理風格
+    if (styleOptions.masteringStyle) {
+        stylePromptParts.push(`mastering: "${styleOptions.masteringStyle}"`);
+    }
+
+    // 純音樂模式
     if (styleOptions.instrumentalOnly) {
-        advancedDescription += `\n- 純音樂模式（無人聲）`;
-    }
-    if (styleOptions.negativePrompt) {
-        advancedDescription += `\n- 請避免：${styleOptions.negativePrompt}`;
+        stylePromptParts.push(`type: "instrumental"`);
     }
 
-    let prompt = `你是一位專業的歌詞創作者。請為以下主題創作一首歌詞，並使用 Suno AI 的 metatag 格式。
+    // 排除風格
+    if (styleOptions.negativePrompt) {
+        stylePromptParts.push(`exclude: "${styleOptions.negativePrompt}"`);
+    }
+
+    const stylePromptStr = stylePromptParts.join(', ');
+
+    // 構建 MAX Mode 標籤
+    let maxModeStr = '';
+    if (styleOptions.maxModeEnabled && styleOptions.maxParams.length > 0) {
+        maxModeStr = '[Is_MAX_MODE: MAX](MAX) ' +
+            styleOptions.maxParams.map(p => `[${p}: MAX](MAX)`).join(' ');
+    }
+
+    // 構建歌詞頂部（防止 Lyric Bleed）
+    let lyricsPrefix = '';
+    if (styleOptions.lyricBleedProtection) {
+        lyricsPrefix = '///*****///\n\n';
+    }
+
+    // 構建 START_ON 指令
+    let startOnNote = '';
+    if (styleOptions.skipIntro) {
+        startOnNote = `\n- 在歌詞開頭加入 [START_ON: "第一句歌詞"] 來跳過前奏，直接從人聲開始`;
+    }
+
+    let prompt = `你是一位專業的 Suno AI 歌詞創作者。請為以下主題創作一首歌詞，使用專業的 Suno metatag 格式。
 
 ## 歌曲主題
 ${theme}
 
-## 基本要求
-- 語言：${languageMap[language] || '繁體中文'}
-${genre ? `- 風格：${genreMap[genre]}` : ''}
-${mood ? `- 情緒：${moodMap[mood]}` : ''}
-- 歌曲結構包含：${structures.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ')}
-${styleDescription ? `\n## Style of Music（音樂風格）${styleDescription}` : ''}
-${advancedDescription ? `\n## 進階要求${advancedDescription}` : ''}
+## 語言
+${languageMap[language] || '繁體中文'}
 
-## Suno Metatag 格式說明
-- 結構標籤用方括號：[Intro], [Verse], [Chorus], [Bridge], [Outro] 等
-- 可以加入描述詞如 [Catchy Chorus], [Emotional Verse]
-- Ad-lib 用小括號：(oh yeah), (hmm~), (啦啦啦)
-- 樂器/效果標籤：[Instrumental], [Guitar Solo], [Fade Out], [Build Up], [Drop] 等
-${styleOptions.instrumentalOnly ? '- 因為是純音樂模式，主要使用 [Instrumental] 和樂器標籤，可以加入少量結構提示' : ''}
+## Style of Music Prompt（請直接使用此格式）
+\`\`\`
+${stylePromptStr}
+\`\`\`
+${maxModeStr ? `\n## MAX Mode 標籤（適合原聲/民謠/古典音樂，提升音質）\n\`\`\`\n${maxModeStr}\n\`\`\`` : ''}
+
+## 歌曲結構
+包含：${structures.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ')}
+
+## Suno 進階 Metatag 格式說明
+
+### 結構標籤（方括號）
+- 基本：[Intro], [Verse], [Pre-Chorus], [Chorus], [Bridge], [Outro]
+- 進階：[Verse | emotional build-up], [Chorus | anthemic | stacked harmonies]
+- 可加描述詞控制段落風格
+
+### Ad-libs（小括號）
+- 例如：(oh yeah), (hmm~), (啦啦啦) - 會被唱出但不是主歌詞
+
+### 效果/樂器標籤
+- [Instrumental], [Guitar Solo], [Build Up], [Drop], [Fade Out]
+- [High Energy], [Low Energy], [Building Energy]
+${styleOptions.instrumentalOnly ? '\n### 純音樂模式\n主要使用 [Instrumental] 和樂器標籤，加入段落結構提示' : ''}
+${startOnNote}
+
+${styleOptions.lyricBleedProtection ? `## Lyric Bleed Protection
+在歌詞最開頭加入 \`///*****///\` 分隔符，防止 Style Prompt 被意外唱出` : ''}
 
 ${extraInstructions ? `## 額外要求\n${extraInstructions}` : ''}
 
 ## 輸出格式
-直接輸出歌詞，包含所有 metatag 標籤。不要加任何解釋或前言。`;
+${styleOptions.lyricBleedProtection ? '1. 最開頭加入 ///*****/// 分隔符\n2. ' : ''}直接輸出歌詞，包含所有 metatag 標籤
+不要加任何解釋或前言，直接輸出可用於 Suno 的歌詞格式`;
 
     return prompt;
 }

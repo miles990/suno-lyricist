@@ -374,9 +374,101 @@ small {
 }
 
 .advanced-options:not(.collapsed) {
-    max-height: 500px;
+    max-height: 2000px;
     opacity: 1;
     margin-bottom: 1rem;
+}
+
+/* ===== Advanced Subsections ===== */
+.advanced-subsection {
+    background: var(--bg-input);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.subsection-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.subsection-title::before {
+    content: '◆';
+    font-size: 0.7rem;
+}
+
+/* Checkbox Grid for MAX Mode */
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.5rem;
+}
+
+.checkbox-grid .checkbox-label {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+}
+
+/* MAX Mode Options Container */
+.max-mode-options {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+/* Hidden utility class */
+.hidden {
+    display: none !important;
+}
+
+/* ===== Tag Button Variants ===== */
+.tag-btn.meta-tag {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.tag-btn.meta-tag:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.tag-btn.special-tag {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: var(--success);
+    color: var(--success);
+}
+
+.tag-btn.special-tag:hover {
+    background: var(--success);
+    color: white;
+}
+
+/* ===== Realism Tags ===== */
+.realism-tag {
+    font-size: 0.75rem !important;
+    padding: 0.3rem 0.6rem !important;
+}
+
+.realism-tag.active {
+    background: var(--warning);
+    border-color: var(--warning);
+    color: var(--bg-dark);
+}
+
+/* Style Tags Compact Variant */
+.style-tags.compact {
+    gap: 0.35rem;
+}
+
+.style-tags.compact .style-tag {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
 }
 
 /* ===== Sliders ===== */
