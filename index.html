@@ -82,6 +82,18 @@
 
         <!-- AI 生成頁面 -->
         <div id="ai-generate" class="tab-content active">
+            <!-- 表單完成度進度條 -->
+            <div class="form-progress-container">
+                <div class="form-progress-header">
+                    <span class="progress-label">創作設定完成度</span>
+                    <span class="progress-value" id="form-progress-value">0%</span>
+                </div>
+                <div class="form-progress-bar">
+                    <div class="form-progress-fill" id="form-progress-fill"></div>
+                </div>
+                <div class="progress-hint" id="progress-hint">填寫主題開始創作</div>
+            </div>
+
             <div class="form-section">
                 <div class="form-group">
                     <label>API 模式</label>

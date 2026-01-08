@@ -4723,6 +4723,110 @@ function initScrollToTop() {
     });
 }
 
+// ===== Form Progress Bar 功能 =====
+const FORM_PROGRESS_ITEMS = [
+    { id: 'song-theme', weight: 25, label: '主題' },
+    { id: 'genre', weight: 15, label: '風格' },
+    { id: 'mood', weight: 10, label: '情緒' },
+    { id: 'vocal-style', weight: 10, label: '人聲' },
+    { id: 'style-prompt', weight: 15, label: 'Style Prompt' },
+    { selector: '.mix-tag.active', weight: 10, label: 'Mix 設定' },
+    { selector: '.vocal-tech-tag.active', weight: 8, label: '人聲技巧' },
+    { selector: '.instrument-tag.active', weight: 7, label: '樂器配器' }
+];
+
+const PROGRESS_HINTS = [
+    { min: 0, max: 10, text: '填寫主題開始創作', class: '' },
+    { min: 10, max: 30, text: '選擇音樂風格會更好', class: '' },
+    { min: 30, max: 50, text: '不錯！繼續完善設定', class: '' },
+    { min: 50, max: 70, text: '很好！可以開始生成了', class: '' },
+    { min: 70, max: 90, text: '專業設定！成果會更精準', class: '' },
+    { min: 90, max: 101, text: '完美配置！準備創作傑作', class: 'excellent' }
+];
+
+function calculateFormProgress() {
+    let progress = 0;
+
+    FORM_PROGRESS_ITEMS.forEach(item => {
+        if (item.id) {
+            const el = document.getElementById(item.id);
+            if (el && el.value && el.value.trim()) {
+                progress += item.weight;
+            }
+        } else if (item.selector) {
+            const els = document.querySelectorAll(item.selector);
+            if (els.length > 0) {
+                progress += item.weight;
+            }
+        }
+    });
+
+    return Math.min(progress, 100);
+}
+
+function updateFormProgress() {
+    const progressFill = document.getElementById('form-progress-fill');
+    const progressValue = document.getElementById('form-progress-value');
+    const progressHint = document.getElementById('progress-hint');
+
+    if (!progressFill || !progressValue || !progressHint) return;
+
+    const progress = calculateFormProgress();
+
+    progressFill.style.width = `${progress}%`;
+    progressValue.textContent = `${progress}%`;
+
+    // 更新提示文字
+    const hint = PROGRESS_HINTS.find(h => progress >= h.min && progress < h.max);
+    if (hint) {
+        progressHint.textContent = hint.text;
+        progressHint.className = 'progress-hint ' + hint.class;
+    }
+
+    // 100% 時特殊樣式
+    if (progress >= 90) {
+        progressValue.classList.add('complete');
+    } else {
+        progressValue.classList.remove('complete');
+    }
+}
+
+function initFormProgress() {
+    // 初始計算
+    updateFormProgress();
+
+    // 監聽所有相關輸入變化
+    const inputIds = ['song-theme', 'genre', 'mood', 'vocal-style', 'style-prompt', 'tempo', 'bpm'];
+    inputIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', updateFormProgress);
+            el.addEventListener('change', updateFormProgress);
+        }
+    });
+
+    // 監聽標籤點擊
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('mix-tag') ||
+            e.target.classList.contains('vocal-tech-tag') ||
+            e.target.classList.contains('instrument-tag') ||
+            e.target.classList.contains('style-tag')) {
+            // 延遲計算，等待 active class 變化
+            setTimeout(updateFormProgress, 50);
+        }
+    });
+
+    // 監聽清除按鈕
+    ['clear-mix-btn', 'clear-vocal-btn', 'clear-instrument-btn'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.addEventListener('click', () => {
+                setTimeout(updateFormProgress, 50);
+            });
+        }
+    });
+}
+
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
@@ -4732,3 +4836,4 @@ initDownloadTxt();
 initInspirationBtn();
 initClearTagButtons();
 initScrollToTop();
+initFormProgress();
