@@ -1649,6 +1649,26 @@ function bindEvents() {
         });
     }
 
+    // Instrument 展開/收合
+    const instrumentExpandBtn = document.getElementById('btn-expand-instrument');
+    const instrumentAdvanced = document.getElementById('instrument-advanced');
+    if (instrumentExpandBtn && instrumentAdvanced) {
+        instrumentExpandBtn.addEventListener('click', () => {
+            const isCollapsed = instrumentAdvanced.classList.contains('collapsed');
+            instrumentAdvanced.classList.toggle('collapsed');
+            instrumentExpandBtn.classList.toggle('expanded');
+            instrumentExpandBtn.innerHTML = isCollapsed
+                ? '<span class="expand-icon">▲</span> 收起進階樂器'
+                : '<span class="expand-icon">▼</span> 顯示更多樂器';
+        });
+    }
+
+    // 演奏技巧標籤（可多選）
+    const playingTechTags = document.querySelectorAll('.playing-tech-tag');
+    playingTechTags.forEach(btn => {
+        btn.addEventListener('click', () => toggleStyleTag(btn));
+    });
+
     // 滑桿數值更新
     elements.weirdnessSlider.addEventListener('input', () => {
         elements.weirdnessValue.textContent = `${elements.weirdnessSlider.value}%`;

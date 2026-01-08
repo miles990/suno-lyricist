@@ -2149,6 +2149,89 @@ header {
     color: var(--text-muted);
 }
 
+/* ===== Instrument Advanced Section ===== */
+.instrument-advanced {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.instrument-advanced.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+.instrument-advanced:not(.collapsed) {
+    max-height: 2000px;
+    opacity: 1;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+.btn-expand-instrument {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.75rem;
+    background: transparent;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-expand-instrument:hover {
+    background: var(--bg-secondary);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn-expand-instrument .expand-icon {
+    transition: transform 0.3s ease;
+}
+
+.btn-expand-instrument.expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+/* ===== Playing Techniques Config ===== */
+.playing-tech-config {
+    background: var(--bg-input);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+}
+
+.playing-tech-category {
+    margin-bottom: 0.75rem;
+}
+
+.playing-tech-category:last-child {
+    margin-bottom: 0;
+}
+
+.playing-tech-category .category-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+    padding: 0.15rem 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius);
+}
+
+.playing-tech-tag.active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-color: transparent;
+}
+
 /* ===== Responsive Quick Start Button ===== */
 @media (max-width: 600px) {
     .header-actions {

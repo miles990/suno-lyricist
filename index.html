@@ -443,51 +443,205 @@
 
                 <!-- 樂器配器配置 -->
                 <div class="form-group">
-                    <label>樂器配器</label>
+                    <label>樂器配器 <span class="label-hint">(點擊展開進階選項)</span></label>
                     <div class="instrument-config">
+                        <div class="instrument-category">
+                            <span class="category-label">吉他</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag instrument-tag" data-style="acoustic guitar">Acoustic Guitar 木吉他</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="electric guitar">Electric Guitar 電吉他</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="bass guitar">Bass Guitar 貝斯</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="12-string guitar">12-String 12弦吉他</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="nylon guitar">Nylon Guitar 尼龍弦</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="slide guitar">Slide Guitar 滑棒吉他</button>
+                            </div>
+                        </div>
                         <div class="instrument-category">
                             <span class="category-label">弦樂</span>
                             <div class="style-tags compact">
-                                <button type="button" class="style-tag instrument-tag" data-style="acoustic guitar">Acoustic Guitar</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="electric guitar">Electric Guitar</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="bass guitar">Bass Guitar</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="violin">Violin</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="cello">Cello</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="strings ensemble">Strings</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="ukulele">Ukulele</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="violin">Violin 小提琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="viola">Viola 中提琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="cello">Cello 大提琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="double bass">Double Bass 低音提琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="strings ensemble">Strings 弦樂合奏</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="harp">Harp 豎琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="ukulele">Ukulele 烏克麗麗</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="banjo">Banjo 班卓琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="mandolin">Mandolin 曼陀林</button>
                             </div>
                         </div>
                         <div class="instrument-category">
                             <span class="category-label">鍵盤</span>
                             <div class="style-tags compact">
-                                <button type="button" class="style-tag instrument-tag" data-style="piano">Piano</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="electric piano">Electric Piano</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="organ">Organ</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="synth">Synth</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="synth pads">Synth Pads</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="synth lead">Synth Lead</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="piano">Piano 鋼琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="grand piano">Grand Piano 三角鋼琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="electric piano">Electric Piano 電鋼琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="rhodes">Rhodes 羅德琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="wurlitzer">Wurlitzer 沃利策</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="organ">Organ 風琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="hammond organ">Hammond Organ 哈蒙德風琴</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="accordion">Accordion 手風琴</button>
+                            </div>
+                        </div>
+                        <div class="instrument-category">
+                            <span class="category-label">合成器</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag instrument-tag" data-style="synth">Synth 合成器</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="synth pads">Synth Pads 合成鋪底</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="synth lead">Synth Lead 合成主音</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="synth bass">Synth Bass 合成貝斯</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="arpeggiator">Arpeggiator 琶音器</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="modular synth">Modular Synth 模組合成器</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="analog synth">Analog Synth 類比合成器</button>
                             </div>
                         </div>
                         <div class="instrument-category">
                             <span class="category-label">節奏</span>
                             <div class="style-tags compact">
-                                <button type="button" class="style-tag instrument-tag" data-style="drums">Drums</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="808 drums">808</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="percussion">Percussion</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="hi-hat">Hi-hat</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="claps">Claps</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="drum machine">Drum Machine</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="drums">Drums 鼓組</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="808 drums">808 鼓機</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="909 drums">909 鼓機</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="drum machine">Drum Machine 電子鼓機</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="percussion">Percussion 打擊樂</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="hi-hat">Hi-hat 踩鈸</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="snare">Snare 小鼓</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="kick drum">Kick Drum 大鼓</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="claps">Claps 拍手</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="congas">Congas 康加鼓</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="bongos">Bongos 邦戈鼓</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="tambourine">Tambourine 鈴鼓</button>
                             </div>
                         </div>
                         <div class="instrument-category">
-                            <span class="category-label">其他</span>
+                            <span class="category-label">管樂</span>
                             <div class="style-tags compact">
-                                <button type="button" class="style-tag instrument-tag" data-style="brass section">Brass</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="saxophone">Saxophone</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="trumpet">Trumpet</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="flute">Flute</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="harmonica">Harmonica</button>
-                                <button type="button" class="style-tag instrument-tag" data-style="orchestra">Orchestra</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="brass section">Brass 銅管</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="trumpet">Trumpet 小號</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="trombone">Trombone 長號</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="french horn">French Horn 法國號</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="tuba">Tuba 大號</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="saxophone">Saxophone 薩克斯風</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="clarinet">Clarinet 單簧管</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="flute">Flute 長笛</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="oboe">Oboe 雙簧管</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="harmonica">Harmonica 口琴</button>
+                            </div>
+                        </div>
+                        <!-- 進階樂器（可展開） -->
+                        <div class="instrument-advanced collapsed" id="instrument-advanced">
+                            <div class="instrument-category">
+                                <span class="category-label">世界音樂</span>
+                                <div class="style-tags compact">
+                                    <button type="button" class="style-tag instrument-tag" data-style="sitar">Sitar 西塔琴</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="tabla">Tabla 塔布拉鼓</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="erhu">Erhu 二胡</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="pipa">Pipa 琵琶</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="guzheng">Guzheng 古箏</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="shamisen">Shamisen 三味線</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="koto">Koto 日本箏</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="didgeridoo">Didgeridoo 迪吉里杜管</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="steel drums">Steel Drums 鋼鼓</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="kalimba">Kalimba 拇指琴</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="bagpipes">Bagpipes 風笛</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="djembe">Djembe 非洲鼓</button>
+                                </div>
+                            </div>
+                            <div class="instrument-category">
+                                <span class="category-label">電子音效</span>
+                                <div class="style-tags compact">
+                                    <button type="button" class="style-tag instrument-tag" data-style="vocoder">Vocoder 聲碼器</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="theremin">Theremin 特雷門琴</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="sampler">Sampler 取樣機</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="glitch">Glitch 故障音效</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="noise">Noise 噪音</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="sub bass">Sub Bass 超低頻</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="risers">Risers 上升音效</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="drops">Drops 下墜音效</button>
+                                </div>
+                            </div>
+                            <div class="instrument-category">
+                                <span class="category-label">合奏編制</span>
+                                <div class="style-tags compact">
+                                    <button type="button" class="style-tag instrument-tag" data-style="orchestra">Orchestra 管弦樂團</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="chamber ensemble">Chamber 室內樂</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="string quartet">String Quartet 弦樂四重奏</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="big band">Big Band 大樂隊</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="choir">Choir 合唱團</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="gospel choir">Gospel Choir 福音詩班</button>
+                                    <button type="button" class="style-tag instrument-tag" data-style="marching band">Marching Band 行進樂隊</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-expand-instrument" id="btn-expand-instrument">
+                            <span class="expand-icon">▼</span> 顯示更多樂器
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 演奏技巧配置 -->
+                <div class="form-group">
+                    <label>演奏技巧 <span class="label-hint">(增強樂器表現力)</span></label>
+                    <div class="playing-tech-config">
+                        <div class="playing-tech-category">
+                            <span class="category-label">吉他技巧</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag playing-tech-tag" data-style="fingerpicking">Fingerpicking 指彈</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="strumming">Strumming 掃弦</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="palm mute">Palm Mute 悶音</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="power chords">Power Chords 強力和弦</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="arpeggios">Arpeggios 琶音</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="hammer-on">Hammer-on 槌弦</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="pull-off">Pull-off 勾弦</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="bending">Bending 推弦</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="tapping">Tapping 點弦</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="wah pedal">Wah Pedal 哇音踏板</button>
+                            </div>
+                        </div>
+                        <div class="playing-tech-category">
+                            <span class="category-label">鍵盤技巧</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag playing-tech-tag" data-style="staccato">Staccato 斷奏</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="legato">Legato 連奏</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="glissando">Glissando 滑奏</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="tremolo">Tremolo 震音</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="broken chords">Broken Chords 分解和弦</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="octave playing">Octave Playing 八度演奏</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="pedal sustain">Pedal Sustain 延音踏板</button>
+                            </div>
+                        </div>
+                        <div class="playing-tech-category">
+                            <span class="category-label">弦樂技巧</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag playing-tech-tag" data-style="pizzicato">Pizzicato 撥弦</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="arco">Arco 弓奏</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="spiccato">Spiccato 跳弓</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="col legno">Col Legno 弓背敲弦</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="sul ponticello">Sul Ponticello 近琴橋演奏</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="harmonics">Harmonics 泛音</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="double stops">Double Stops 雙音</button>
+                            </div>
+                        </div>
+                        <div class="playing-tech-category">
+                            <span class="category-label">管樂技巧</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag playing-tech-tag" data-style="flutter tongue">Flutter Tongue 顫舌音</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="circular breathing">Circular Breathing 循環呼吸</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="growl">Growl 咆哮音</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="mute">Mute 弱音器</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="multiphonics">Multiphonics 複合音</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="overblowing">Overblowing 泛音吹奏</button>
+                            </div>
+                        </div>
+                        <div class="playing-tech-category">
+                            <span class="category-label">鼓組技巧</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag playing-tech-tag" data-style="fills">Fills 過門</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="ghost notes">Ghost Notes 幽靈音</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="rim shot">Rim Shot 敲邊</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="cross stick">Cross Stick 交叉敲擊</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="double bass">Double Bass 雙踩</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="brush">Brush 刷鼓</button>
+                                <button type="button" class="style-tag playing-tech-tag" data-style="blast beat">Blast Beat 極速鼓點</button>
                             </div>
                         </div>
                     </div>
