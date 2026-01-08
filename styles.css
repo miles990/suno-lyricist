@@ -3416,3 +3416,50 @@ header {
     font-family: 'SF Mono', Monaco, monospace;
     font-size: 0.7rem;
 }
+
+/* ===== 自動生成 Style Prompt 按鈕 ===== */
+.btn-auto-style {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.7rem;
+    margin-left: 0.5rem;
+    background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    vertical-align: middle;
+}
+
+.btn-auto-style:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 10px rgba(168, 85, 247, 0.4);
+}
+
+.btn-auto-style:active {
+    transform: scale(0.98);
+}
+
+/* Style Prompt 高亮閃爍動畫 */
+.highlight-flash {
+    animation: highlightFlash 0.6s ease;
+}
+
+@keyframes highlightFlash {
+    0% {
+        background-color: var(--bg-input);
+        box-shadow: none;
+    }
+    50% {
+        background-color: rgba(168, 85, 247, 0.2);
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+    }
+    100% {
+        background-color: var(--bg-input);
+        box-shadow: none;
+    }
+}

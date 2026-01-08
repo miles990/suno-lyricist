@@ -4046,6 +4046,117 @@ function hideModal() {
     elements.templateModal.classList.remove('active');
 }
 
+// ===== 自動生成 Style Prompt =====
+function generateAutoStylePrompt() {
+    const parts = [];
+
+    // 1. 主風格 (Genre)
+    const genre = elements.songGenre?.value;
+    if (genre) {
+        const genreName = genre.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        parts.push(genreName);
+    }
+
+    // 2. 情緒 (Mood)
+    const mood = elements.songMood?.value;
+    if (mood) {
+        parts.push(mood);
+    }
+
+    // 3. 節奏 (Tempo)
+    const tempo = elements.songTempo?.value;
+    if (tempo && tempo !== 'medium') {
+        const tempoMap = {
+            'very-slow': 'very slow tempo',
+            'slow': 'slow tempo',
+            'fast': 'upbeat',
+            'very-fast': 'high energy'
+        };
+        if (tempoMap[tempo]) parts.push(tempoMap[tempo]);
+    }
+
+    // 4. BPM
+    const bpm = document.getElementById('song-bpm')?.value;
+    if (bpm) {
+        parts.push(`${bpm} BPM`);
+    }
+
+    // 5. 人聲風格 (Vocal Style)
+    const vocalStyle = elements.vocalStyle?.value;
+    if (vocalStyle) {
+        parts.push(`${vocalStyle} vocals`);
+    }
+
+    // 6. 收集已選的人聲技巧標籤
+    const vocalTechs = [];
+    document.querySelectorAll('.vocal-tech-tag.active').forEach(tag => {
+        vocalTechs.push(tag.dataset.style);
+    });
+    if (vocalTechs.length > 0) {
+        parts.push(vocalTechs.slice(0, 3).join(', '));
+    }
+
+    // 7. 收集已選的樂器標籤
+    const instruments = [];
+    document.querySelectorAll('.instrument-tag.active').forEach(tag => {
+        instruments.push(tag.dataset.style);
+    });
+    if (instruments.length > 0) {
+        parts.push(instruments.slice(0, 4).join(', '));
+    }
+
+    // 8. 收集已選的 Mix 標籤
+    const mixTags = [];
+    document.querySelectorAll('.mix-tag.active').forEach(tag => {
+        mixTags.push(tag.dataset.style);
+    });
+    if (mixTags.length > 0) {
+        parts.push(`[MIX: ${mixTags.join(', ')}]`);
+    }
+
+    // 9. 收集已選的母帶處理標籤
+    const masteringTags = [];
+    document.querySelectorAll('.mastering-tag.active').forEach(tag => {
+        masteringTags.push(tag.dataset.style);
+    });
+    if (masteringTags.length > 0) {
+        parts.push(`[MASTERING: ${masteringTags.join(', ')}]`);
+    }
+
+    // 10. 收集已選的 Ad-Libs
+    const adLibsInput = document.getElementById('adlibs-input');
+    if (adLibsInput?.value?.trim()) {
+        parts.push(`ad-libs: (${adLibsInput.value.trim()})`);
+    }
+
+    // 組合成最終 Style Prompt
+    const stylePrompt = parts.join(', ');
+
+    // 填入文字框
+    if (elements.stylePrompt) {
+        elements.stylePrompt.value = stylePrompt;
+        currentStylePrompt = stylePrompt;
+
+        // 高亮動畫
+        elements.stylePrompt.classList.add('highlight-flash');
+        setTimeout(() => {
+            elements.stylePrompt.classList.remove('highlight-flash');
+        }, 600);
+
+        showToast('已自動生成 Style Prompt！', 'success');
+    }
+
+    return stylePrompt;
+}
+
+// 初始化自動生成按鈕
+function initAutoStylePrompt() {
+    const autoBtn = document.getElementById('auto-style-btn');
+    if (autoBtn) {
+        autoBtn.addEventListener('click', generateAutoStylePrompt);
+    }
+}
+
 // ===== 複製到剪貼簿 =====
 async function copyToClipboard(text) {
     try {
@@ -4276,3 +4387,4 @@ function closeAllPanels() {
 // ===== 啟動應用 =====
 init();
 initKeyboardShortcuts();
+initAutoStylePrompt();
