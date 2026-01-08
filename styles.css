@@ -3799,3 +3799,42 @@ textarea,
 [data-theme="light"] .btn-inspiration {
     box-shadow: 0 1px 3px rgba(245, 158, 11, 0.2);
 }
+
+/* ===== Clear Tags Button ===== */
+.btn-clear-tags {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.2rem 0.5rem;
+    margin-left: 0.4rem;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    vertical-align: middle;
+}
+
+.btn-clear-tags:hover {
+    background: var(--danger);
+    color: white;
+    border-color: var(--danger);
+    transform: scale(1.05);
+}
+
+.btn-clear-tags:active {
+    transform: scale(0.95);
+}
+
+[data-theme="light"] .btn-clear-tags {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
+}
+
+[data-theme="light"] .btn-clear-tags:hover {
+    background: #dc2626;
+    color: white;
+}

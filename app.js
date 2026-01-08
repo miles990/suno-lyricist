@@ -4649,6 +4649,49 @@ function initInspirationBtn() {
     }
 }
 
+// ===== 標籤清除功能 =====
+function clearTagsBySelector(selector, toastMessage) {
+    const tags = document.querySelectorAll(selector);
+    let clearedCount = 0;
+    tags.forEach(tag => {
+        if (tag.classList.contains('active')) {
+            tag.classList.remove('active');
+            clearedCount++;
+        }
+    });
+    if (clearedCount > 0) {
+        showToast(`已清除 ${clearedCount} 個${toastMessage}`, 'success');
+    } else {
+        showToast(`沒有已選的${toastMessage}`, 'info');
+    }
+}
+
+function initClearTagButtons() {
+    // 清除混音標籤
+    const clearMixBtn = document.getElementById('clear-mix-btn');
+    if (clearMixBtn) {
+        clearMixBtn.addEventListener('click', () => {
+            clearTagsBySelector('.mix-tag', '混音標籤');
+        });
+    }
+
+    // 清除人聲標籤
+    const clearVocalBtn = document.getElementById('clear-vocal-btn');
+    if (clearVocalBtn) {
+        clearVocalBtn.addEventListener('click', () => {
+            clearTagsBySelector('.vocal-tech-tag', '人聲標籤');
+        });
+    }
+
+    // 清除樂器標籤
+    const clearInstrumentBtn = document.getElementById('clear-instrument-btn');
+    if (clearInstrumentBtn) {
+        clearInstrumentBtn.addEventListener('click', () => {
+            clearTagsBySelector('.instrument-tag', '樂器標籤');
+        });
+    }
+}
+
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
@@ -4656,3 +4699,4 @@ initThemeToggle();
 initLyricsStatsObserver();
 initDownloadTxt();
 initInspirationBtn();
+initClearTagButtons();
