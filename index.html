@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suno 歌詞產生器</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Suno 歌詞產生器</h1>
+            <p class="subtitle">AI 生成 + 模板編輯，完美支援 Suno 格式</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="ai-generate">AI 生成</button>
+            <button class="tab" data-tab="template-edit">模板編輯</button>
+            <button class="tab" data-tab="tags-ref">標籤參考</button>
+        </div>
+
+        <!-- AI 生成頁面 -->
+        <div id="ai-generate" class="tab-content active">
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="api-key">Claude API Key</label>
+                    <div class="api-key-wrapper">
+                        <input type="password" id="api-key" placeholder="sk-ant-...">
+                        <button id="toggle-api-key" class="btn-icon" title="顯示/隱藏">👁</button>
+                    </div>
+                    <small>API Key 只會存在本地瀏覽器，不會上傳</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="song-theme">歌曲主題</label>
+                        <input type="text" id="song-theme" placeholder="例：夏日海灘的愛情故事">
+                    </div>
+                    <div class="form-group">
+                        <label for="song-genre">音樂風格</label>
+                        <select id="song-genre">
+                            <option value="">選擇風格...</option>
+                            <option value="pop">Pop 流行</option>
+                            <option value="rock">Rock 搖滾</option>
+                            <option value="hip-hop">Hip Hop 嘻哈</option>
+                            <option value="r&b">R&B</option>
+                            <option value="electronic">Electronic 電子</option>
+                            <option value="jazz">Jazz 爵士</option>
+                            <option value="country">Country 鄉村</option>
+                            <option value="folk">Folk 民謠</option>
+                            <option value="classical">Classical 古典</option>
+                            <option value="k-pop">K-Pop</option>
+                            <option value="j-pop">J-Pop</option>
+                            <option value="c-pop">C-Pop 華語流行</option>
+                            <option value="ballad">Ballad 抒情</option>
+                            <option value="lo-fi">Lo-Fi</option>
+                            <option value="metal">Metal 金屬</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="song-mood">情緒氛圍</label>
+                        <select id="song-mood">
+                            <option value="">選擇情緒...</option>
+                            <option value="happy">Happy 快樂</option>
+                            <option value="sad">Sad 悲傷</option>
+                            <option value="energetic">Energetic 活力</option>
+                            <option value="romantic">Romantic 浪漫</option>
+                            <option value="melancholic">Melancholic 憂鬱</option>
+                            <option value="peaceful">Peaceful 平靜</option>
+                            <option value="angry">Angry 憤怒</option>
+                            <option value="nostalgic">Nostalgic 懷舊</option>
+                            <option value="hopeful">Hopeful 希望</option>
+                            <option value="dreamy">Dreamy 夢幻</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="song-language">歌詞語言</label>
+                        <select id="song-language">
+                            <option value="zh-TW">繁體中文</option>
+                            <option value="zh-CN">簡體中文</option>
+                            <option value="en">English</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
+                            <option value="mixed-en-zh">中英混合</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="song-structure">歌曲結構</label>
+                    <div class="structure-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="structure" value="intro" checked> Intro
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="structure" value="verse" checked> Verse
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="structure" value="pre-chorus"> Pre-Chorus
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="structure" value="chorus" checked> Chorus
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="structure" value="bridge"> Bridge
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="structure" value="outro" checked> Outro
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="extra-instructions">額外指示（可選）</label>
+                    <textarea id="extra-instructions" rows="2" placeholder="例：副歌要有記憶點、使用押韻..."></textarea>
+                </div>
+
+                <!-- Styles 區塊 -->
+                <div class="section-divider">
+                    <span>Style of Music</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="style-prompt">風格描述 (Style Prompt)</label>
+                    <textarea id="style-prompt" rows="2" placeholder="例：Sultry RnB, smooth vocals, groovy bass, 90s vibe"></textarea>
+                    <small>描述音樂風格、樂器、人聲特色等，這會直接影響 Suno 生成的音樂</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vocal-style">人聲風格</label>
+                        <select id="vocal-style">
+                            <option value="">選擇人聲...</option>
+                            <option value="male">Male Vocal 男聲</option>
+                            <option value="female">Female Vocal 女聲</option>
+                            <option value="duet">Duet 對唱</option>
+                            <option value="choir">Choir 合唱</option>
+                            <option value="rap">Rap 饒舌</option>
+                            <option value="whisper">Whisper 輕聲</option>
+                            <option value="powerful">Powerful 有力</option>
+                            <option value="soft">Soft 柔和</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tempo">節奏速度</label>
+                        <select id="tempo">
+                            <option value="">選擇速度...</option>
+                            <option value="slow">Slow 慢速 (60-80 BPM)</option>
+                            <option value="medium">Medium 中速 (80-120 BPM)</option>
+                            <option value="fast">Fast 快速 (120-140 BPM)</option>
+                            <option value="very-fast">Very Fast 極快 (140+ BPM)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>快速風格標籤</label>
+                    <div class="style-tags">
+                        <button type="button" class="style-tag" data-style="acoustic">Acoustic</button>
+                        <button type="button" class="style-tag" data-style="electric guitar">Electric Guitar</button>
+                        <button type="button" class="style-tag" data-style="piano">Piano</button>
+                        <button type="button" class="style-tag" data-style="synth">Synth</button>
+                        <button type="button" class="style-tag" data-style="bass heavy">Bass Heavy</button>
+                        <button type="button" class="style-tag" data-style="strings">Strings</button>
+                        <button type="button" class="style-tag" data-style="drums">Drums</button>
+                        <button type="button" class="style-tag" data-style="808">808</button>
+                        <button type="button" class="style-tag" data-style="lo-fi">Lo-Fi</button>
+                        <button type="button" class="style-tag" data-style="cinematic">Cinematic</button>
+                        <button type="button" class="style-tag" data-style="ambient">Ambient</button>
+                        <button type="button" class="style-tag" data-style="groovy">Groovy</button>
+                    </div>
+                </div>
+
+                <!-- Advanced Options 區塊 -->
+                <div class="section-divider">
+                    <span>Advanced Options</span>
+                    <button type="button" id="toggle-advanced" class="btn-text-small">展開</button>
+                </div>
+
+                <div id="advanced-options" class="advanced-options collapsed">
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <label for="weirdness-slider">Weirdness（實驗性）</label>
+                            <span id="weirdness-value">50%</span>
+                        </div>
+                        <input type="range" id="weirdness-slider" min="0" max="100" value="50" class="slider">
+                        <div class="slider-labels">
+                            <span>Safe 保守</span>
+                            <span>Chaos 瘋狂</span>
+                        </div>
+                        <small>控制 AI 創作的實驗程度。50% 為基準值，越高越不可預測</small>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <label for="style-influence-slider">Style Influence（風格影響力）</label>
+                            <span id="style-influence-value">70%</span>
+                        </div>
+                        <input type="range" id="style-influence-slider" min="0" max="100" value="70" class="slider">
+                        <div class="slider-labels">
+                            <span>Loose 寬鬆</span>
+                            <span>Strict 嚴格</span>
+                        </div>
+                        <small>控制 Suno 多嚴格地遵循你的風格描述。建議 70-90%</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="instrumental-only">
+                            <span>純音樂模式（無人聲）</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="negative-prompt">排除元素（Negative Prompt）</label>
+                        <input type="text" id="negative-prompt" placeholder="例：no autotune, no electronic beats">
+                        <small>告訴 Suno 要避免的元素</small>
+                    </div>
+                </div>
+
+                <button id="generate-btn" class="btn-primary">
+                    <span class="btn-text">生成歌詞</span>
+                    <span class="btn-loading" style="display:none;">生成中...</span>
+                </button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-header">
+                    <h3>生成結果</h3>
+                    <div class="output-actions">
+                        <button id="copy-btn" class="btn-secondary" disabled>複製</button>
+                        <button id="edit-btn" class="btn-secondary" disabled>編輯</button>
+                    </div>
+                </div>
+                <div id="output-area" class="output-area">
+                    <p class="placeholder-text">生成的歌詞會顯示在這裡...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模板編輯頁面 -->
+        <div id="template-edit" class="tab-content">
+            <div class="editor-layout">
+                <div class="editor-sidebar">
+                    <h3>快速插入標籤</h3>
+                    <div class="tag-category">
+                        <h4>結構標籤</h4>
+                        <div class="tag-buttons">
+                            <button class="tag-btn" data-tag="[Intro]">[Intro]</button>
+                            <button class="tag-btn" data-tag="[Verse]">[Verse]</button>
+                            <button class="tag-btn" data-tag="[Pre-Chorus]">[Pre-Chorus]</button>
+                            <button class="tag-btn" data-tag="[Chorus]">[Chorus]</button>
+                            <button class="tag-btn" data-tag="[Bridge]">[Bridge]</button>
+                            <button class="tag-btn" data-tag="[Outro]">[Outro]</button>
+                            <button class="tag-btn" data-tag="[Hook]">[Hook]</button>
+                            <button class="tag-btn" data-tag="[Break]">[Break]</button>
+                            <button class="tag-btn" data-tag="[Interlude]">[Interlude]</button>
+                            <button class="tag-btn" data-tag="[End]">[End]</button>
+                        </div>
+                    </div>
+                    <div class="tag-category">
+                        <h4>樂器標籤</h4>
+                        <div class="tag-buttons">
+                            <button class="tag-btn" data-tag="[Instrumental]">[Instrumental]</button>
+                            <button class="tag-btn" data-tag="[Guitar Solo]">[Guitar Solo]</button>
+                            <button class="tag-btn" data-tag="[Piano Solo]">[Piano Solo]</button>
+                            <button class="tag-btn" data-tag="[Drum Break]">[Drum Break]</button>
+                            <button class="tag-btn" data-tag="[Bass Drop]">[Bass Drop]</button>
+                            <button class="tag-btn" data-tag="[Synth]">[Synth]</button>
+                        </div>
+                    </div>
+                    <div class="tag-category">
+                        <h4>人聲標籤</h4>
+                        <div class="tag-buttons">
+                            <button class="tag-btn" data-tag="[Male Vocal]">[Male Vocal]</button>
+                            <button class="tag-btn" data-tag="[Female Vocal]">[Female Vocal]</button>
+                            <button class="tag-btn" data-tag="[Duet]">[Duet]</button>
+                            <button class="tag-btn" data-tag="[Harmony]">[Harmony]</button>
+                            <button class="tag-btn" data-tag="[Whisper]">[Whisper]</button>
+                            <button class="tag-btn" data-tag="[Rap]">[Rap]</button>
+                        </div>
+                    </div>
+                    <div class="tag-category">
+                        <h4>效果標籤</h4>
+                        <div class="tag-buttons">
+                            <button class="tag-btn" data-tag="[Fade In]">[Fade In]</button>
+                            <button class="tag-btn" data-tag="[Fade Out]">[Fade Out]</button>
+                            <button class="tag-btn" data-tag="[Build Up]">[Build Up]</button>
+                            <button class="tag-btn" data-tag="[Drop]">[Drop]</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="editor-main">
+                    <div class="editor-toolbar">
+                        <button id="load-template" class="btn-secondary">載入模板</button>
+                        <button id="clear-editor" class="btn-secondary">清空</button>
+                        <button id="copy-editor" class="btn-secondary">複製全部</button>
+                    </div>
+                    <textarea id="lyrics-editor" class="lyrics-editor" placeholder="在這裡編輯你的歌詞...
+
+範例格式：
+[Intro]
+[Instrumental]
+
+[Verse 1]
+第一段歌詞在這裡
+每一行都是一句歌詞
+
+[Chorus]
+這是副歌的部分
+(oh yeah) ← 這是 ad-lib
+
+[Verse 2]
+第二段歌詞...
+
+[Outro]
+[Fade Out]"></textarea>
+                    <div class="editor-footer">
+                        <span id="char-count">0 字元</span>
+                        <span id="line-count">0 行</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 模板選擇彈窗 -->
+            <div id="template-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>選擇模板</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="template-grid">
+                            <div class="template-card" data-template="pop-ballad">
+                                <h4>流行抒情</h4>
+                                <p>Intro → Verse → Chorus → Verse → Chorus → Bridge → Chorus → Outro</p>
+                            </div>
+                            <div class="template-card" data-template="rock">
+                                <h4>搖滾</h4>
+                                <p>Intro → Verse → Chorus → Verse → Chorus → Guitar Solo → Chorus → Outro</p>
+                            </div>
+                            <div class="template-card" data-template="hip-hop">
+                                <h4>嘻哈</h4>
+                                <p>Intro → Verse → Hook → Verse → Hook → Bridge → Hook → Outro</p>
+                            </div>
+                            <div class="template-card" data-template="electronic">
+                                <h4>電子舞曲</h4>
+                                <p>Intro → Build Up → Drop → Break → Build Up → Drop → Outro</p>
+                            </div>
+                            <div class="template-card" data-template="simple">
+                                <h4>簡單三段式</h4>
+                                <p>Verse → Chorus → Verse → Chorus → Outro</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 標籤參考頁面 -->
+        <div id="tags-ref" class="tab-content">
+            <div class="reference-section">
+                <h3>Suno Metatags 完整參考</h3>
+                <p class="info-text">Metatags 是放在方括號 [ ] 內的指令，用來控制 Suno AI 生成音樂的結構和風格。</p>
+
+                <div class="ref-category">
+                    <h4>結構標籤 (Structure Tags)</h4>
+                    <table class="ref-table">
+                        <thead>
+                            <tr><th>標籤</th><th>說明</th><th>使用建議</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>[Intro]</td><td>歌曲開頭</td><td>通常搭配 [Instrumental]</td></tr>
+                            <tr><td>[Verse]</td><td>主歌段落</td><td>可用 [Verse 1], [Verse 2] 區分</td></tr>
+                            <tr><td>[Pre-Chorus]</td><td>導歌</td><td>連接主歌和副歌</td></tr>
+                            <tr><td>[Chorus]</td><td>副歌</td><td>歌曲最記憶點的部分</td></tr>
+                            <tr><td>[Bridge]</td><td>橋段</td><td>通常在第二次副歌後</td></tr>
+                            <tr><td>[Outro]</td><td>結尾</td><td>可搭配 [Fade Out]</td></tr>
+                            <tr><td>[Hook]</td><td>記憶點段落</td><td>嘻哈常用</td></tr>
+                            <tr><td>[Break]</td><td>間奏休息</td><td>暫停或減少元素</td></tr>
+                            <tr><td>[Interlude]</td><td>間奏</td><td>純音樂過場</td></tr>
+                            <tr><td>[End]</td><td>結束標記</td><td>明確標示歌曲結束</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="ref-category">
+                    <h4>人聲標籤 (Vocal Tags)</h4>
+                    <table class="ref-table">
+                        <thead>
+                            <tr><th>標籤</th><th>說明</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>[Male Vocal]</td><td>男聲</td></tr>
+                            <tr><td>[Female Vocal]</td><td>女聲</td></tr>
+                            <tr><td>[Duet]</td><td>對唱</td></tr>
+                            <tr><td>[Harmony]</td><td>和聲</td></tr>
+                            <tr><td>[Whisper]</td><td>輕聲/耳語</td></tr>
+                            <tr><td>[Rap]</td><td>饒舌</td></tr>
+                            <tr><td>[Spoken]</td><td>口白</td></tr>
+                            <tr><td>[Choir]</td><td>合唱團</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="ref-category">
+                    <h4>樂器標籤 (Instrument Tags)</h4>
+                    <table class="ref-table">
+                        <thead>
+                            <tr><th>標籤</th><th>說明</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>[Instrumental]</td><td>純音樂（無人聲）</td></tr>
+                            <tr><td>[Guitar Solo]</td><td>吉他獨奏</td></tr>
+                            <tr><td>[Piano Solo]</td><td>鋼琴獨奏</td></tr>
+                            <tr><td>[Drum Break]</td><td>鼓點段落</td></tr>
+                            <tr><td>[Bass Drop]</td><td>低音下降（電子音樂）</td></tr>
+                            <tr><td>[Synth]</td><td>合成器</td></tr>
+                            <tr><td>[Strings]</td><td>弦樂</td></tr>
+                            <tr><td>[Acoustic]</td><td>原聲樂器</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="ref-category">
+                    <h4>效果標籤 (Effect Tags)</h4>
+                    <table class="ref-table">
+                        <thead>
+                            <tr><th>標籤</th><th>說明</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>[Fade In]</td><td>淡入</td></tr>
+                            <tr><td>[Fade Out]</td><td>淡出</td></tr>
+                            <tr><td>[Build Up]</td><td>漸強堆疊</td></tr>
+                            <tr><td>[Drop]</td><td>節拍下降</td></tr>
+                            <tr><td>[Big Finish]</td><td>盛大結尾</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="ref-category">
+                    <h4>Ad-libs（即興語句）</h4>
+                    <p>使用小括號 ( ) 加入即興語句，會被唱出但不是主歌詞：</p>
+                    <div class="code-example">
+                        <code>(oh yeah)</code>
+                        <code>(hey!)</code>
+                        <code>(come on)</code>
+                        <code>(啦啦啦)</code>
+                    </div>
+                </div>
+
+                <div class="ref-tips">
+                    <h4>使用技巧</h4>
+                    <ul>
+                        <li>標籤保持簡短，1-3 個字效果最好</li>
+                        <li>可以在標籤後加描述詞，如 <code>[Catchy Chorus]</code></li>
+                        <li>不要過度使用標籤，會降低效果</li>
+                        <li>Suno V5 對標籤的解析更準確</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Suno 歌詞產生器 | 使用 Claude API 生成</p>
+            <p class="footer-links">
+                <a href="https://sunoaiwiki.com/resources/2024-05-13-list-of-metatags/" target="_blank">Suno Wiki</a> |
+                <a href="https://jackrighteous.com/en-us/pages/suno-ai-meta-tags-guide" target="_blank">Meta Tags Guide</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
