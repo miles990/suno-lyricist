@@ -2188,7 +2188,10 @@ const elements = {
     // Modal
     templateModal: document.getElementById('template-modal'),
     templateCards: document.querySelectorAll('.template-card'),
-    modalClose: document.querySelector('.modal-close')
+    modalClose: document.querySelector('.modal-close'),
+
+    // Shortcuts
+    shortcutsBtn: document.getElementById('shortcuts-btn')
 };
 
 // ===== 初始化 =====
@@ -2358,6 +2361,11 @@ function bindEvents() {
 
     if (historyBtn) {
         historyBtn.addEventListener('click', openHistoryPanel);
+    }
+
+    // 快捷鍵按鈕
+    if (elements.shortcutsBtn) {
+        elements.shortcutsBtn.addEventListener('click', showKeyboardShortcutsHelp);
     }
     if (historyCloseBtn) {
         historyCloseBtn.addEventListener('click', closeHistoryPanel);
@@ -4140,5 +4148,131 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
+// ===== 鍵盤快捷鍵系統 =====
+const KEYBOARD_SHORTCUTS = {
+    'g': { action: 'generate', description: '生成歌詞', key: 'G' },
+    'c': { action: 'copy', description: '複製歌詞', key: 'C' },
+    's': { action: 'copySuno', description: '複製到 Suno', key: 'S' },
+    'h': { action: 'history', description: '開啟歷史面板', key: 'H' },
+    'a': { action: 'analyze', description: '分析歌詞', key: 'A' },
+    'r': { action: 'random', description: '隨機風格組合', key: 'R' },
+    '/': { action: 'help', description: '顯示快捷鍵說明', key: '/' },
+    'Escape': { action: 'close', description: '關閉彈窗', key: 'Esc' }
+};
+
+function initKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        // 如果在輸入框中，不觸發快捷鍵（除了 Escape）
+        const isInputFocused = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+        if (isInputFocused && e.key !== 'Escape') return;
+
+        // 需要按住 Alt/Option 鍵
+        if (!e.altKey && e.key !== 'Escape' && e.key !== '/') return;
+
+        const shortcut = KEYBOARD_SHORTCUTS[e.key.toLowerCase()] || KEYBOARD_SHORTCUTS[e.key];
+        if (!shortcut) return;
+
+        e.preventDefault();
+
+        switch (shortcut.action) {
+            case 'generate':
+                elements.generateBtn?.click();
+                break;
+            case 'copy':
+                if (!elements.copyBtn?.disabled) {
+                    elements.copyBtn?.click();
+                }
+                break;
+            case 'copySuno':
+                if (!elements.copySunoBtn?.disabled) {
+                    elements.copySunoBtn?.click();
+                }
+                break;
+            case 'history':
+                openHistoryPanel();
+                break;
+            case 'analyze':
+                const analyzeBtn = document.getElementById('analyze-btn');
+                if (analyzeBtn && !analyzeBtn.disabled) {
+                    analyzeBtn.click();
+                }
+                break;
+            case 'random':
+                // 觸發 Song Lab 的隨機按鈕
+                const randomAllBtn = document.getElementById('random-all-btn');
+                if (randomAllBtn) {
+                    randomAllBtn.click();
+                    showToast('已隨機生成風格組合！', 'success');
+                }
+                break;
+            case 'help':
+                showKeyboardShortcutsHelp();
+                break;
+            case 'close':
+                closeAllPanels();
+                break;
+        }
+    });
+}
+
+function showKeyboardShortcutsHelp() {
+    // 檢查是否已有說明面板
+    let helpPanel = document.getElementById('keyboard-shortcuts-help');
+    if (helpPanel) {
+        helpPanel.remove();
+        return;
+    }
+
+    // 創建說明面板
+    helpPanel = document.createElement('div');
+    helpPanel.id = 'keyboard-shortcuts-help';
+    helpPanel.className = 'keyboard-shortcuts-help';
+    helpPanel.innerHTML = `
+        <div class="shortcuts-header">
+            <h3>⌨️ 鍵盤快捷鍵</h3>
+            <button class="shortcuts-close" onclick="document.getElementById('keyboard-shortcuts-help').remove()">&times;</button>
+        </div>
+        <div class="shortcuts-list">
+            ${Object.entries(KEYBOARD_SHORTCUTS).map(([key, info]) => `
+                <div class="shortcut-item">
+                    <kbd>${key === 'Escape' ? 'Esc' : key === '/' ? '/' : 'Alt + ' + info.key}</kbd>
+                    <span>${info.description}</span>
+                </div>
+            `).join('')}
+        </div>
+        <div class="shortcuts-footer">
+            <small>按 <kbd>/</kbd> 或 <kbd>Esc</kbd> 關閉此面板</small>
+        </div>
+    `;
+
+    document.body.appendChild(helpPanel);
+
+    // 添加動畫
+    requestAnimationFrame(() => {
+        helpPanel.classList.add('active');
+    });
+}
+
+function closeAllPanels() {
+    // 關閉歷史面板
+    closeHistoryPanel();
+
+    // 關閉快捷鍵說明
+    const helpPanel = document.getElementById('keyboard-shortcuts-help');
+    if (helpPanel) helpPanel.remove();
+
+    // 關閉模態框
+    hideModal();
+
+    // 關閉分析面板
+    const analysisPanel = document.getElementById('lyrics-analysis');
+    if (analysisPanel) analysisPanel.classList.add('hidden');
+
+    // 關閉主題推薦面板
+    const themeSuggestions = document.getElementById('theme-suggestions');
+    if (themeSuggestions) themeSuggestions.classList.add('hidden');
+}
+
 // ===== 啟動應用 =====
 init();
+initKeyboardShortcuts();
