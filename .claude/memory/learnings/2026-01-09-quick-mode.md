@@ -55,5 +55,21 @@ status: resolved
 3. **狀態同步** - 兩個模式間的資料同步很重要
 4. **記憶偏好** - 用 localStorage 記住用戶選擇
 
+## 後續改進（同一迭代）
+
+### 突出核心按鈕
+- 生成按鈕：漸層背景、陰影、懸停動畫、✨ emoji
+- 複製到 Suno 按鈕：改為綠色成功漸層
+
+### 熱門主題建議
+- 新增 5 個一鍵填入的主題 chips
+- 解決「空白焦慮」問題
+- 降低新用戶創作門檻
+
 ## 相關檔案
 - `.claude/memory/discoveries/2026-01-09-simplicity-insight.md`
+
+## 提交記錄
+1. `feat: 新增快速模式 UI（Less is More）`
+2. `style: 突出核心按鈕設計`
+3. `feat: 快速模式新增熱門主題建議`
