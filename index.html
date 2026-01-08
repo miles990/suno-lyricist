@@ -56,11 +56,43 @@
                     <small>API Key 只會存在本地瀏覽器，不會上傳</small>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="song-theme">歌曲主題</label>
-                        <input type="text" id="song-theme" placeholder="例：夏日海灘的愛情故事">
+                <div class="form-group">
+                    <label for="song-theme">歌曲主題</label>
+                    <input type="text" id="song-theme" placeholder="例：夏日海灘的愛情故事">
+                </div>
+
+                <div class="form-group">
+                    <label>AI 創作模式</label>
+                    <div class="ai-mode-selector">
+                        <label class="radio-label ai-mode-option">
+                            <input type="radio" name="ai-mode" value="manual" id="ai-mode-manual" checked>
+                            <span class="ai-mode-icon">🎛️</span>
+                            <div class="ai-mode-text">
+                                <span class="ai-mode-title">手動設定</span>
+                                <small>自行選擇所有風格參數</small>
+                            </div>
+                        </label>
+                        <label class="radio-label ai-mode-option">
+                            <input type="radio" name="ai-mode" value="optimize" id="ai-mode-optimize">
+                            <span class="ai-mode-icon">✨</span>
+                            <div class="ai-mode-text">
+                                <span class="ai-mode-title">AI 優化</span>
+                                <small>AI 補充未設定的參數</small>
+                            </div>
+                        </label>
+                        <label class="radio-label ai-mode-option">
+                            <input type="radio" name="ai-mode" value="auto" id="ai-mode-auto">
+                            <span class="ai-mode-icon">🤖</span>
+                            <div class="ai-mode-text">
+                                <span class="ai-mode-title">AI 全自動</span>
+                                <small>只需輸入主題，AI 決定一切</small>
+                            </div>
+                        </label>
                     </div>
+                </div>
+
+                <div id="manual-settings">
+                <div class="form-row">
                     <div class="form-group">
                         <label for="song-genre">音樂風格</label>
                         <select id="song-genre">
@@ -343,6 +375,7 @@
                         </div>
                     </div>
                 </div>
+                </div><!-- end manual-settings -->
 
                 <button id="generate-btn" class="btn-primary">
                     <span class="btn-text">生成歌詞</span>

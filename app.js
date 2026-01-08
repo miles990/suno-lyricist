@@ -193,6 +193,12 @@ const elements = {
     checkBackend: document.getElementById('check-backend'),
     backendStatus: document.getElementById('backend-status'),
 
+    // AI Creative Mode
+    aiModeManual: document.getElementById('ai-mode-manual'),
+    aiModeOptimize: document.getElementById('ai-mode-optimize'),
+    aiModeAuto: document.getElementById('ai-mode-auto'),
+    manualSettings: document.getElementById('manual-settings'),
+
     // AI Generate
     apiKey: document.getElementById('api-key'),
     toggleApiKey: document.getElementById('toggle-api-key'),
@@ -271,6 +277,15 @@ function init() {
         elements.directApiConfig.classList.remove('hidden');
     }
 
+    // 載入 AI 創作模式
+    const savedAiMode = localStorage.getItem('ai-mode') || 'manual';
+    if (savedAiMode === 'optimize') {
+        elements.aiModeOptimize.checked = true;
+    } else if (savedAiMode === 'auto') {
+        elements.aiModeAuto.checked = true;
+        elements.manualSettings.classList.add('hidden');
+    }
+
     // 綁定事件
     bindEvents();
 
@@ -305,6 +320,11 @@ function bindEvents() {
 
     // 檢查後端連線
     elements.checkBackend.addEventListener('click', checkBackendStatus);
+
+    // AI 創作模式切換
+    elements.aiModeManual.addEventListener('change', () => toggleAiMode('manual'));
+    elements.aiModeOptimize.addEventListener('change', () => toggleAiMode('optimize'));
+    elements.aiModeAuto.addEventListener('change', () => toggleAiMode('auto'));
 
     // API Key 顯示/隱藏
     elements.toggleApiKey.addEventListener('click', toggleApiKeyVisibility);
@@ -426,6 +446,25 @@ function toggleApiMode(mode) {
     }
 }
 
+// ===== AI 創作模式切換 =====
+function toggleAiMode(mode) {
+    localStorage.setItem('ai-mode', mode);
+    if (mode === 'auto') {
+        // AI 全自動：隱藏所有設定
+        elements.manualSettings.classList.add('hidden');
+    } else {
+        // 手動或 AI 優化：顯示設定
+        elements.manualSettings.classList.remove('hidden');
+    }
+}
+
+// ===== 獲取當前 AI 模式 =====
+function getAiMode() {
+    if (elements.aiModeAuto.checked) return 'auto';
+    if (elements.aiModeOptimize.checked) return 'optimize';
+    return 'manual';
+}
+
 // ===== 檢查後端狀態 =====
 async function checkBackendStatus() {
     const url = elements.backendUrl.value.trim();
@@ -522,8 +561,11 @@ async function generateLyrics() {
         masteringStyle: elements.masteringStyle.value
     };
 
+    // 獲取 AI 模式
+    const aiMode = getAiMode();
+
     // 構建 prompt
-    const prompt = buildPrompt(theme, genre, mood, language, structures, extraInstructions, styleOptions);
+    const prompt = buildPrompt(theme, genre, mood, language, structures, extraInstructions, styleOptions, aiMode);
 
     // 更新 UI
     setGeneratingState(true);
@@ -546,7 +588,7 @@ async function generateLyrics() {
 }
 
 // ===== 構建 Prompt =====
-function buildPrompt(theme, genre, mood, language, structures, extraInstructions, styleOptions) {
+function buildPrompt(theme, genre, mood, language, structures, extraInstructions, styleOptions, aiMode = 'manual') {
     const languageMap = {
         'zh-TW': '繁體中文',
         'zh-CN': '簡體中文',
@@ -682,7 +724,114 @@ function buildPrompt(theme, genre, mood, language, structures, extraInstructions
         startOnNote = `\n- 在歌詞開頭加入 [START_ON: "第一句歌詞"] 來跳過前奏，直接從人聲開始`;
     }
 
-    let prompt = `你是一位專業的 Suno AI 歌詞創作者。請為以下主題創作一首歌詞，使用專業的 Suno metatag 格式。
+    let prompt;
+
+    if (aiMode === 'auto') {
+        // AI 全自動模式：只提供主題，讓 AI 決定一切
+        prompt = `你是一位專業的 Suno AI 歌詞創作者和音樂製作人。請為以下主題創作一首完整的歌曲。
+
+## 歌曲主題
+${theme}
+
+## 你的任務
+作為專業音樂製作人，請根據主題：
+1. **決定最適合的音樂風格**（如 Pop, Rock, R&B, Electronic 等）
+2. **決定歌曲情緒**（如 happy, melancholic, energetic 等）
+3. **設計歌曲結構**（Intro, Verse, Chorus, Bridge, Outro 的安排）
+4. **選擇人聲風格**（男聲/女聲、柔和/有力 等）
+5. **設計 Style of Music Prompt**（包含所有音樂元素）
+6. **創作符合 Suno 格式的完整歌詞**
+
+## 輸出格式
+請按以下格式輸出：
+
+### Style of Music Prompt
+\`\`\`
+[你設計的 style prompt，使用 colon+quotes 格式如 genre: "pop", mood: "romantic"]
+\`\`\`
+
+### 歌詞
+[完整的 Suno 格式歌詞，包含所有 metatag 標籤]
+
+## Suno Metatag 格式說明
+- 結構標籤：[Intro], [Verse], [Chorus], [Bridge], [Outro]
+- 進階標籤：[Verse | emotional build-up], [Chorus | anthemic]
+- Ad-libs：(oh yeah), (hmm~) - 用小括號
+- 效果：[Instrumental], [Build Up], [Drop], [Fade Out]
+
+請發揮你的專業創意，創作出最適合這個主題的歌曲！`;
+
+    } else if (aiMode === 'optimize') {
+        // AI 優化模式：使用者設定的參數 + AI 補充未設定的
+        const userSetParams = [];
+        const unsetParams = [];
+
+        if (genre) userSetParams.push(`風格: ${genre}`);
+        else unsetParams.push('音樂風格');
+
+        if (mood) userSetParams.push(`情緒: ${mood}`);
+        else unsetParams.push('情緒氛圍');
+
+        if (styleOptions.vocalStyle) userSetParams.push(`人聲: ${styleOptions.vocalStyle}`);
+        else unsetParams.push('人聲風格');
+
+        if (styleOptions.tempo) userSetParams.push(`速度: ${styleOptions.tempo}`);
+        else unsetParams.push('節奏速度');
+
+        if (styleOptions.stylePrompt) userSetParams.push(`自訂風格: ${styleOptions.stylePrompt}`);
+        if (styleOptions.selectedStyles.length > 0) userSetParams.push(`樂器: ${styleOptions.selectedStyles.join(', ')}`);
+
+        prompt = `你是一位專業的 Suno AI 歌詞創作者和音樂製作人。請為以下主題創作一首歌詞。
+
+## 歌曲主題
+${theme}
+
+## 語言
+${languageMap[language] || '繁體中文'}
+
+## 使用者已設定的參數
+${userSetParams.length > 0 ? userSetParams.join('\n') : '（無）'}
+
+## 需要你優化決定的參數
+${unsetParams.length > 0 ? unsetParams.join(', ') : '（全部已設定）'}
+
+## AI 優化任務
+請根據主題和已設定的參數，為未設定的參數選擇最適合的值，並說明你的選擇理由。
+
+## 歌曲結構
+包含：${structures.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ')}
+
+${stylePromptStr ? `## 已設定的 Style Prompt\n\`\`\`\n${stylePromptStr}\n\`\`\`` : ''}
+${maxModeStr ? `\n## MAX Mode 標籤\n\`\`\`\n${maxModeStr}\n\`\`\`` : ''}
+
+## 輸出格式
+請按以下格式輸出：
+
+### AI 優化建議
+[簡短說明你為未設定參數選擇的值及理由]
+
+### 完整 Style of Music Prompt
+\`\`\`
+[合併使用者設定和你的優化後的完整 style prompt]
+\`\`\`
+
+### 歌詞
+[完整的 Suno 格式歌詞]
+
+## Suno Metatag 格式說明
+- 結構標籤：[Intro], [Verse], [Chorus], [Bridge], [Outro]
+- Ad-libs：(oh yeah), (hmm~)
+- 效果：[Instrumental], [Build Up], [Drop], [Fade Out]
+${styleOptions.instrumentalOnly ? '\n注意：純音樂模式，主要使用 [Instrumental] 標籤' : ''}
+${startOnNote}
+
+${styleOptions.lyricBleedProtection ? `## Lyric Bleed Protection\n在歌詞最開頭加入 \`///*****///\` 分隔符` : ''}
+
+${extraInstructions ? `## 額外要求\n${extraInstructions}` : ''}`;
+
+    } else {
+        // 手動模式：完全按照使用者設定
+        prompt = `你是一位專業的 Suno AI 歌詞創作者。請為以下主題創作一首歌詞，使用專業的 Suno metatag 格式。
 
 ## 歌曲主題
 ${theme}
@@ -723,6 +872,7 @@ ${extraInstructions ? `## 額外要求\n${extraInstructions}` : ''}
 ## 輸出格式
 ${styleOptions.lyricBleedProtection ? '1. 最開頭加入 ///*****/// 分隔符\n2. ' : ''}直接輸出歌詞，包含所有 metatag 標籤
 不要加任何解釋或前言，直接輸出可用於 Suno 的歌詞格式`;
+    }
 
     return prompt;
 }
