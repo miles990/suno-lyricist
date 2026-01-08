@@ -4592,9 +4592,67 @@ function initDownloadTxt() {
 }
 
 // ===== 啟動應用 =====
+// ===== 創作靈感系統 =====
+const INSPIRATION_THEMES = {
+    emotions: [
+        '初戀的心動', '失戀後的成長', '重逢的喜悅', '離別的不捨',
+        '暗戀的酸甜', '思念遠方的人', '被愛包圍的幸福', '心碎後的堅強'
+    ],
+    stories: [
+        '午夜城市漫步', '雨天咖啡廳邂逅', '海邊的告白', '畢業季的約定',
+        '深夜獨自開車', '老照片裡的回憶', '跨年夜的願望', '凌晨三點的對話'
+    ],
+    seasons: [
+        '夏日海灘派對', '秋天落葉的浪漫', '冬夜的溫暖擁抱', '春天新的開始',
+        '聖誕節的期待', '情人節的驚喜', '新年第一道曙光', '颱風夜的陪伴'
+    ],
+    life: [
+        '追夢的勇氣', '青春的遺憾', '成長的代價', '自我療癒之旅',
+        '家的溫暖', '友情的珍貴', '獨處的時光', '重新出發的決心'
+    ],
+    abstract: [
+        '時間的流逝', '記憶的碎片', '夢與現實的交界', '星空下的對話',
+        '月光下的秘密', '風帶來的訊息', '雲端的漫遊', '光影交錯的瞬間'
+    ],
+    fun: [
+        '週末夜店狂歡', '公路旅行', '演唱會的熱情', 'K歌之王',
+        '網路戀情', '遊戲裡的隊友', '深夜食堂', '健身房的蛻變'
+    ]
+};
+
+function getRandomInspiration() {
+    const categories = Object.keys(INSPIRATION_THEMES);
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    const themes = INSPIRATION_THEMES[randomCategory];
+    return themes[Math.floor(Math.random() * themes.length)];
+}
+
+function initInspirationBtn() {
+    const btn = document.getElementById('inspiration-btn');
+    const themeInput = document.getElementById('song-theme');
+
+    if (btn && themeInput) {
+        btn.addEventListener('click', () => {
+            // 添加骰子動畫
+            btn.classList.add('rolling');
+            setTimeout(() => btn.classList.remove('rolling'), 500);
+
+            // 獲取隨機靈感
+            const inspiration = getRandomInspiration();
+            themeInput.value = inspiration;
+
+            // 觸發 input 事件以更新任何相關狀態
+            themeInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+            showToast(`靈感：${inspiration}`, 'success');
+        });
+    }
+}
+
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
 initThemeToggle();
 initLyricsStatsObserver();
 initDownloadTxt();
+initInspirationBtn();

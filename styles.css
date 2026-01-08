@@ -3755,3 +3755,47 @@ textarea,
 [data-theme="light"] .btn-download-txt:hover:not(:disabled) {
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
+
+/* ===== Inspiration Button ===== */
+.btn-inspiration {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.6rem;
+    margin-left: 0.5rem;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    vertical-align: middle;
+}
+
+.btn-inspiration:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4);
+}
+
+.btn-inspiration:active {
+    transform: scale(0.98);
+}
+
+/* Inspiration dice animation */
+@keyframes diceRoll {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.btn-inspiration.rolling {
+    animation: diceRoll 0.5s ease;
+}
+
+[data-theme="light"] .btn-inspiration {
+    box-shadow: 0 1px 3px rgba(245, 158, 11, 0.2);
+}
