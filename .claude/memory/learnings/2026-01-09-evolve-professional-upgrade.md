@@ -714,4 +714,48 @@ related_skills: [frontend-design, ux-design, javascript, suno-ai]
 | 第十三階段 | 歌詞下載 TXT | ~107 行 |
 | 第十四階段 | 創作靈感系統 | ~103 行 |
 | 第十五階段 | 標籤快速清除 | ~86 行 |
-| **總計** | **22+ 核心功能** | **~4,241 行** |
+| 第十六階段 | 返回頂部按鈕 | ~113 行 |
+| **總計** | **23+ 核心功能** | **~4,354 行** |
+
+---
+
+## 第十六階段改進 (2026-01-09)
+
+### 1. 返回頂部按鈕
+
+**位置**: `app.js:4695-4724`, `index.html:10-13`, `styles.css:3842-3926`
+
+**功能**:
+- `initScrollToTop()`: 初始化滾動監聽和按鈕事件
+- 滾動超過 300px 自動顯示按鈕
+- 點擊平滑滾動至頂部
+
+**技術特點**:
+1. `requestAnimationFrame` 優化滾動性能（避免滾動卡頓）
+2. `ticking` 標誌防止重複計算
+3. `smooth` 行為實現平滑滾動動畫
+4. CSS `visibility` + `opacity` 組合確保動畫平滑
+
+**UI 設計**:
+- 固定定位圓形按鈕（右下角）
+- 漸變紫色背景 (primary → secondary)
+- 上下彈跳動畫 (`bounceUp`) 吸引注意
+- hover 上浮 + 增強陰影效果
+- 響應式尺寸適配（桌面 50px / 平板 45px / 手機 40px）
+
+**CSS 動畫**:
+```css
+@keyframes bounceUp {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+```
+
+### 第十六階段統計
+
+| 檔案 | 第十六階段新增行數 |
+|------|-----------------|
+| app.js | ~30 行 |
+| index.html | ~4 行 |
+| styles.css | ~86 行 |
+| 總計 | ~113 行 |
