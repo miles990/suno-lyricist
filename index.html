@@ -406,6 +406,21 @@
                 <!-- Styles 區塊 -->
                 <div class="section-divider">
                     <span>Style of Music</span>
+                    <div class="section-divider-actions">
+                        <button type="button" id="save-style-combo-btn" class="btn-save-combo" title="保存當前風格組合">💾 保存組合</button>
+                        <button type="button" id="load-style-combo-btn" class="btn-load-combo" title="載入風格組合">📂 我的組合</button>
+                    </div>
+                </div>
+
+                <!-- 風格組合收藏夾面板 -->
+                <div id="style-combo-panel" class="style-combo-panel hidden">
+                    <div class="combo-panel-header">
+                        <h4>💫 我的風格組合</h4>
+                        <button id="close-combo-panel" class="btn-close-analysis">✕</button>
+                    </div>
+                    <div id="combo-list" class="combo-list">
+                        <p class="empty-combo">尚無保存的風格組合</p>
+                    </div>
                 </div>
 
                 <!-- Style Preset 模板庫 -->

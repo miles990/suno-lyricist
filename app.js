@@ -5141,6 +5141,206 @@ function initQualityScore() {
     }
 }
 
+// ===== Style Combo System 功能 =====
+const STYLE_COMBO_STORAGE_KEY = 'sunolyricist_style_combos';
+const MAX_COMBOS = 10;
+
+function getStyleCombos() {
+    const stored = localStorage.getItem(STYLE_COMBO_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+}
+
+function saveStyleCombos(combos) {
+    localStorage.setItem(STYLE_COMBO_STORAGE_KEY, JSON.stringify(combos));
+}
+
+function getCurrentStyleSettings() {
+    const genre = document.getElementById('genre')?.value || '';
+    const mood = document.getElementById('mood')?.value || '';
+    const vocalStyle = document.getElementById('vocal-style')?.value || '';
+    const tempo = document.getElementById('tempo')?.value || '';
+    const bpm = document.getElementById('bpm')?.value || '';
+    const stylePrompt = document.getElementById('style-prompt')?.value || '';
+
+    // 收集 Mix 標籤
+    const mixTags = [];
+    document.querySelectorAll('.mix-tag.active').forEach(tag => {
+        mixTags.push(tag.dataset.style);
+    });
+
+    // 收集人聲技巧
+    const vocalTechs = [];
+    document.querySelectorAll('.vocal-tech-tag.active').forEach(tag => {
+        vocalTechs.push(tag.dataset.tech);
+    });
+
+    // 收集樂器
+    const instruments = [];
+    document.querySelectorAll('.instrument-tag.active').forEach(tag => {
+        instruments.push(tag.dataset.instrument);
+    });
+
+    return {
+        genre, mood, vocalStyle, tempo, bpm, stylePrompt,
+        mixTags, vocalTechs, instruments
+    };
+}
+
+function applyStyleCombo(combo) {
+    // 套用基本設定
+    if (combo.genre) document.getElementById('genre').value = combo.genre;
+    if (combo.mood) document.getElementById('mood').value = combo.mood;
+    if (combo.vocalStyle) document.getElementById('vocal-style').value = combo.vocalStyle;
+    if (combo.tempo) document.getElementById('tempo').value = combo.tempo;
+    if (combo.bpm) document.getElementById('bpm').value = combo.bpm;
+    if (combo.stylePrompt) document.getElementById('style-prompt').value = combo.stylePrompt;
+
+    // 清除並套用 Mix 標籤
+    document.querySelectorAll('.mix-tag').forEach(tag => tag.classList.remove('active'));
+    if (combo.mixTags) {
+        combo.mixTags.forEach(style => {
+            const tag = document.querySelector(`.mix-tag[data-style="${style}"]`);
+            if (tag) tag.classList.add('active');
+        });
+    }
+
+    // 清除並套用人聲技巧
+    document.querySelectorAll('.vocal-tech-tag').forEach(tag => tag.classList.remove('active'));
+    if (combo.vocalTechs) {
+        combo.vocalTechs.forEach(tech => {
+            const tag = document.querySelector(`.vocal-tech-tag[data-tech="${tech}"]`);
+            if (tag) tag.classList.add('active');
+        });
+    }
+
+    // 清除並套用樂器
+    document.querySelectorAll('.instrument-tag').forEach(tag => tag.classList.remove('active'));
+    if (combo.instruments) {
+        combo.instruments.forEach(inst => {
+            const tag = document.querySelector(`.instrument-tag[data-instrument="${inst}"]`);
+            if (tag) tag.classList.add('active');
+        });
+    }
+
+    // 更新進度條
+    if (typeof updateFormProgress === 'function') {
+        setTimeout(updateFormProgress, 100);
+    }
+}
+
+function saveCurrentStyleCombo() {
+    const settings = getCurrentStyleSettings();
+
+    // 檢查是否有設定
+    if (!settings.genre && !settings.stylePrompt && settings.mixTags.length === 0) {
+        showToast('請先選擇一些風格設定', 'error');
+        return;
+    }
+
+    const name = prompt('為這個風格組合命名：', settings.genre || '我的風格');
+    if (!name) return;
+
+    const combos = getStyleCombos();
+
+    // 限制數量
+    if (combos.length >= MAX_COMBOS) {
+        showToast(`最多只能保存 ${MAX_COMBOS} 個組合`, 'error');
+        return;
+    }
+
+    const newCombo = {
+        id: Date.now(),
+        name: name.trim(),
+        settings,
+        createdAt: new Date().toISOString()
+    };
+
+    combos.unshift(newCombo);
+    saveStyleCombos(combos);
+    renderStyleCombos();
+    showToast('風格組合已保存！', 'success');
+}
+
+function deleteStyleCombo(id) {
+    if (!confirm('確定要刪除這個風格組合嗎？')) return;
+
+    const combos = getStyleCombos().filter(c => c.id !== id);
+    saveStyleCombos(combos);
+    renderStyleCombos();
+    showToast('風格組合已刪除', 'success');
+}
+
+function loadStyleCombo(id) {
+    const combos = getStyleCombos();
+    const combo = combos.find(c => c.id === id);
+    if (!combo) return;
+
+    applyStyleCombo(combo.settings);
+    document.getElementById('style-combo-panel').classList.add('hidden');
+    showToast(`已載入「${combo.name}」`, 'success');
+}
+
+function renderStyleCombos() {
+    const comboList = document.getElementById('combo-list');
+    if (!comboList) return;
+
+    const combos = getStyleCombos();
+
+    if (combos.length === 0) {
+        comboList.innerHTML = '<p class="empty-combo">尚無保存的風格組合</p>';
+        return;
+    }
+
+    comboList.innerHTML = combos.map(combo => {
+        const preview = [
+            combo.settings.genre,
+            combo.settings.mood,
+            combo.settings.vocalStyle
+        ].filter(Boolean).join(' • ') || '自訂組合';
+
+        return `
+            <div class="combo-item">
+                <div class="combo-info">
+                    <div class="combo-name">${combo.name}</div>
+                    <div class="combo-preview">${preview}</div>
+                </div>
+                <div class="combo-actions">
+                    <button class="btn-combo-load" onclick="loadStyleCombo(${combo.id})">載入</button>
+                    <button class="btn-combo-delete" onclick="deleteStyleCombo(${combo.id})">🗑️</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function initStyleCombo() {
+    const saveBtn = document.getElementById('save-style-combo-btn');
+    const loadBtn = document.getElementById('load-style-combo-btn');
+    const closeBtn = document.getElementById('close-combo-panel');
+    const panel = document.getElementById('style-combo-panel');
+
+    if (saveBtn) {
+        saveBtn.addEventListener('click', saveCurrentStyleCombo);
+    }
+
+    if (loadBtn) {
+        loadBtn.addEventListener('click', () => {
+            renderStyleCombos();
+            panel?.classList.toggle('hidden');
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            panel?.classList.add('hidden');
+        });
+    }
+}
+
+// 導出給 onclick 使用
+window.loadStyleCombo = loadStyleCombo;
+window.deleteStyleCombo = deleteStyleCombo;
+
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
@@ -5153,3 +5353,4 @@ initScrollToTop();
 initFormProgress();
 initOnboarding();
 initQualityScore();
+initStyleCombo();
