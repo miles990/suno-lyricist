@@ -1635,6 +1635,20 @@ function bindEvents() {
     // Advanced Options 展開/收合
     elements.toggleAdvanced.addEventListener('click', toggleAdvancedOptions);
 
+    // Vocal Techniques 展開/收合
+    const vocalTechExpandBtn = document.getElementById('btn-expand-vocal-tech');
+    const vocalTechAdvanced = document.getElementById('vocal-tech-advanced');
+    if (vocalTechExpandBtn && vocalTechAdvanced) {
+        vocalTechExpandBtn.addEventListener('click', () => {
+            const isCollapsed = vocalTechAdvanced.classList.contains('collapsed');
+            vocalTechAdvanced.classList.toggle('collapsed');
+            vocalTechExpandBtn.classList.toggle('expanded');
+            vocalTechExpandBtn.innerHTML = isCollapsed
+                ? '<span class="expand-icon">▲</span> 收起進階技巧'
+                : '<span class="expand-icon">▼</span> 顯示更多技巧';
+        });
+    }
+
     // 滑桿數值更新
     elements.weirdnessSlider.addEventListener('input', () => {
         elements.weirdnessValue.textContent = `${elements.weirdnessSlider.value}%`;

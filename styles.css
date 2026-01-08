@@ -2067,6 +2067,88 @@ header {
     }
 }
 
+/* ===== Vocal Techniques Config ===== */
+.vocal-tech-config {
+    background: var(--bg-input);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+}
+
+.vocal-tech-category {
+    margin-bottom: 0.75rem;
+}
+
+.vocal-tech-category:last-child {
+    margin-bottom: 0;
+}
+
+.vocal-tech-category .category-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+    padding: 0.15rem 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius);
+}
+
+.vocal-tech-advanced {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.vocal-tech-advanced.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+.vocal-tech-advanced:not(.collapsed) {
+    max-height: 2000px;
+    opacity: 1;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+.btn-expand-vocal-tech {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.75rem;
+    background: transparent;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-expand-vocal-tech:hover {
+    background: var(--bg-secondary);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn-expand-vocal-tech .expand-icon {
+    transition: transform 0.3s ease;
+}
+
+.btn-expand-vocal-tech.expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+.label-hint {
+    font-size: 0.75rem;
+    font-weight: normal;
+    color: var(--text-muted);
+}
+
 /* ===== Responsive Quick Start Button ===== */
 @media (max-width: 600px) {
     .header-actions {

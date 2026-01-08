@@ -312,16 +312,130 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>演唱技巧</label>
-                            <div class="style-tags compact">
-                                <button type="button" class="style-tag vocal-tech-tag" data-style="vibrato">Vibrato 顫音</button>
-                                <button type="button" class="style-tag vocal-tech-tag" data-style="falsetto">Falsetto 假聲</button>
-                                <button type="button" class="style-tag vocal-tech-tag" data-style="belting">Belting 飽滿高音</button>
-                                <button type="button" class="style-tag vocal-tech-tag" data-style="melisma">Melisma 轉音</button>
-                                <button type="button" class="style-tag vocal-tech-tag" data-style="vocal fry">Vocal Fry 氣泡音</button>
-                                <button type="button" class="style-tag vocal-tech-tag" data-style="ad-libs">Ad-libs 即興</button>
-                                <button type="button" class="style-tag vocal-tech-tag" data-style="harmonies">Harmonies 和聲</button>
-                                <button type="button" class="style-tag vocal-tech-tag" data-style="runs">Runs 花式轉音</button>
+                            <label>演唱技巧 <span class="label-hint">(點擊展開更多)</span></label>
+                            <div class="vocal-tech-config">
+                                <!-- 基礎技巧 -->
+                                <div class="vocal-tech-category">
+                                    <span class="category-label">基礎技巧</span>
+                                    <div class="style-tags compact">
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="vibrato">Vibrato 顫音</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="falsetto">Falsetto 假聲</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="belting">Belting 飽滿高音</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="melisma">Melisma 轉音</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="runs">Runs 花式轉音</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="vocal fry">Vocal Fry 氣泡音</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="head voice">Head Voice 頭聲</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="chest voice">Chest Voice 胸聲</button>
+                                    </div>
+                                </div>
+                                <!-- 情感表達 -->
+                                <div class="vocal-tech-category">
+                                    <span class="category-label">情感表達</span>
+                                    <div class="style-tags compact">
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="emotive whispers">Emotive Whispers 情感低語</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="soulful cry">Soulful Cry 靈魂哭腔</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="tender croons">Tender Croons 溫柔低吟</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="passionate belting">Passionate Belting 激情飽滿</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="vulnerable confession">Vulnerable Confession 脆弱告白</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="intimate storytelling">Intimate Storytelling 親密敘事</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="yearning falsetto">Yearning Falsetto 渴望假聲</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="nostalgic warmth">Nostalgic Warmth 懷舊溫暖</button>
+                                    </div>
+                                </div>
+                                <!-- 力度變化 -->
+                                <div class="vocal-tech-category">
+                                    <span class="category-label">力度變化</span>
+                                    <div class="style-tags compact">
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="raspy power notes">Raspy Power Notes 沙啞力量音</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="breathy crescendos">Breathy Crescendos 氣息漸強</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="dynamic swells">Dynamic Swells 動態起伏</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="explosive climax">Explosive Climax 爆發高潮</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="controlled intensity">Controlled Intensity 控制強度</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="soft to powerful">Soft to Powerful 柔到強</button>
+                                        <button type="button" class="style-tag vocal-tech-tag" data-style="gradual fade">Gradual Fade 漸弱消退</button>
+                                    </div>
+                                </div>
+                                <!-- 進階可展開 -->
+                                <div class="vocal-tech-advanced collapsed" id="vocal-tech-advanced">
+                                    <!-- 氣聲技巧 -->
+                                    <div class="vocal-tech-category">
+                                        <span class="category-label">氣聲技巧</span>
+                                        <div class="style-tags compact">
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="airy textures">Airy Textures 空靈質感</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="whisper singing">Whisper Singing 低語演唱</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="breathy intimacy">Breathy Intimacy 氣息親密</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="sighing phrases">Sighing Phrases 嘆息樂句</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="ghostly echoes">Ghostly Echoes 幽靈回音</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="hushed tones">Hushed Tones 低沉音調</button>
+                                        </div>
+                                    </div>
+                                    <!-- 裝飾技巧 -->
+                                    <div class="vocal-tech-category">
+                                        <span class="category-label">裝飾技巧</span>
+                                        <div class="style-tags compact">
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="silky trills">Silky Trills 絲滑顫音</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="gliding transitions">Gliding Transitions 滑音過渡</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="playful ornaments">Playful Ornaments 俏皮裝飾</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="subtle vibrato">Subtle Vibrato 微妙顫音</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="grace notes">Grace Notes 裝飾音</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="delicate flourishes">Delicate Flourishes 精緻華彩</button>
+                                        </div>
+                                    </div>
+                                    <!-- 節奏表現 -->
+                                    <div class="vocal-tech-category">
+                                        <span class="category-label">節奏表現</span>
+                                        <div class="style-tags compact">
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="rhythmic staccatos">Rhythmic Staccatos 節奏斷音</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="syncopated delivery">Syncopated Delivery 切分演繹</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="percussive phrasing">Percussive Phrasing 打擊樂句</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="laid-back groove">Laid-back Groove 慵懶律動</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="driving pulse">Driving Pulse 驅動脈衝</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="swing feel">Swing Feel 搖擺感</button>
+                                        </div>
+                                    </div>
+                                    <!-- 特殊效果 -->
+                                    <div class="vocal-tech-category">
+                                        <span class="category-label">特殊效果</span>
+                                        <div class="style-tags compact">
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="ad-libs">Ad-libs 即興</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="harmonies">Harmonies 和聲</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="call and response">Call and Response 呼應</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="vocal layering">Vocal Layering 人聲疊加</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="echo effects">Echo Effects 回聲效果</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="reverb wash">Reverb Wash 混響</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="doubled vocals">Doubled Vocals 雙軌人聲</button>
+                                        </div>
+                                    </div>
+                                    <!-- 風格特色 -->
+                                    <div class="vocal-tech-category">
+                                        <span class="category-label">風格特色</span>
+                                        <div class="style-tags compact">
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="gospel runs">Gospel Runs 福音轉音</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="jazz scatting">Jazz Scatting 爵士擬聲</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="r&b melisma">R&B Melisma R&B轉音</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="country twang">Country Twang 鄉村腔調</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="operatic tones">Operatic Tones 歌劇音色</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="indie softness">Indie Softness 獨立柔和</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="soul grit">Soul Grit 靈魂沙啞</button>
+                                        </div>
+                                    </div>
+                                    <!-- 高級表現 -->
+                                    <div class="vocal-tech-category">
+                                        <span class="category-label">高級表現</span>
+                                        <div class="style-tags compact">
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="theatrical delivery">Theatrical Delivery 戲劇演繹</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="spoken word">Spoken Word 朗誦</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="rap flow">Rap Flow 說唱流動</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="melodic rap">Melodic Rap 旋律說唱</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="yodel">Yodel 約德爾唱法</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="growling">Growling 咆哮</button>
+                                            <button type="button" class="style-tag vocal-tech-tag" data-style="screaming">Screaming 嘶吼</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-expand-vocal-tech" id="btn-expand-vocal-tech">
+                                    <span class="expand-icon">▼</span> 顯示更多技巧
+                                </button>
                             </div>
                         </div>
                     </div>
