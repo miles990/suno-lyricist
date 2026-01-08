@@ -5982,6 +5982,21 @@ function initQuickMode() {
         });
     }
 
+    // 快速主題建議 chips
+    const quickChips = document.querySelectorAll('.quick-chip');
+    if (quickChips.length > 0 && quickThemeInput) {
+        quickChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                const theme = chip.dataset.theme;
+                if (theme) {
+                    quickThemeInput.value = theme;
+                    quickThemeInput.focus();
+                    showToast(`已選擇：${chip.textContent.trim()}`, 'success');
+                }
+            });
+        });
+    }
+
     function switchToQuickMode() {
         quickModeBtn.classList.add('active');
         advancedModeBtn.classList.remove('active');

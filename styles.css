@@ -5382,6 +5382,49 @@ textarea,
     100% { transform: rotate(360deg); }
 }
 
+/* Quick Theme Suggestions */
+.quick-theme-suggestions {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.quick-suggestions-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.quick-suggestions-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.quick-chip {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.quick-chip:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.quick-chip:active {
+    transform: translateY(0);
+}
+
 .quick-mode-hint {
     margin-top: 1.5rem;
     padding: 0.75rem 1rem;
@@ -5440,5 +5483,14 @@ textarea,
 
     .mode-icon {
         font-size: 1.3rem;
+    }
+
+    .quick-chip {
+        font-size: 0.8rem;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .quick-suggestions-chips {
+        gap: 0.4rem;
     }
 }
