@@ -44,6 +44,7 @@
 
         <div class="tabs">
             <button class="tab active" data-tab="ai-generate">AI 生成</button>
+            <button class="tab" data-tab="song-lab">🧪 歌曲實驗室</button>
             <button class="tab" data-tab="template-edit">模板編輯</button>
             <button class="tab" data-tab="tags-ref">標籤參考</button>
         </div>
@@ -1026,6 +1027,240 @@
                         <span class="btn-text">優化歌詞</span>
                         <span class="btn-loading" style="display:none;">優化中...</span>
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 歌曲實驗室頁面 -->
+        <div id="song-lab" class="tab-content">
+            <div class="lab-container">
+                <div class="lab-header">
+                    <h2>🧪 歌曲實驗室</h2>
+                    <p class="lab-subtitle">混搭音樂元素，探索獨特風格組合</p>
+                </div>
+
+                <div class="lab-controls">
+                    <button id="lab-randomize" class="btn-lab-action btn-randomize">
+                        🎲 隨機混搭
+                    </button>
+                    <button id="lab-clear" class="btn-lab-action btn-clear">
+                        🗑️ 清空
+                    </button>
+                    <button id="lab-apply" class="btn-lab-action btn-apply">
+                        ✨ 套用到 AI 生成
+                    </button>
+                </div>
+
+                <div class="lab-grid">
+                    <!-- 主風格 -->
+                    <div class="lab-card">
+                        <div class="lab-card-header">
+                            <span class="lab-card-icon">🎵</span>
+                            <span class="lab-card-title">主風格</span>
+                            <button class="btn-lab-random" data-target="lab-genre">🎲</button>
+                        </div>
+                        <select id="lab-genre" class="lab-select">
+                            <option value="">選擇風格...</option>
+                            <optgroup label="流行 Pop">
+                                <option value="pop">Pop</option>
+                                <option value="synth-pop">Synth Pop</option>
+                                <option value="indie-pop">Indie Pop</option>
+                                <option value="k-pop">K-Pop</option>
+                                <option value="hyperpop">Hyperpop</option>
+                            </optgroup>
+                            <optgroup label="電子 Electronic">
+                                <option value="house">House</option>
+                                <option value="techno">Techno</option>
+                                <option value="trance">Trance</option>
+                                <option value="dubstep">Dubstep</option>
+                                <option value="future-bass">Future Bass</option>
+                                <option value="synthwave">Synthwave</option>
+                                <option value="lo-fi">Lo-Fi</option>
+                            </optgroup>
+                            <optgroup label="嘻哈 Hip-Hop">
+                                <option value="hip-hop">Hip Hop</option>
+                                <option value="trap">Trap</option>
+                                <option value="drill">Drill</option>
+                                <option value="phonk">Phonk</option>
+                            </optgroup>
+                            <optgroup label="搖滾 Rock">
+                                <option value="rock">Rock</option>
+                                <option value="indie-rock">Indie Rock</option>
+                                <option value="punk">Punk Rock</option>
+                                <option value="grunge">Grunge</option>
+                                <option value="post-rock">Post Rock</option>
+                            </optgroup>
+                            <optgroup label="R&B/Soul">
+                                <option value="rnb">R&B</option>
+                                <option value="neo-soul">Neo Soul</option>
+                                <option value="funk">Funk</option>
+                            </optgroup>
+                            <optgroup label="爵士 Jazz">
+                                <option value="jazz">Jazz</option>
+                                <option value="smooth-jazz">Smooth Jazz</option>
+                                <option value="jazz-fusion">Jazz Fusion</option>
+                            </optgroup>
+                            <optgroup label="民謠 Folk">
+                                <option value="folk">Folk</option>
+                                <option value="indie-folk">Indie Folk</option>
+                                <option value="country">Country</option>
+                            </optgroup>
+                            <optgroup label="其他">
+                                <option value="reggaeton">Reggaeton</option>
+                                <option value="afrobeat">Afrobeat</option>
+                                <option value="classical">Classical</option>
+                                <option value="ambient">Ambient</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- 副風格 -->
+                    <div class="lab-card">
+                        <div class="lab-card-header">
+                            <span class="lab-card-icon">🎭</span>
+                            <span class="lab-card-title">副風格</span>
+                            <button class="btn-lab-random" data-target="lab-subgenre">🎲</button>
+                        </div>
+                        <select id="lab-subgenre" class="lab-select">
+                            <option value="">選擇副風格...</option>
+                            <option value="cinematic">Cinematic 電影感</option>
+                            <option value="dreamy">Dreamy 夢幻</option>
+                            <option value="dark">Dark 暗黑</option>
+                            <option value="uplifting">Uplifting 振奮</option>
+                            <option value="chill">Chill 放鬆</option>
+                            <option value="aggressive">Aggressive 激進</option>
+                            <option value="vintage">Vintage 復古</option>
+                            <option value="futuristic">Futuristic 未來感</option>
+                            <option value="experimental">Experimental 實驗</option>
+                            <option value="minimalist">Minimalist 極簡</option>
+                        </select>
+                    </div>
+
+                    <!-- 情緒 -->
+                    <div class="lab-card">
+                        <div class="lab-card-header">
+                            <span class="lab-card-icon">💫</span>
+                            <span class="lab-card-title">情緒氛圍</span>
+                            <button class="btn-lab-random" data-target="lab-mood">🎲</button>
+                        </div>
+                        <select id="lab-mood" class="lab-select">
+                            <option value="">選擇情緒...</option>
+                            <option value="euphoric">Euphoric 狂喜</option>
+                            <option value="melancholic">Melancholic 憂鬱</option>
+                            <option value="romantic">Romantic 浪漫</option>
+                            <option value="energetic">Energetic 活力</option>
+                            <option value="peaceful">Peaceful 平和</option>
+                            <option value="intense">Intense 強烈</option>
+                            <option value="nostalgic">Nostalgic 懷舊</option>
+                            <option value="mysterious">Mysterious 神秘</option>
+                            <option value="playful">Playful 俏皮</option>
+                            <option value="epic">Epic 史詩</option>
+                        </select>
+                    </div>
+
+                    <!-- 節奏 -->
+                    <div class="lab-card">
+                        <div class="lab-card-header">
+                            <span class="lab-card-icon">⚡</span>
+                            <span class="lab-card-title">節奏速度</span>
+                            <button class="btn-lab-random" data-target="lab-tempo">🎲</button>
+                        </div>
+                        <select id="lab-tempo" class="lab-select">
+                            <option value="">選擇節奏...</option>
+                            <option value="very-slow">Very Slow 極慢 (60-70 BPM)</option>
+                            <option value="slow">Slow 慢板 (70-90 BPM)</option>
+                            <option value="moderate">Moderate 中等 (90-110 BPM)</option>
+                            <option value="upbeat">Upbeat 輕快 (110-130 BPM)</option>
+                            <option value="fast">Fast 快速 (130-150 BPM)</option>
+                            <option value="very-fast">Very Fast 極快 (150+ BPM)</option>
+                        </select>
+                    </div>
+
+                    <!-- 人聲風格 -->
+                    <div class="lab-card">
+                        <div class="lab-card-header">
+                            <span class="lab-card-icon">🎤</span>
+                            <span class="lab-card-title">人聲風格</span>
+                            <button class="btn-lab-random" data-target="lab-vocal">🎲</button>
+                        </div>
+                        <select id="lab-vocal" class="lab-select">
+                            <option value="">選擇人聲...</option>
+                            <optgroup label="女聲">
+                                <option value="ethereal female">Ethereal Female 空靈女聲</option>
+                                <option value="powerful female">Powerful Female 有力女聲</option>
+                                <option value="breathy female">Breathy Female 氣息女聲</option>
+                                <option value="soulful female">Soulful Female 靈魂女聲</option>
+                            </optgroup>
+                            <optgroup label="男聲">
+                                <option value="deep male">Deep Male 低沉男聲</option>
+                                <option value="raspy male">Raspy Male 沙啞男聲</option>
+                                <option value="smooth male">Smooth Male 柔和男聲</option>
+                                <option value="falsetto male">Falsetto Male 假聲男聲</option>
+                            </optgroup>
+                            <optgroup label="特殊">
+                                <option value="duet">Duet 對唱</option>
+                                <option value="choir">Choir 合唱團</option>
+                                <option value="spoken word">Spoken Word 唸白</option>
+                                <option value="instrumental">Instrumental 純音樂</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- 樂器特色 -->
+                    <div class="lab-card">
+                        <div class="lab-card-header">
+                            <span class="lab-card-icon">🎸</span>
+                            <span class="lab-card-title">主要樂器</span>
+                            <button class="btn-lab-random" data-target="lab-instrument">🎲</button>
+                        </div>
+                        <select id="lab-instrument" class="lab-select">
+                            <option value="">選擇樂器...</option>
+                            <optgroup label="弦樂">
+                                <option value="acoustic guitar">Acoustic Guitar 木吉他</option>
+                                <option value="electric guitar">Electric Guitar 電吉他</option>
+                                <option value="bass guitar">Bass Guitar 貝斯</option>
+                                <option value="strings">Strings 弦樂</option>
+                            </optgroup>
+                            <optgroup label="鍵盤">
+                                <option value="piano">Piano 鋼琴</option>
+                                <option value="synth">Synth 合成器</option>
+                                <option value="organ">Organ 風琴</option>
+                                <option value="rhodes">Rhodes 電鋼琴</option>
+                            </optgroup>
+                            <optgroup label="管樂">
+                                <option value="saxophone">Saxophone 薩克斯風</option>
+                                <option value="trumpet">Trumpet 小號</option>
+                                <option value="flute">Flute 長笛</option>
+                            </optgroup>
+                            <optgroup label="電子">
+                                <option value="808">808 Drums</option>
+                                <option value="drum machine">Drum Machine 鼓機</option>
+                                <option value="sampler">Sampler 取樣器</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 預覽區 -->
+                <div class="lab-preview">
+                    <div class="lab-preview-header">
+                        <h3>📋 Style Prompt 預覽</h3>
+                        <button id="lab-copy" class="btn-lab-copy" title="複製">📋</button>
+                    </div>
+                    <div id="lab-preview-content" class="lab-preview-content">
+                        <span class="lab-placeholder">選擇元素後，Style Prompt 將在此顯示...</span>
+                    </div>
+                </div>
+
+                <!-- 實驗歷史 -->
+                <div class="lab-history">
+                    <div class="lab-history-header">
+                        <h3>💾 我的收藏</h3>
+                        <button id="lab-save" class="btn-lab-save" title="保存當前組合">💾 保存</button>
+                    </div>
+                    <div id="lab-saved-list" class="lab-saved-list">
+                        <p class="lab-empty">尚無收藏，點擊「保存」收藏喜歡的組合</p>
+                    </div>
                 </div>
             </div>
         </div>

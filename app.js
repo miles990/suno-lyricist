@@ -1880,6 +1880,9 @@ function init() {
         checkBackendStatus();
     }
 
+    // 初始化歌曲實驗室
+    initSongLab();
+
     // 檢查是否首次使用，顯示引導精靈
     const hasUsedBefore = localStorage.getItem('suno-has-used');
     if (!hasUsedBefore) {
@@ -2177,6 +2180,257 @@ function toggleMaxModeOptions() {
     } else {
         elements.maxModeOptions.classList.add('hidden');
     }
+}
+
+// ===== Song Lab (歌曲實驗室) =====
+const labElements = {
+    genre: null,
+    subgenre: null,
+    mood: null,
+    tempo: null,
+    vocal: null,
+    instrument: null,
+    previewContent: null,
+    savedList: null
+};
+
+let labSavedCombos = JSON.parse(localStorage.getItem('lab-saved-combos') || '[]');
+
+function initSongLab() {
+    labElements.genre = document.getElementById('lab-genre');
+    labElements.subgenre = document.getElementById('lab-subgenre');
+    labElements.mood = document.getElementById('lab-mood');
+    labElements.tempo = document.getElementById('lab-tempo');
+    labElements.vocal = document.getElementById('lab-vocal');
+    labElements.instrument = document.getElementById('lab-instrument');
+    labElements.previewContent = document.getElementById('lab-preview-content');
+    labElements.savedList = document.getElementById('lab-saved-list');
+
+    // 綁定下拉選單變更事件
+    Object.values(labElements).forEach(el => {
+        if (el && el.tagName === 'SELECT') {
+            el.addEventListener('change', updateLabPreview);
+        }
+    });
+
+    // 綁定控制按鈕
+    document.getElementById('lab-randomize')?.addEventListener('click', labRandomize);
+    document.getElementById('lab-clear')?.addEventListener('click', labClear);
+    document.getElementById('lab-apply')?.addEventListener('click', labApplyToAI);
+    document.getElementById('lab-copy')?.addEventListener('click', labCopyPrompt);
+    document.getElementById('lab-save')?.addEventListener('click', labSaveCombo);
+
+    // 綁定單個隨機按鈕
+    document.querySelectorAll('.btn-lab-random').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.dataset.target;
+            const select = document.getElementById(targetId);
+            if (select) {
+                randomizeSelect(select);
+                updateLabPreview();
+            }
+        });
+    });
+
+    // 載入已保存的組合
+    renderLabSaved();
+}
+
+function randomizeSelect(select) {
+    const options = Array.from(select.options).filter(opt => opt.value !== '');
+    if (options.length > 0) {
+        const randomOpt = options[Math.floor(Math.random() * options.length)];
+        select.value = randomOpt.value;
+    }
+}
+
+function labRandomize() {
+    Object.values(labElements).forEach(el => {
+        if (el && el.tagName === 'SELECT') {
+            randomizeSelect(el);
+        }
+    });
+    updateLabPreview();
+    showToast('已隨機混搭所有元素！', 'success');
+}
+
+function labClear() {
+    Object.values(labElements).forEach(el => {
+        if (el && el.tagName === 'SELECT') {
+            el.value = '';
+        }
+    });
+    updateLabPreview();
+    showToast('已清空所有選擇', 'info');
+}
+
+function getLabStylePrompt() {
+    const parts = [];
+    const genre = labElements.genre?.value;
+    const subgenre = labElements.subgenre?.value;
+    const mood = labElements.mood?.value;
+    const tempo = labElements.tempo?.value;
+    const vocal = labElements.vocal?.value;
+    const instrument = labElements.instrument?.value;
+
+    if (genre) parts.push(genre.replace(/-/g, ' '));
+    if (subgenre) parts.push(subgenre);
+    if (mood) parts.push(mood);
+
+    if (tempo) {
+        const tempoMap = {
+            'very-slow': '60-70 BPM',
+            'slow': '70-90 BPM',
+            'moderate': '90-110 BPM',
+            'upbeat': '110-130 BPM',
+            'fast': '130-150 BPM',
+            'very-fast': '150+ BPM'
+        };
+        parts.push(tempoMap[tempo] || tempo);
+    }
+
+    if (vocal) parts.push(vocal + ' vocals');
+    if (instrument) parts.push(instrument);
+
+    return parts.join(', ');
+}
+
+function updateLabPreview() {
+    const prompt = getLabStylePrompt();
+    if (prompt) {
+        labElements.previewContent.innerHTML = `<span class="lab-prompt-text">${prompt}</span>`;
+    } else {
+        labElements.previewContent.innerHTML = '<span class="lab-placeholder">選擇元素後，Style Prompt 將在此顯示...</span>';
+    }
+}
+
+function labCopyPrompt() {
+    const prompt = getLabStylePrompt();
+    if (prompt) {
+        copyToClipboard(prompt);
+    } else {
+        showToast('請先選擇一些元素', 'warning');
+    }
+}
+
+function labApplyToAI() {
+    const prompt = getLabStylePrompt();
+    if (!prompt) {
+        showToast('請先選擇一些元素', 'warning');
+        return;
+    }
+
+    // 切換到 AI 生成頁面
+    switchTab('ai-generate');
+
+    // 嘗試設定對應的值
+    const genre = labElements.genre?.value;
+    const mood = labElements.mood?.value;
+    const vocal = labElements.vocal?.value;
+    const tempo = labElements.tempo?.value;
+
+    if (genre && elements.songGenre) {
+        const option = Array.from(elements.songGenre.options).find(opt =>
+            opt.value === genre || opt.value.includes(genre.replace(/-/g, ''))
+        );
+        if (option) elements.songGenre.value = option.value;
+    }
+
+    if (mood && elements.songMood) {
+        const option = Array.from(elements.songMood.options).find(opt =>
+            opt.value === mood || opt.value.includes(mood)
+        );
+        if (option) elements.songMood.value = option.value;
+    }
+
+    if (vocal && elements.vocalStyle) {
+        const option = Array.from(elements.vocalStyle.options).find(opt =>
+            opt.value.toLowerCase().includes(vocal.split(' ')[0].toLowerCase())
+        );
+        if (option) elements.vocalStyle.value = option.value;
+    }
+
+    if (tempo && elements.songTempo) {
+        const tempoMapping = {
+            'very-slow': 'slow',
+            'slow': 'slow',
+            'moderate': 'moderate',
+            'upbeat': 'upbeat',
+            'fast': 'fast',
+            'very-fast': 'fast'
+        };
+        elements.songTempo.value = tempoMapping[tempo] || tempo;
+    }
+
+    showToast('已套用到 AI 生成設定！', 'success');
+}
+
+function labSaveCombo() {
+    const prompt = getLabStylePrompt();
+    if (!prompt) {
+        showToast('請先選擇一些元素', 'warning');
+        return;
+    }
+
+    const combo = {
+        id: Date.now(),
+        name: prompt.substring(0, 30) + (prompt.length > 30 ? '...' : ''),
+        genre: labElements.genre?.value || '',
+        subgenre: labElements.subgenre?.value || '',
+        mood: labElements.mood?.value || '',
+        tempo: labElements.tempo?.value || '',
+        vocal: labElements.vocal?.value || '',
+        instrument: labElements.instrument?.value || '',
+        prompt: prompt,
+        createdAt: new Date().toISOString()
+    };
+
+    labSavedCombos.unshift(combo);
+    if (labSavedCombos.length > 20) labSavedCombos.pop(); // 最多保存 20 個
+
+    localStorage.setItem('lab-saved-combos', JSON.stringify(labSavedCombos));
+    renderLabSaved();
+    showToast('已保存到收藏！', 'success');
+}
+
+function renderLabSaved() {
+    if (!labElements.savedList) return;
+
+    if (labSavedCombos.length === 0) {
+        labElements.savedList.innerHTML = '<p class="lab-empty">尚無收藏，點擊「保存」收藏喜歡的組合</p>';
+        return;
+    }
+
+    labElements.savedList.innerHTML = labSavedCombos.map(combo => `
+        <div class="lab-saved-item" data-id="${combo.id}">
+            <span class="lab-saved-item-name" onclick="labLoadCombo(${combo.id})">${combo.name}</span>
+            <div class="lab-saved-item-actions">
+                <button class="lab-saved-item-btn" onclick="labDeleteCombo(${combo.id})" title="刪除">🗑️</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function labLoadCombo(id) {
+    const combo = labSavedCombos.find(c => c.id === id);
+    if (!combo) return;
+
+    if (labElements.genre) labElements.genre.value = combo.genre;
+    if (labElements.subgenre) labElements.subgenre.value = combo.subgenre;
+    if (labElements.mood) labElements.mood.value = combo.mood;
+    if (labElements.tempo) labElements.tempo.value = combo.tempo;
+    if (labElements.vocal) labElements.vocal.value = combo.vocal;
+    if (labElements.instrument) labElements.instrument.value = combo.instrument;
+
+    updateLabPreview();
+    showToast('已載入收藏的組合', 'success');
+}
+
+function labDeleteCombo(id) {
+    labSavedCombos = labSavedCombos.filter(c => c.id !== id);
+    localStorage.setItem('lab-saved-combos', JSON.stringify(labSavedCombos));
+    renderLabSaved();
+    showToast('已刪除', 'info');
 }
 
 // ===== Advanced Options 展開/收合 =====

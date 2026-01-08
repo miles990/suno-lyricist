@@ -2340,3 +2340,311 @@ header {
         padding: 0.5rem 0.75rem;
     }
 }
+
+/* ===== Song Lab (歌曲實驗室) ===== */
+.lab-container {
+    padding: 1rem;
+}
+
+.lab-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.lab-header h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.lab-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.lab-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-lab-action {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-randomize {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+}
+
+.btn-randomize:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.btn-clear {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+.btn-clear:hover {
+    background: var(--bg-input);
+    border-color: var(--text-secondary);
+}
+
+.btn-apply {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    color: white;
+}
+
+.btn-apply:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.lab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.lab-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    transition: all 0.3s;
+}
+
+.lab-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.15);
+}
+
+.lab-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.lab-card-icon {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+.lab-card-title {
+    font-weight: 600;
+    flex: 1;
+    color: var(--text);
+}
+
+.btn-lab-random {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+
+.btn-lab-random:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: rotate(180deg);
+}
+
+.lab-select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.lab-select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.lab-preview {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.lab-preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.lab-preview-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.btn-lab-copy {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-lab-copy:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.lab-preview-content {
+    background: var(--bg-input);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    min-height: 60px;
+    word-break: break-word;
+}
+
+.lab-placeholder {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.lab-history {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.lab-history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.lab-history-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.btn-lab-save {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+
+.btn-lab-save:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+}
+
+.lab-saved-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.lab-empty {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+}
+
+.lab-saved-item {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem;
+    background: var(--bg-input);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    gap: 0.75rem;
+    transition: all 0.2s;
+}
+
+.lab-saved-item:hover {
+    background: var(--bg-card);
+    border: 1px solid var(--primary);
+}
+
+.lab-saved-item-name {
+    flex: 1;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.lab-saved-item-name:hover {
+    color: var(--primary);
+}
+
+.lab-saved-item-actions {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.lab-saved-item-btn {
+    background: transparent;
+    border: none;
+    padding: 0.2rem 0.4rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.lab-saved-item-btn:hover {
+    opacity: 1;
+}
+
+/* Lab responsive */
+@media (max-width: 768px) {
+    .lab-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-lab-action {
+        justify-content: center;
+    }
+    
+    .lab-grid {
+        grid-template-columns: 1fr;
+    }
+}
