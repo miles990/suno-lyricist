@@ -4456,8 +4456,76 @@ function initThemeToggle() {
     });
 }
 
+// ===== 即時歌詞統計 =====
+function updateLyricsStats(lyrics) {
+    const statsBar = document.getElementById('lyrics-stats-bar');
+    if (!statsBar) return;
+
+    if (!lyrics || lyrics.trim().length === 0) {
+        statsBar.classList.add('hidden');
+        return;
+    }
+
+    statsBar.classList.remove('hidden');
+
+    // 計算字數（排除結構標籤）
+    const cleanLyrics = lyrics.replace(/\[.*?\]/g, '').trim();
+    const charCount = cleanLyrics.replace(/\s/g, '').length;
+
+    // 計算行數（排除空行和標籤行）
+    const lines = lyrics.split('\n').filter(line => {
+        const trimmed = line.trim();
+        return trimmed.length > 0 && !trimmed.match(/^\[.*?\]$/);
+    });
+    const lineCount = lines.length;
+
+    // 計算段落數（通過結構標籤）
+    const sectionMatches = lyrics.match(/\[(Verse|Chorus|Bridge|Pre-Chorus|Outro|Intro|Hook|Interlude|Break|Rap|Spoken|Refrain).*?\]/gi);
+    const sectionCount = sectionMatches ? sectionMatches.length : 0;
+
+    // 預估歌曲時長
+    // 假設：平均每行約 4 秒，加上段落間隙
+    const estimatedSeconds = (lineCount * 4) + (sectionCount * 2);
+    const minutes = Math.floor(estimatedSeconds / 60);
+    const seconds = estimatedSeconds % 60;
+    const duration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+    // 更新 UI
+    const statsChars = document.getElementById('stats-chars');
+    const statsLines = document.getElementById('stats-lines');
+    const statsSections = document.getElementById('stats-sections');
+    const statsDuration = document.getElementById('stats-duration');
+
+    if (statsChars) statsChars.textContent = charCount;
+    if (statsLines) statsLines.textContent = lineCount;
+    if (statsSections) statsSections.textContent = sectionCount;
+    if (statsDuration) statsDuration.textContent = duration;
+}
+
+// 監聽歌詞輸出變化
+function initLyricsStatsObserver() {
+    const outputArea = document.getElementById('output-area');
+    if (!outputArea) return;
+
+    // 使用 MutationObserver 監聽輸出區域變化
+    const observer = new MutationObserver((mutations) => {
+        const lyrics = outputArea.textContent || '';
+        // 排除 placeholder 文字
+        if (!lyrics.includes('生成的歌詞會顯示在這裡')) {
+            updateLyricsStats(lyrics);
+        }
+    });
+
+    observer.observe(outputArea, {
+        childList: true,
+        subtree: true,
+        characterData: true
+    });
+}
+
 // ===== 啟動應用 =====
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
 initThemeToggle();
+initLyricsStatsObserver();

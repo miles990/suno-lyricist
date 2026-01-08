@@ -3625,3 +3625,96 @@ textarea,
 .btn-theme-toggle {
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
+
+/* ===== Lyrics Stats Bar ===== */
+.lyrics-stats-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    animation: statsSlideIn 0.3s ease;
+}
+
+@keyframes statsSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.lyrics-stats-bar.hidden {
+    display: none;
+}
+
+.stats-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.8rem;
+    background: var(--bg-card);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+}
+
+.stats-icon {
+    font-size: 0.9rem;
+}
+
+.stats-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.stats-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--primary);
+    min-width: 2rem;
+    text-align: right;
+}
+
+/* Duration special styling */
+.stats-item:last-child .stats-value {
+    color: var(--success);
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .lyrics-stats-bar {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%);
+    border-color: rgba(99, 102, 241, 0.15);
+}
+
+[data-theme="light"] .stats-item {
+    background: #ffffff;
+    border-color: var(--border);
+}
+
+/* Responsive stats bar */
+@media (max-width: 600px) {
+    .lyrics-stats-bar {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .stats-item {
+        padding: 0.25rem 0.6rem;
+    }
+
+    .stats-label {
+        font-size: 0.7rem;
+    }
+
+    .stats-value {
+        font-size: 0.8rem;
+    }
+}
