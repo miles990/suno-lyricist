@@ -4519,11 +4519,32 @@ function updateLyricsStats(lyrics) {
     const statsLines = document.getElementById('stats-lines');
     const statsSections = document.getElementById('stats-sections');
     const statsDuration = document.getElementById('stats-duration');
+    const statsWarning = document.getElementById('stats-warning');
 
     if (statsChars) statsChars.textContent = charCount;
     if (statsLines) statsLines.textContent = lineCount;
     if (statsSections) statsSections.textContent = sectionCount;
     if (statsDuration) statsDuration.textContent = duration;
+
+    // Suno 字數限制警告 (建議 3000 字以內)
+    if (statsWarning) {
+        if (charCount > 3000) {
+            statsWarning.textContent = '⚠️ 超過 Suno 建議上限 (3000字)';
+            statsWarning.className = 'stats-warning danger';
+        } else if (charCount > 2500) {
+            statsWarning.textContent = '⚡ 接近 Suno 上限，建議精簡';
+            statsWarning.className = 'stats-warning warning';
+        } else if (charCount < 100 && charCount > 0) {
+            statsWarning.textContent = '💡 歌詞較短，可考慮擴充';
+            statsWarning.className = 'stats-warning info';
+        } else if (charCount >= 200 && charCount <= 800) {
+            statsWarning.textContent = '✅ 長度適中，適合 Suno 生成';
+            statsWarning.className = 'stats-warning success';
+        } else {
+            statsWarning.textContent = '';
+            statsWarning.className = 'stats-warning';
+        }
+    }
 }
 
 // 監聽歌詞輸出變化

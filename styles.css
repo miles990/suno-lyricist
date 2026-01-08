@@ -4474,3 +4474,33 @@ textarea,
 [data-theme="light"] .combo-item:hover {
     background: #e2e8f0;
 }
+
+/* ===== Stats Warning ===== */
+.stats-warning {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    margin-left: auto;
+    transition: all 0.3s ease;
+}
+
+.stats-warning.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.stats-warning.info {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.stats-warning.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.stats-warning.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    animation: pulse 1.5s infinite;
+}
