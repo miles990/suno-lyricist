@@ -1,5 +1,9 @@
 // ===== Suno 歌詞產生器 =====
 
+// 迭代優化計數器
+let iterationCount = 0;
+let currentLyrics = '';
+
 // 歌詞模板
 const TEMPLATES = {
     'pop-ballad': `[Intro]
@@ -198,6 +202,7 @@ const elements = {
     aiModeOptimize: document.getElementById('ai-mode-optimize'),
     aiModeAuto: document.getElementById('ai-mode-auto'),
     manualSettings: document.getElementById('manual-settings'),
+    aiModeHint: document.getElementById('ai-mode-hint'),
 
     // AI Generate
     apiKey: document.getElementById('api-key'),
@@ -241,6 +246,13 @@ const elements = {
     // Realism
     realismTags: document.querySelectorAll('.realism-tag'),
     masteringStyle: document.getElementById('mastering-style'),
+
+    // Iterate Section
+    iterateSection: document.getElementById('iterate-section'),
+    iterateInstruction: document.getElementById('iterate-instruction'),
+    iterateBtn: document.getElementById('iterate-btn'),
+    iterateTags: document.querySelectorAll('.iterate-tag'),
+    iterationNum: document.getElementById('iteration-num'),
 
     // Template Editor
     lyricsEditor: document.getElementById('lyrics-editor'),
@@ -342,6 +354,16 @@ function bindEvents() {
 
     // 編輯按鈕
     elements.editBtn.addEventListener('click', editGeneratedLyrics);
+
+    // 迭代優化按鈕
+    elements.iterateBtn.addEventListener('click', iterateLyrics);
+
+    // 迭代快速標籤
+    elements.iterateTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            elements.iterateInstruction.value = tag.dataset.instruction;
+        });
+    });
 
     // 標籤按鈕
     elements.tagButtons.forEach(btn => {
@@ -447,6 +469,12 @@ function toggleApiMode(mode) {
 }
 
 // ===== AI 創作模式切換 =====
+const AI_MODE_HINTS = {
+    manual: '手動設定所有參數，完全控制生成結果',
+    optimize: 'AI 會自動補充你未設定的參數，並說明選擇理由',
+    auto: '只需輸入主題，AI 會決定風格、情緒、結構等所有參數'
+};
+
 function toggleAiMode(mode) {
     localStorage.setItem('ai-mode', mode);
     if (mode === 'auto') {
@@ -455,6 +483,16 @@ function toggleAiMode(mode) {
     } else {
         // 手動或 AI 優化：顯示設定
         elements.manualSettings.classList.remove('hidden');
+    }
+
+    // 更新提示文字
+    updateAiModeHint(mode);
+}
+
+function updateAiModeHint(mode) {
+    const hintText = elements.aiModeHint.querySelector('.hint-text');
+    if (hintText && AI_MODE_HINTS[mode]) {
+        hintText.textContent = AI_MODE_HINTS[mode];
     }
 }
 
@@ -936,7 +974,7 @@ async function callClaudeAPI(apiKey, prompt) {
 }
 
 // ===== 顯示歌詞 =====
-function displayLyrics(lyrics) {
+function displayLyrics(lyrics, isIteration = false) {
     // 高亮標籤
     const highlighted = lyrics
         .replace(/\[([^\]]+)\]/g, '<span class="lyrics-tag">[$1]</span>')
@@ -946,6 +984,99 @@ function displayLyrics(lyrics) {
     elements.outputArea.dataset.rawLyrics = lyrics;
     elements.copyBtn.disabled = false;
     elements.editBtn.disabled = false;
+
+    // 儲存當前歌詞並顯示迭代區塊
+    currentLyrics = lyrics;
+    elements.iterateSection.classList.remove('hidden');
+
+    // 如果是新生成（非迭代），重置計數器
+    if (!isIteration) {
+        iterationCount = 0;
+        elements.iterationNum.textContent = '1';
+    }
+}
+
+// ===== 迭代優化歌詞 =====
+async function iterateLyrics() {
+    const isBackendMode = elements.apiModeBackend.checked;
+    const apiKey = elements.apiKey.value.trim();
+
+    // 驗證認證
+    if (!isBackendMode && !apiKey) {
+        showToast('請輸入 Claude API Key', 'error');
+        return;
+    }
+
+    if (!currentLyrics) {
+        showToast('請先生成歌詞', 'error');
+        return;
+    }
+
+    const instruction = elements.iterateInstruction.value.trim();
+    if (!instruction) {
+        showToast('請輸入優化指示', 'error');
+        return;
+    }
+
+    // 構建迭代優化 prompt
+    const prompt = buildIterationPrompt(currentLyrics, instruction);
+
+    // 更新 UI
+    setIteratingState(true);
+
+    try {
+        let lyrics;
+        if (isBackendMode) {
+            lyrics = await callBackendAPI(prompt);
+        } else {
+            lyrics = await callClaudeAPI(apiKey, prompt);
+        }
+
+        // 更新迭代計數
+        iterationCount++;
+        elements.iterationNum.textContent = iterationCount + 1;
+
+        // 顯示優化後的歌詞
+        displayLyrics(lyrics, true);
+        elements.iterateInstruction.value = '';
+        showToast(`第 ${iterationCount} 次優化完成！`, 'success');
+    } catch (error) {
+        console.error('迭代優化失敗:', error);
+        showToast(`優化失敗: ${error.message}`, 'error');
+    } finally {
+        setIteratingState(false);
+    }
+}
+
+// ===== 構建迭代優化 Prompt =====
+function buildIterationPrompt(lyrics, instruction) {
+    return `你是一位專業的 Suno AI 歌詞優化師。請根據以下指示優化這首歌詞。
+
+## 當前歌詞
+\`\`\`
+${lyrics}
+\`\`\`
+
+## 優化指示
+${instruction}
+
+## 要求
+1. 保持 Suno metatag 格式（[標籤]、(ad-libs) 等）
+2. 根據優化指示進行針對性修改
+3. 保持歌曲的整體結構和風格連貫性
+4. 如果是改進押韻，確保韻腳自然
+5. 如果是調整情緒，確保過渡平順
+
+## 輸出格式
+直接輸出優化後的完整歌詞，不要加任何解釋或比較。
+只輸出優化後的歌詞，保持 Suno 可直接使用的格式。`;
+}
+
+// ===== 設定迭代中狀態 =====
+function setIteratingState(isIterating) {
+    elements.iterateBtn.disabled = isIterating;
+    elements.iterateBtn.querySelector('.btn-text').style.display = isIterating ? 'none' : 'inline';
+    elements.iterateBtn.querySelector('.btn-loading').style.display = isIterating ? 'inline' : 'none';
 }
 
 // ===== 設定生成中狀態 =====

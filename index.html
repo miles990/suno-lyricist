@@ -89,6 +89,10 @@
                             </div>
                         </label>
                     </div>
+                    <div id="ai-mode-hint" class="ai-mode-hint">
+                        <span class="hint-icon">💡</span>
+                        <span class="hint-text">手動設定所有參數，完全控制生成結果</span>
+                    </div>
                 </div>
 
                 <div id="manual-settings">
@@ -185,7 +189,7 @@
 
                 <div class="form-group">
                     <label for="style-prompt">風格描述 (Style Prompt)</label>
-                    <textarea id="style-prompt" rows="2" placeholder="例：Sultry RnB, smooth vocals, groovy bass, 90s vibe"></textarea>
+                    <textarea id="style-prompt" rows="2" placeholder="例：Sultry RnB, smooth vocals, groovy bass, 90s vibe" maxlength="1000"></textarea>
                     <small>描述音樂風格、樂器、人聲特色等，這會直接影響 Suno 生成的音樂</small>
                 </div>
 
@@ -394,6 +398,29 @@
                 <div id="output-area" class="output-area">
                     <p class="placeholder-text">生成的歌詞會顯示在這裡...</p>
                 </div>
+
+                <!-- 迭代優化區塊 -->
+                <div id="iterate-section" class="iterate-section hidden">
+                    <div class="iterate-header">
+                        <h4>迭代優化</h4>
+                        <span class="iterate-count">第 <span id="iteration-num">1</span> 次優化</span>
+                    </div>
+                    <div class="iterate-input-wrapper">
+                        <textarea id="iterate-instruction" rows="2" placeholder="輸入優化指示，例如：副歌更有力、加入更多押韻、改成更浪漫的風格..."></textarea>
+                        <div class="iterate-quick-tags">
+                            <button type="button" class="iterate-tag" data-instruction="副歌更有記憶點">更有記憶點</button>
+                            <button type="button" class="iterate-tag" data-instruction="加強押韻效果">加強押韻</button>
+                            <button type="button" class="iterate-tag" data-instruction="情緒更強烈">情緒更強</button>
+                            <button type="button" class="iterate-tag" data-instruction="歌詞更簡潔">更簡潔</button>
+                            <button type="button" class="iterate-tag" data-instruction="加入更多 ad-libs">加 Ad-libs</button>
+                            <button type="button" class="iterate-tag" data-instruction="調整結構，讓高潮更晚出現">延後高潮</button>
+                        </div>
+                    </div>
+                    <button id="iterate-btn" class="btn-iterate">
+                        <span class="btn-text">優化歌詞</span>
+                        <span class="btn-loading" style="display:none;">優化中...</span>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -553,7 +580,7 @@
                         <button id="clear-editor" class="btn-secondary">清空</button>
                         <button id="copy-editor" class="btn-secondary">複製全部</button>
                     </div>
-                    <textarea id="lyrics-editor" class="lyrics-editor" placeholder="在這裡編輯你的歌詞...
+                    <textarea id="lyrics-editor" class="lyrics-editor" maxlength="5000" placeholder="在這裡編輯你的歌詞...
 
 範例格式：
 [Intro]
