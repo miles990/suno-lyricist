@@ -450,6 +450,50 @@ related_skills: [frontend-design, ux-design, javascript, suno-ai]
 
 ---
 
+## 第十階段改進 (2026-01-09)
+
+### 1. Style Prompt 自動生成功能
+
+**位置**: `app.js:4049-4158`, `index.html:386-392`, `styles.css:3420-3465`
+
+**功能**:
+- `generateAutoStylePrompt()`: 一鍵生成專業 Style Prompt
+- `initAutoStylePrompt()`: 初始化按鈕事件監聽
+- 智能整合所有表單選項
+
+**收集的元素**:
+1. Genre (風格) - 自動格式化為 Title Case
+2. Mood (情緒)
+3. Tempo (節奏) - 映射為描述性詞彙 (slow tempo, upbeat, high energy)
+4. BPM (精確節拍)
+5. Vocal Style (人聲風格) - 加入 "vocals" 後綴
+6. Vocal Techniques (人聲技巧) - 最多 3 個
+7. Instruments (樂器配器) - 最多 4 個
+8. Mix 標籤 - 格式化為 `[MIX: ...]`
+9. Mastering 標籤 - 格式化為 `[MASTERING: ...]`
+10. Ad-Libs - 格式化為 `ad-libs: (...)`
+
+**UI 元件**:
+- ✨「自動生成」按鈕（紫色漸變）
+- 位於 Style Prompt 標籤旁
+- 高亮閃爍動畫回饋
+
+**CSS 樣式**:
+- `.btn-auto-style`: 紫色漸變背景 + hover 縮放效果
+- `.highlight-flash`: 閃爍動畫 (紫色光暈)
+- `@keyframes highlightFlash`: 0.6s 漸變動畫
+
+### 第十階段統計
+
+| 檔案 | 第十階段新增行數 |
+|------|-----------------|
+| app.js | ~112 行 |
+| index.html | ~5 行 |
+| styles.css | ~47 行 |
+| 總計 | ~164 行 |
+
+---
+
 ## 總改進統計
 
 | 階段 | 新增功能 | 程式碼行數 |
@@ -463,4 +507,5 @@ related_skills: [frontend-design, ux-design, javascript, suno-ai]
 | 第七階段 | 版本歷史搜尋篩選 | ~373 行 |
 | 第八階段 | Suno 快速複製格式化 | ~128 行 |
 | 第九階段 | 鍵盤快捷鍵系統 | ~286 行 |
-| **總計** | **16+ 核心功能** | **~3,360 行** |
+| 第十階段 | Style Prompt 自動生成 | ~164 行 |
+| **總計** | **17+ 核心功能** | **~3,524 行** |
