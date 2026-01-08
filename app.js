@@ -5619,6 +5619,269 @@ function initShareLyrics() {
     loadSharedLyrics();
 }
 
+// ===== 第二十四階段：Pro Audio Lab (風格融合 + 音質優化) =====
+
+// 風格融合兼容性矩陣
+const FUSION_COMPATIBILITY = {
+    'pop': { compatible: ['synth-pop', 'indie-pop', 'r&b', 'electronic', 'rock', 'hip-hop'], experimental: ['jazz', 'classical', 'metal'] },
+    'rock': { compatible: ['indie-rock', 'punk', 'grunge', 'metal', 'pop', 'blues'], experimental: ['jazz', 'electronic', 'classical'] },
+    'hip-hop': { compatible: ['trap', 'drill', 'r&b', 'pop', 'electronic', 'jazz'], experimental: ['rock', 'country', 'classical'] },
+    'electronic': { compatible: ['pop', 'hip-hop', 'techno', 'house', 'ambient', 'synthwave'], experimental: ['jazz', 'classical', 'folk'] },
+    'jazz': { compatible: ['r&b', 'funk', 'soul', 'blues', 'classical'], experimental: ['hip-hop', 'electronic', 'rock'] },
+    'r&b': { compatible: ['pop', 'hip-hop', 'jazz', 'soul', 'funk'], experimental: ['rock', 'electronic', 'country'] },
+    'folk': { compatible: ['country', 'indie-folk', 'acoustic', 'americana'], experimental: ['electronic', 'hip-hop', 'metal'] },
+    'classical': { compatible: ['orchestral', 'cinematic', 'ambient'], experimental: ['electronic', 'metal', 'hip-hop'] }
+};
+
+// 融合風格名稱建議
+const FUSION_NAMES = {
+    'pop+electronic': 'Electropop / Dance-Pop',
+    'pop+hip-hop': 'Pop-Rap / Urban Pop',
+    'pop+rock': 'Pop-Rock',
+    'pop+r&b': 'Pop R&B / Contemporary R&B',
+    'rock+electronic': 'Electro-Rock / Industrial',
+    'rock+hip-hop': 'Rap-Rock / Nu-Metal',
+    'hip-hop+electronic': 'Electro-Hop / EDM-Trap',
+    'hip-hop+jazz': 'Jazz-Hop / Hip-Hop Jazz',
+    'electronic+classical': 'Neoclassical / Electronic Orchestral',
+    'jazz+electronic': 'Nu-Jazz / Electro-Jazz',
+    'folk+electronic': 'Folktronica / Organic Electronic'
+};
+
+// 計算融合兼容性
+function calculateFusionCompatibility(genre1, genre2) {
+    if (!genre1 || !genre2 || genre1 === genre2) return null;
+
+    const g1 = genre1.toLowerCase().replace(/-/g, '');
+    const g2 = genre2.toLowerCase().replace(/-/g, '');
+    const compat = FUSION_COMPATIBILITY[g1] || FUSION_COMPATIBILITY[g2];
+
+    if (!compat) return { score: 50, level: 'moderate', name: `${genre1} × ${genre2}` };
+
+    const isHighCompat = (compat.compatible || []).some(c => c.includes(g2) || g2.includes(c));
+    const isExperimental = (compat.experimental || []).some(c => c.includes(g2) || g2.includes(c));
+
+    const key = `${g1}+${g2}`;
+    const reverseKey = `${g2}+${g1}`;
+    const fusionName = FUSION_NAMES[key] || FUSION_NAMES[reverseKey] || `${genre1} × ${genre2} Fusion`;
+
+    if (isHighCompat) {
+        return { score: 85, level: 'high', name: fusionName, tip: '經典組合，成功率高！' };
+    } else if (isExperimental) {
+        return { score: 45, level: 'experimental', name: fusionName, tip: '實驗性組合，可能需要多次生成' };
+    }
+    return { score: 65, level: 'moderate', name: fusionName, tip: '有趣的組合，試試看！' };
+}
+
+// 更新融合分析顯示
+function updateFusionAnalysis() {
+    const genre = document.getElementById('lab-genre')?.value;
+    const subgenre = document.getElementById('lab-subgenre')?.value;
+    const fusionContent = document.getElementById('fusion-content');
+    const fusionBadge = document.getElementById('fusion-badge');
+
+    if (!fusionContent) return;
+
+    if (!genre) {
+        fusionContent.innerHTML = '<div class="fusion-placeholder">選擇主風格後，將顯示融合分析結果</div>';
+        if (fusionBadge) fusionBadge.textContent = '選擇風格後分析';
+        return;
+    }
+
+    // 單一風格分析
+    const genreInfo = GENRE_BPM_MAP[genre];
+    const mixPreset = GENRE_MIX_PRESETS[genre];
+
+    let html = `
+        <div class="fusion-result">
+            <div class="fusion-genre-info">
+                <span class="fusion-genre-name">${genre.replace(/-/g, ' ').toUpperCase()}</span>
+                ${genreInfo ? `<span class="fusion-bpm">建議 BPM: ${genreInfo}</span>` : ''}
+            </div>
+    `;
+
+    // 如果選擇了副風格，顯示融合分析
+    if (subgenre) {
+        const fusion = calculateFusionCompatibility(genre, subgenre);
+        if (fusion) {
+            const scoreClass = fusion.level === 'high' ? 'high' : fusion.level === 'experimental' ? 'low' : 'medium';
+            html += `
+                <div class="fusion-combination">
+                    <div class="fusion-name">${fusion.name}</div>
+                    <div class="fusion-score-bar">
+                        <div class="fusion-score-fill ${scoreClass}" style="width: ${fusion.score}%"></div>
+                    </div>
+                    <div class="fusion-score-text">
+                        <span>兼容性: ${fusion.score}%</span>
+                        ${fusion.tip ? `<span class="fusion-tip">${fusion.tip}</span>` : ''}
+                    </div>
+                </div>
+            `;
+            if (fusionBadge) {
+                fusionBadge.textContent = fusion.level === 'high' ? '高兼容' : fusion.level === 'experimental' ? '實驗性' : '可嘗試';
+                fusionBadge.className = `fusion-badge ${fusion.level}`;
+            }
+        }
+    } else {
+        if (fusionBadge) fusionBadge.textContent = '已分析';
+    }
+
+    // 推薦 Mix 設定
+    if (mixPreset) {
+        html += `
+            <div class="fusion-mix-suggestion">
+                <strong>推薦 Mix 設定:</strong>
+                <div class="fusion-mix-tags">
+                    ${mixPreset.map(m => `<span class="fusion-mix-tag">${m}</span>`).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    html += '</div>';
+    fusionContent.innerHTML = html;
+}
+
+// 選中的額外標籤
+let selectedProAudioTags = [];
+
+// 應用 Mix 預設
+function applyMixPreset(mixValue) {
+    const mixValueEl = document.getElementById('mix-value');
+    if (mixValueEl) {
+        mixValueEl.textContent = mixValue;
+        mixValueEl.title = mixValue;
+    }
+
+    // 加入到預覽
+    addToLabPreview(mixValue);
+    showToast('已套用 Mix 預設', 'success');
+}
+
+// 清除 Mix 預設
+function clearMixPreset() {
+    const mixValueEl = document.getElementById('mix-value');
+    if (mixValueEl) {
+        mixValueEl.textContent = '未選擇';
+    }
+    selectedProAudioTags = selectedProAudioTags.filter(t => !t.startsWith('[MIX:'));
+    updateLabPreviewWithExtras();
+    showToast('已清除 Mix 預設', 'info');
+}
+
+// 應用小技巧標籤
+function applyTip(tipValue) {
+    if (!selectedProAudioTags.includes(tipValue)) {
+        selectedProAudioTags.push(tipValue);
+    }
+    addToLabPreview(tipValue);
+    showToast('已加入標籤', 'success');
+}
+
+// 應用快速組合
+function applyQuickCombo(comboValue) {
+    selectedProAudioTags = []; // 清除之前的
+    const parts = comboValue.match(/\[.*?\]/g) || [];
+    parts.forEach(p => {
+        if (!selectedProAudioTags.includes(p)) {
+            selectedProAudioTags.push(p);
+        }
+    });
+    addToLabPreview(comboValue);
+    showToast('已套用優化組合', 'success');
+}
+
+// 加入到 Lab 預覽
+function addToLabPreview(tag) {
+    const prompt = getLabStylePrompt();
+    const previewContent = document.getElementById('lab-preview-content');
+
+    if (previewContent) {
+        const fullPrompt = prompt ? `${prompt}, ${tag}` : tag;
+        previewContent.innerHTML = `<span class="lab-prompt-text">${fullPrompt}</span>`;
+    }
+}
+
+// 更新帶有額外標籤的預覽
+function updateLabPreviewWithExtras() {
+    const prompt = getLabStylePrompt();
+    const previewContent = document.getElementById('lab-preview-content');
+
+    if (previewContent) {
+        const extras = selectedProAudioTags.join(' ');
+        const fullPrompt = prompt && extras ? `${prompt}, ${extras}` : (prompt || extras);
+
+        if (fullPrompt) {
+            previewContent.innerHTML = `<span class="lab-prompt-text">${fullPrompt}</span>`;
+        } else {
+            previewContent.innerHTML = '<span class="lab-placeholder">選擇元素後，Style Prompt 將在此顯示...</span>';
+        }
+    }
+}
+
+// 初始化 Pro Audio Lab
+function initProAudioLab() {
+    // Pro Audio 面板折疊
+    const proAudioToggle = document.getElementById('pro-audio-toggle');
+    const proAudioContent = document.getElementById('pro-audio-content');
+
+    if (proAudioToggle && proAudioContent) {
+        proAudioToggle.addEventListener('click', () => {
+            proAudioContent.classList.toggle('collapsed');
+            const icon = proAudioToggle.querySelector('.toggle-icon');
+            if (icon) {
+                icon.textContent = proAudioContent.classList.contains('collapsed') ? '▶' : '▼';
+            }
+        });
+    }
+
+    // Mix 預設按鈕
+    document.querySelectorAll('.mix-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // 移除其他選中狀態
+            document.querySelectorAll('.mix-preset-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyMixPreset(btn.dataset.mix);
+        });
+    });
+
+    // 清除 Mix 按鈕
+    const clearMixBtn = document.getElementById('clear-mix');
+    if (clearMixBtn) {
+        clearMixBtn.addEventListener('click', () => {
+            document.querySelectorAll('.mix-preset-btn').forEach(b => b.classList.remove('active'));
+            clearMixPreset();
+        });
+    }
+
+    // 套用提示按鈕
+    document.querySelectorAll('.btn-apply-tip').forEach(btn => {
+        btn.addEventListener('click', () => {
+            applyTip(btn.dataset.tip);
+        });
+    });
+
+    // 快速組合按鈕
+    document.querySelectorAll('.combo-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.combo-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyQuickCombo(btn.dataset.combo);
+        });
+    });
+
+    // 監聽 Lab 選擇變化來更新融合分析
+    const labGenre = document.getElementById('lab-genre');
+    const labSubgenre = document.getElementById('lab-subgenre');
+
+    if (labGenre) {
+        labGenre.addEventListener('change', updateFusionAnalysis);
+    }
+    if (labSubgenre) {
+        labSubgenre.addEventListener('change', updateFusionAnalysis);
+    }
+}
+
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
@@ -5633,3 +5896,4 @@ initOnboarding();
 initQualityScore();
 initStyleCombo();
 initShareLyrics();
+initProAudioLab();

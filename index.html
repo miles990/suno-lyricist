@@ -1711,6 +1711,154 @@
                     </div>
                 </div>
 
+                <!-- 風格融合分析 -->
+                <div class="fusion-analysis" id="fusion-analysis">
+                    <div class="fusion-header">
+                        <h3>🔬 風格融合分析</h3>
+                        <span class="fusion-badge" id="fusion-badge">選擇風格後分析</span>
+                    </div>
+                    <div class="fusion-content" id="fusion-content">
+                        <div class="fusion-placeholder">
+                            選擇主風格和副風格後，將顯示融合分析結果
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pro Audio 優化面板 -->
+                <div class="pro-audio-panel">
+                    <div class="pro-audio-header" id="pro-audio-toggle">
+                        <h3>🎛️ Pro Audio 優化</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="pro-audio-content" id="pro-audio-content">
+                        <!-- Mix 預設 -->
+                        <div class="audio-section">
+                            <h4>🎚️ Mix 預設 (讓音質變好)</h4>
+                            <div class="mix-presets">
+                                <button class="mix-preset-btn" data-mix="[MIX: PRISTINE POLISHED SOUND; RADIO-READY CLARITY; WIDE STEREO FIELD]" title="適合流行、舞曲">
+                                    <span class="preset-icon">✨</span>
+                                    <span class="preset-name">清晰明亮</span>
+                                </button>
+                                <button class="mix-preset-btn" data-mix="[MIX: ANALOG WARMTH THROUGHOUT; VINTAGE TAPE SATURATION; NATURAL DYNAMIC RANGE]" title="適合R&B、爵士、民謠">
+                                    <span class="preset-icon">🌅</span>
+                                    <span class="preset-name">溫暖復古</span>
+                                </button>
+                                <button class="mix-preset-btn" data-mix="[MIX: BASS-FORWARD; DEEP SUB PRESENCE; HEAVY SIDECHAIN TO KICK; PUMPING COMPRESSION]" title="適合 EDM、Trap、Hip-Hop">
+                                    <span class="preset-icon">💥</span>
+                                    <span class="preset-name">低音轟炸</span>
+                                </button>
+                                <button class="mix-preset-btn" data-mix="[MIX: VOCALS CLEAR AND UPFRONT; MINIMAL REVERB; TIGHT PUNCHY DRUMS]" title="讓人聲更清晰">
+                                    <span class="preset-icon">🎤</span>
+                                    <span class="preset-name">人聲突出</span>
+                                </button>
+                                <button class="mix-preset-btn" data-mix="[MIX: LO-FI GRITTY TEXTURE; DUSTY VINTAGE FEEL; HIGH-FREQUENCY ROLLOFF; VINYL CRACKLE]" title="適合 Lo-Fi、Chill">
+                                    <span class="preset-icon">📻</span>
+                                    <span class="preset-name">Lo-Fi 質感</span>
+                                </button>
+                                <button class="mix-preset-btn" data-mix="[MIX: BIG HALL REVERB; CATHEDRAL SPACE; AMBIENT REVERB TAILS; WIDE STEREO FIELD]" title="適合氛圍音樂、史詩">
+                                    <span class="preset-icon">🏛️</span>
+                                    <span class="preset-name">空間殿堂</span>
+                                </button>
+                            </div>
+                            <div class="selected-mix" id="selected-mix">
+                                <span class="mix-label">已選 Mix:</span>
+                                <span class="mix-value" id="mix-value">未選擇</span>
+                                <button class="btn-clear-mix" id="clear-mix" title="清除">✕</button>
+                            </div>
+                        </div>
+
+                        <!-- 人聲清晰度 -->
+                        <div class="audio-section">
+                            <h4>🎤 人聲清晰度技巧</h4>
+                            <div class="vocal-tips">
+                                <div class="vocal-tip-card">
+                                    <span class="tip-icon">1</span>
+                                    <div class="tip-content">
+                                        <strong>使用 [VOCALS: CLEAR AND UPFRONT]</strong>
+                                        <p>讓人聲在混音中突出，不被樂器蓋過</p>
+                                    </div>
+                                    <button class="btn-apply-tip" data-tip="[VOCALS: CLEAR AND UPFRONT]">套用</button>
+                                </div>
+                                <div class="vocal-tip-card">
+                                    <span class="tip-icon">2</span>
+                                    <div class="tip-content">
+                                        <strong>加入 [MINIMAL REVERB]</strong>
+                                        <p>減少混響讓歌詞更清楚，適合快歌</p>
+                                    </div>
+                                    <button class="btn-apply-tip" data-tip="[MINIMAL REVERB]">套用</button>
+                                </div>
+                                <div class="vocal-tip-card">
+                                    <span class="tip-icon">3</span>
+                                    <div class="tip-content">
+                                        <strong>指定發音方式 [CLEAR DICTION]</strong>
+                                        <p>強調咬字清晰，每個字都唱得準確</p>
+                                    </div>
+                                    <button class="btn-apply-tip" data-tip="[CLEAR DICTION]">套用</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 歌詞發音指南 -->
+                        <div class="audio-section">
+                            <h4>📝 歌詞發音指南 (讓字唱對)</h4>
+                            <div class="pronunciation-guide">
+                                <div class="guide-tip">
+                                    <span class="guide-icon">💡</span>
+                                    <div class="guide-content">
+                                        <strong>使用簡單的詞彙</strong>
+                                        <p>避免生僻字和複雜的多音節詞，Suno 對常見詞彙發音更準確</p>
+                                    </div>
+                                </div>
+                                <div class="guide-tip">
+                                    <span class="guide-icon">💡</span>
+                                    <div class="guide-content">
+                                        <strong>歌詞與節奏配合</strong>
+                                        <p>每個音節對應一個音符，避免一個音符塞太多字</p>
+                                    </div>
+                                </div>
+                                <div class="guide-tip">
+                                    <span class="guide-icon">💡</span>
+                                    <div class="guide-content">
+                                        <strong>使用 [SLOW TEMPO] 練習</strong>
+                                        <p>慢速 BPM (60-80) 時發音更清楚，快歌容易糊</p>
+                                    </div>
+                                </div>
+                                <div class="guide-tip">
+                                    <span class="guide-icon">💡</span>
+                                    <div class="guide-content">
+                                        <strong>英文歌詞發音更穩定</strong>
+                                        <p>Suno 對英文訓練較多，中文可能需要多次生成</p>
+                                    </div>
+                                </div>
+                                <div class="guide-tip">
+                                    <span class="guide-icon">⚡</span>
+                                    <div class="guide-content">
+                                        <strong>發音強調標籤</strong>
+                                        <p>使用 <code>[ENUNCIATE CLEARLY]</code> 或 <code>[PRECISE PRONUNCIATION]</code></p>
+                                    </div>
+                                    <button class="btn-apply-tip" data-tip="[ENUNCIATE CLEARLY]">套用</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 快速優化組合 -->
+                        <div class="audio-section">
+                            <h4>⚡ 一鍵優化組合</h4>
+                            <div class="quick-combos">
+                                <button class="combo-btn" data-combo="[MIX: VOCALS CLEAR AND UPFRONT; PRISTINE POLISHED SOUND] [VOCALS: CLEAR DICTION; ENUNCIATE CLEARLY]" title="最佳人聲清晰度">
+                                    🎤 人聲清晰組合
+                                </button>
+                                <button class="combo-btn" data-combo="[MIX: RADIO-READY CLARITY; WIDE STEREO FIELD; BRIGHT CRISP HIGHS] [VOCALS: POWERFUL BELTING]" title="專業發行品質">
+                                    💿 專業品質組合
+                                </button>
+                                <button class="combo-btn" data-combo="[MIX: WARM INTIMATE FEEL; NATURAL ROOM AMBIENCE] [VOCALS: INTIMATE CLOSE SOUND]" title="溫暖親密感">
+                                    🌙 親密質感組合
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 實驗歷史 -->
                 <div class="lab-history">
                     <div class="lab-history-header">
