@@ -717,7 +717,8 @@ related_skills: [frontend-design, ux-design, javascript, suno-ai]
 | 第十六階段 | 返回頂部按鈕 | ~113 行 |
 | 第十七階段 | 表單完成度進度條 | ~196 行 |
 | 第十八階段 | AI 生成載入動畫 | ~75 行 |
-| **總計** | **25+ 核心功能** | **~4,625 行** |
+| 第十九階段 | 首次使用導覽系統 | ~230 行 |
+| **總計** | **26+ 核心功能** | **~4,855 行** |
 
 ---
 
@@ -862,3 +863,48 @@ related_skills: [frontend-design, ux-design, javascript, suno-ai]
 | index.html | ~4 行 |
 | styles.css | ~28 行 |
 | 總計 | ~75 行 |
+
+---
+
+## 第十九階段改進 (2026-01-09)
+
+### 1. 首次使用導覽系統 (Onboarding Tour)
+
+**位置**: `app.js:4878-4998`, `index.html:15-28`, `styles.css:4043-4161`
+
+**功能**:
+- `ONBOARDING_STEPS`: 5 步驟導覽配置
+- `showOnboarding()`: 首次訪問時顯示導覽
+- `updateOnboardingStep()`: 更新當前步驟內容
+- `nextOnboardingStep()`: 前進到下一步
+- `closeOnboarding()`: 關閉並記錄已看過
+- `initOnboarding()`: 初始化事件綁定
+
+**導覽步驟**:
+1. 歡迎頁面 - 介紹 SunoLyricist
+2. 歌曲主題 - 輸入創作主題 + 靈感功能
+3. 音樂風格 - 風格選擇 + 智能推薦
+4. 生成歌詞 - 生成按鈕說明
+5. 開始創作 - 快捷鍵和主題切換提示
+
+**技術特點**:
+- LocalStorage 記錄已看過狀態
+- 目標元素高亮（紫色光暈 box-shadow）
+- 自動滾動到目標元素 (`scrollIntoView`)
+- 延遲 500ms 顯示（等待頁面載入）
+
+**UI 設計**:
+- 暗色遮罩 (70% 透明度)
+- 漸層步驟標籤
+- slideUp 動畫進場
+- 圓角卡片 (16px)
+- 跳過/下一步按鈕
+
+### 第十九階段統計
+
+| 檔案 | 第十九階段新增行數 |
+|------|-----------------|
+| app.js | ~110 行 |
+| index.html | ~14 行 |
+| styles.css | ~120 行 |
+| 總計 | ~230 行 |
