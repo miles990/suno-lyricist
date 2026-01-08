@@ -5362,6 +5362,263 @@ function initStyleCombo() {
 window.loadStyleCombo = loadStyleCombo;
 window.deleteStyleCombo = deleteStyleCombo;
 
+// ===== 第二十三階段：歌詞分享系統 =====
+// 壓縮字串 (LZString 簡易版 Base64 編碼)
+function compressShareData(data) {
+    try {
+        const jsonStr = JSON.stringify(data);
+        // 使用 Base64 編碼 (支援中文)
+        const encoded = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g,
+            (match, p1) => String.fromCharCode('0x' + p1)));
+        return encoded;
+    } catch (e) {
+        console.error('壓縮分享資料失敗:', e);
+        return null;
+    }
+}
+
+// 解壓縮字串
+function decompressShareData(encoded) {
+    try {
+        const jsonStr = decodeURIComponent(atob(encoded).split('').map(c =>
+            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        return JSON.parse(jsonStr);
+    } catch (e) {
+        console.error('解壓縮分享資料失敗:', e);
+        return null;
+    }
+}
+
+// 生成分享資料
+function generateShareData() {
+    const lyricsOutput = document.getElementById('lyrics-output');
+    const stylePromptInput = document.getElementById('style-prompt');
+    const includeStyle = document.getElementById('share-include-style')?.checked ?? true;
+    const includeSettings = document.getElementById('share-include-settings')?.checked ?? true;
+
+    const data = {
+        v: 1, // 版本號
+        l: lyricsOutput?.innerText || '', // lyrics
+        t: document.getElementById('song-theme')?.value || '' // theme
+    };
+
+    if (includeStyle && stylePromptInput?.value) {
+        data.s = stylePromptInput.value; // style prompt
+    }
+
+    if (includeSettings) {
+        const genre = document.getElementById('song-genre')?.value;
+        const mood = document.getElementById('song-mood')?.value;
+        const vocal = document.getElementById('vocal-style')?.value;
+        const bpm = document.getElementById('song-bpm')?.value;
+
+        if (genre) data.g = genre;
+        if (mood) data.m = mood;
+        if (vocal) data.vo = vocal;
+        if (bpm) data.b = bpm;
+    }
+
+    return data;
+}
+
+// 生成分享 URL
+function generateShareUrl() {
+    const data = generateShareData();
+    if (!data.l || data.l.trim() === '' || data.l === '歌詞生成中...' || data.l.includes('輸入歌曲主題')) {
+        showToast('請先生成歌詞再分享', 'error');
+        return null;
+    }
+
+    const compressed = compressShareData(data);
+    if (!compressed) {
+        showToast('生成分享連結失敗', 'error');
+        return null;
+    }
+
+    const baseUrl = window.location.origin + window.location.pathname;
+    return `${baseUrl}?share=${compressed}`;
+}
+
+// 更新分享 URL 預覽
+function updateShareUrlPreview() {
+    const url = generateShareUrl();
+    const urlInput = document.getElementById('share-url-input');
+    const sizeSpan = document.getElementById('share-url-size');
+
+    if (url && urlInput) {
+        urlInput.value = url;
+        const sizeKB = (new Blob([url]).size / 1024).toFixed(2);
+        if (sizeSpan) {
+            sizeSpan.textContent = `${sizeKB} KB`;
+            // 超過 2KB 顯示警告顏色
+            sizeSpan.style.color = parseFloat(sizeKB) > 2 ? '#f59e0b' : 'var(--primary)';
+        }
+    }
+}
+
+// 顯示分享 Modal
+function showShareModal() {
+    const modal = document.getElementById('share-modal');
+    if (modal) {
+        updateShareUrlPreview();
+        modal.classList.remove('hidden');
+    }
+}
+
+// 關閉分享 Modal
+function closeShareModal() {
+    const modal = document.getElementById('share-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+// 複製分享 URL
+function copyShareUrl() {
+    const urlInput = document.getElementById('share-url-input');
+    if (urlInput && urlInput.value) {
+        navigator.clipboard.writeText(urlInput.value).then(() => {
+            showToast('分享連結已複製！', 'success');
+            closeShareModal();
+        }).catch(() => {
+            // Fallback
+            urlInput.select();
+            document.execCommand('copy');
+            showToast('分享連結已複製！', 'success');
+            closeShareModal();
+        });
+    }
+}
+
+// 載入分享的歌詞
+function loadSharedLyrics() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const shareData = urlParams.get('share');
+
+    if (!shareData) return false;
+
+    const data = decompressShareData(shareData);
+    if (!data) {
+        showToast('分享連結無效或已過期', 'error');
+        return false;
+    }
+
+    // 載入歌詞
+    const lyricsOutput = document.getElementById('lyrics-output');
+    if (lyricsOutput && data.l) {
+        lyricsOutput.innerHTML = data.l.replace(/\n/g, '<br>');
+        lyricsOutput.classList.remove('placeholder');
+
+        // 更新全域變數
+        currentLyrics = data.l;
+
+        // 啟用按鈕
+        const copyBtn = document.getElementById('copy-btn');
+        const copySunoBtn = document.getElementById('copy-suno-btn');
+        const downloadBtn = document.getElementById('download-txt-btn');
+        const shareBtn = document.getElementById('share-lyrics-btn');
+        const editBtn = document.getElementById('edit-btn');
+        const analyzeBtn = document.getElementById('analyze-lyrics-btn');
+
+        if (copyBtn) copyBtn.disabled = false;
+        if (copySunoBtn) copySunoBtn.disabled = false;
+        if (downloadBtn) downloadBtn.disabled = false;
+        if (shareBtn) shareBtn.disabled = false;
+        if (editBtn) editBtn.disabled = false;
+        if (analyzeBtn) analyzeBtn.disabled = false;
+    }
+
+    // 載入主題
+    const themeInput = document.getElementById('song-theme');
+    if (themeInput && data.t) {
+        themeInput.value = data.t;
+    }
+
+    // 載入 Style Prompt
+    const stylePromptInput = document.getElementById('style-prompt');
+    if (stylePromptInput && data.s) {
+        stylePromptInput.value = data.s;
+        currentStylePrompt = data.s;
+    }
+
+    // 載入其他設定
+    if (data.g) {
+        const genreSelect = document.getElementById('song-genre');
+        if (genreSelect) genreSelect.value = data.g;
+    }
+    if (data.m) {
+        const moodSelect = document.getElementById('song-mood');
+        if (moodSelect) moodSelect.value = data.m;
+    }
+    if (data.vo) {
+        const vocalSelect = document.getElementById('vocal-style');
+        if (vocalSelect) vocalSelect.value = data.vo;
+    }
+    if (data.b) {
+        const bpmInput = document.getElementById('song-bpm');
+        if (bpmInput) bpmInput.value = data.b;
+    }
+
+    // 顯示成功訊息
+    showToast('🎵 已載入分享的歌詞！', 'success');
+
+    // 清除 URL 參數（不刷新頁面）
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+
+    // 更新表單進度
+    if (typeof updateFormProgress === 'function') {
+        updateFormProgress();
+    }
+
+    return true;
+}
+
+// 初始化分享系統
+function initShareLyrics() {
+    const shareBtn = document.getElementById('share-lyrics-btn');
+    const closeModalBtn = document.getElementById('close-share-modal');
+    const copyUrlBtn = document.getElementById('copy-share-url');
+    const includeStyleCheckbox = document.getElementById('share-include-style');
+    const includeSettingsCheckbox = document.getElementById('share-include-settings');
+    const modal = document.getElementById('share-modal');
+
+    // 分享按鈕點擊
+    if (shareBtn) {
+        shareBtn.addEventListener('click', showShareModal);
+    }
+
+    // 關閉 Modal
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeShareModal);
+    }
+
+    // 點擊遮罩關閉
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeShareModal();
+            }
+        });
+    }
+
+    // 複製 URL
+    if (copyUrlBtn) {
+        copyUrlBtn.addEventListener('click', copyShareUrl);
+    }
+
+    // 選項變更時更新預覽
+    if (includeStyleCheckbox) {
+        includeStyleCheckbox.addEventListener('change', updateShareUrlPreview);
+    }
+    if (includeSettingsCheckbox) {
+        includeSettingsCheckbox.addEventListener('change', updateShareUrlPreview);
+    }
+
+    // 頁面載入時檢查分享連結
+    loadSharedLyrics();
+}
+
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
@@ -5375,3 +5632,4 @@ initFormProgress();
 initOnboarding();
 initQualityScore();
 initStyleCombo();
+initShareLyrics();

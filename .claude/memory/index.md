@@ -7,7 +7,7 @@
 |-------|-------|
 | Created | 2026-01-08 |
 | Last Updated | 2026-01-09 |
-| Entries | 5 |
+| Entries | 6 |
 
 ## Learnings
 <!-- LEARNINGS_START -->
@@ -19,6 +19,7 @@
 
 ## Discoveries
 <!-- DISCOVERIES_START -->
+- [2026-01-09] [simplicity-insight](discoveries/2026-01-09-simplicity-insight.md) - **涌現洞察** - 功能豐富 ≠ 實用價值，Less is More
 - [2026-01-08] [project-analysis](discoveries/2026-01-08-project-analysis.md) - 專案探索發現：涌現機會、改進方向、代碼品質分析
 <!-- DISCOVERIES_END -->
 

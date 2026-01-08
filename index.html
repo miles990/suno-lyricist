@@ -1273,6 +1273,7 @@
                         <button id="copy-btn" class="btn-secondary" disabled>複製歌詞</button>
                         <button id="copy-suno-btn" class="btn-suno-copy" disabled title="複製歌詞 + Style Prompt，格式化為 Suno 可用格式">🎵 複製到 Suno</button>
                         <button id="download-txt-btn" class="btn-download-txt" disabled title="下載歌詞為 TXT 檔案">📥 下載 TXT</button>
+                        <button id="share-lyrics-btn" class="btn-share-lyrics" disabled title="產生分享連結">🔗 分享</button>
                         <button id="edit-btn" class="btn-secondary" disabled>編輯</button>
                     </div>
                 </div>
@@ -1447,6 +1448,37 @@
                         <span class="btn-text">優化歌詞</span>
                         <span class="btn-loading" style="display:none;">優化中...</span>
                     </button>
+                </div>
+
+                <!-- 分享連結 Modal -->
+                <div id="share-modal" class="share-modal hidden">
+                    <div class="share-modal-content">
+                        <div class="share-modal-header">
+                            <h4>🔗 分享歌詞</h4>
+                            <button id="close-share-modal" class="btn-close-analysis">✕</button>
+                        </div>
+                        <div class="share-modal-body">
+                            <p class="share-description">複製以下連結分享您的創作，對方可以直接查看歌詞和風格設定。</p>
+                            <div class="share-url-container">
+                                <input type="text" id="share-url-input" class="share-url-input" readonly>
+                                <button id="copy-share-url" class="btn-copy-share-url">複製</button>
+                            </div>
+                            <div class="share-options">
+                                <label class="share-option">
+                                    <input type="checkbox" id="share-include-style" checked>
+                                    <span>包含 Style Prompt</span>
+                                </label>
+                                <label class="share-option">
+                                    <input type="checkbox" id="share-include-settings" checked>
+                                    <span>包含風格設定</span>
+                                </label>
+                            </div>
+                            <div class="share-preview">
+                                <span class="share-preview-label">連結預覽大小：</span>
+                                <span id="share-url-size" class="share-url-size">0 KB</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
