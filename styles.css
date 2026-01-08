@@ -352,11 +352,144 @@ small {
     display: none;
 }
 
-/* ===== Structure Options ===== */
-.structure-options {
+/* Auto mode custom preference */
+#auto-mode-custom-pref {
+    animation: fadeIn 0.3s ease;
+}
+
+#auto-mode-custom-pref.hidden {
+    display: none;
+}
+
+#auto-mode-custom-pref label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.optional-tag {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: normal;
+}
+
+#auto-mode-custom-pref textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+#auto-mode-custom-pref small {
+    color: var(--primary);
+}
+
+/* ===== Structure Editor ===== */
+.structure-templates {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.structure-templates .template-btn {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
+}
+
+.structure-templates .template-btn:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.structure-editor {
+    background: var(--bg-input);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+}
+
+.structure-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-height: 40px;
+    padding: 0.5rem;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 0.75rem;
+}
+
+.structure-list:empty::before {
+    content: "點擊模板或新增段落來設定結構";
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.structure-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.8rem;
+    cursor: grab;
+    transition: all 0.2s;
+}
+
+.structure-item:hover {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.structure-item.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.structure-item .section-name {
+    color: var(--text-primary);
+}
+
+.structure-item .section-number {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+}
+
+.structure-item .remove-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0;
+    margin-left: 0.2rem;
+    font-size: 0.9rem;
+    line-height: 1;
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+.structure-item .remove-btn:hover {
+    color: var(--danger);
+    opacity: 1;
+}
+
+.structure-add-section {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.structure-add-section select {
+    flex: 1;
+    font-size: 0.85rem;
+    padding: 0.4rem;
+}
+
+.structure-hint {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.75rem;
 }
 
 .checkbox-label {
@@ -1035,6 +1168,106 @@ footer {
     border-radius: 12px;
 }
 
+/* Iterate Target Selector */
+.iterate-target-selector {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.iterate-target-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.iterate-target-option:hover {
+    border-color: var(--primary);
+}
+
+.iterate-target-option.active {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.iterate-target-option input[type="radio"] {
+    display: none;
+}
+
+.target-icon {
+    font-size: 1rem;
+}
+
+.target-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.iterate-target-option.active .target-label {
+    color: var(--primary);
+}
+
+/* ===== Singer Config ===== */
+.singer-config {
+    background: var(--bg-input);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.singer-config .form-group.compact {
+    margin-bottom: 0.5rem;
+}
+
+.singer-config .form-group.compact label {
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+}
+
+.singer-config .form-group.compact select {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+}
+
+/* ===== Instrument Config ===== */
+.instrument-config {
+    background: var(--bg-input);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.instrument-category {
+    margin-bottom: 0.75rem;
+}
+
+.instrument-category:last-child {
+    margin-bottom: 0;
+}
+
+.category-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+}
+
+/* Vocal tech and instrument tags */
+.vocal-tech-tag.active,
+.instrument-tag.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
 .iterate-input-wrapper {
     margin-bottom: 0.75rem;
 }
@@ -1132,5 +1365,289 @@ footer {
     to {
         transform: translateX(0);
         opacity: 1;
+    }
+}
+
+/* ===== Version History Panel ===== */
+header {
+    position: relative;
+}
+
+.btn-history {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-history:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.history-icon {
+    font-size: 1.1rem;
+}
+
+.history-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.history-overlay.active {
+    display: block;
+}
+
+.history-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    max-width: 90vw;
+    height: 100vh;
+    background: var(--bg-card);
+    border-left: 1px solid var(--border);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.history-panel.active {
+    right: 0;
+}
+
+.history-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-dark);
+}
+
+.history-panel-header h3 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.history-close-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.history-close-btn:hover {
+    color: var(--text-primary);
+}
+
+.history-panel-actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-input);
+}
+
+.btn-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+}
+
+.btn-file {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+.version-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.empty-history {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+    font-style: italic;
+}
+
+.version-item {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.version-item:hover {
+    border-color: var(--primary);
+}
+
+.version-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.version-item-header:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.version-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.version-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.version-meta {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.version-iteration {
+    background: var(--primary);
+    color: white;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.version-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.version-btn {
+    padding: 0.3rem 0.5rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.version-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.version-btn.restore-btn:hover {
+    background: var(--success);
+    border-color: var(--success);
+}
+
+.version-btn.delete-btn:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+}
+
+.version-preview {
+    display: none;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.version-preview.expanded {
+    display: block;
+}
+
+.version-preview-content {
+    white-space: pre-wrap;
+    font-family: monospace;
+    line-height: 1.5;
+}
+
+.version-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.version-tag {
+    padding: 0.15rem 0.4rem;
+    background: var(--bg-dark);
+    border-radius: 4px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.version-note {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--border);
+    font-style: italic;
+    color: var(--warning);
+}
+
+/* Animation for panel */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 500px) {
+    .btn-history .history-text {
+        display: none;
+    }
+
+    .btn-history {
+        padding: 0.5rem;
+    }
+
+    .history-panel {
+        width: 100%;
+        max-width: 100%;
+        right: -100%;
     }
 }

@@ -3,15 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suno 歌詞產生器</title>
+    <title>Suno AI 歌詞創作助手</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Suno 歌詞產生器</h1>
-            <p class="subtitle">AI 生成 + 模板編輯，完美支援 Suno 格式</p>
+            <h1>Suno AI 歌詞創作助手</h1>
+            <p class="subtitle">AI 智慧生成 + 模板編輯，完美支援 Suno 格式</p>
+            <button id="history-btn" class="btn-history" title="版本歷史">
+                <span class="history-icon">📜</span>
+                <span class="history-text">版本歷史</span>
+            </button>
         </header>
+
+        <!-- 版本歷史面板 -->
+        <div id="history-panel" class="history-panel">
+            <div class="history-panel-header">
+                <h3>版本歷史</h3>
+                <button id="history-close" class="history-close-btn">&times;</button>
+            </div>
+            <div class="history-panel-actions">
+                <button id="history-export-all" class="btn-secondary btn-small">匯出全部</button>
+                <label class="btn-secondary btn-small btn-file">
+                    匯入
+                    <input type="file" id="history-file-input" accept=".json" hidden>
+                </label>
+            </div>
+            <div id="version-list" class="version-list">
+                <p class="empty-history">尚無版本記錄</p>
+            </div>
+        </div>
+        <div id="history-overlay" class="history-overlay"></div>
 
         <div class="tabs">
             <button class="tab active" data-tab="ai-generate">AI 生成</button>
@@ -95,6 +118,16 @@
                     </div>
                 </div>
 
+                <!-- AI 全自動模式的自訂偏好描述 -->
+                <div id="auto-mode-custom-pref" class="form-group hidden">
+                    <label for="custom-preference">
+                        <span>自訂偏好描述</span>
+                        <span class="optional-tag">（選填）</span>
+                    </label>
+                    <textarea id="custom-preference" rows="3" placeholder="例：我希望這首歌有 80 年代復古的感覺、副歌要有很強的記憶點、想要加入薩克斯風 solo..."></textarea>
+                    <small>輸入任何你對這首歌的想法或期望，AI 會在創作時參考</small>
+                </div>
+
                 <div id="manual-settings">
                 <div class="form-row">
                     <div class="form-group">
@@ -154,27 +187,37 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="song-structure">歌曲結構</label>
-                    <div class="structure-options">
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="structure" value="intro" checked> Intro
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="structure" value="verse" checked> Verse
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="structure" value="pre-chorus"> Pre-Chorus
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="structure" value="chorus" checked> Chorus
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="structure" value="bridge"> Bridge
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="structure" value="outro" checked> Outro
-                        </label>
+                    <label>歌曲結構</label>
+                    <!-- 結構模板快速選擇 -->
+                    <div class="structure-templates">
+                        <button type="button" class="template-btn structure-template" data-template="pop-standard" title="流行標準結構">流行曲</button>
+                        <button type="button" class="template-btn structure-template" data-template="verse-chorus" title="簡單段落副歌">簡單</button>
+                        <button type="button" class="template-btn structure-template" data-template="ballad" title="抒情曲結構">抒情</button>
+                        <button type="button" class="template-btn structure-template" data-template="edm" title="電子舞曲結構">電子</button>
+                        <button type="button" class="template-btn structure-template" data-template="hip-hop" title="嘻哈結構">嘻哈</button>
                     </div>
+                    <!-- 結構編輯器 -->
+                    <div class="structure-editor">
+                        <div id="structure-list" class="structure-list">
+                            <!-- 動態生成的結構項目 -->
+                        </div>
+                        <div class="structure-add-section">
+                            <select id="add-section-type">
+                                <option value="intro">Intro 前奏</option>
+                                <option value="verse">Verse 主歌</option>
+                                <option value="pre-chorus">Pre-Chorus 導歌</option>
+                                <option value="chorus">Chorus 副歌</option>
+                                <option value="bridge">Bridge 橋段</option>
+                                <option value="outro">Outro 尾奏</option>
+                                <option value="instrumental">Instrumental 純音樂</option>
+                                <option value="drop">Drop 節拍落點</option>
+                                <option value="hook">Hook 記憶點</option>
+                                <option value="break">Break 休息段</option>
+                            </select>
+                            <button type="button" id="add-section-btn" class="btn-secondary btn-small">+ 新增段落</button>
+                        </div>
+                    </div>
+                    <small class="structure-hint">點擊拖動排序 • 點擊 × 移除段落 • 使用模板快速設定</small>
                 </div>
 
                 <div class="form-group">
@@ -220,21 +263,116 @@
                     </div>
                 </div>
 
+                <!-- 歌手/聲線配置 -->
+                <div class="form-group">
+                    <label>歌手聲線特色</label>
+                    <div class="singer-config">
+                        <div class="form-row">
+                            <div class="form-group compact">
+                                <label for="vocal-tone">音色</label>
+                                <select id="vocal-tone">
+                                    <option value="">選擇音色...</option>
+                                    <option value="smooth">Smooth 滑順</option>
+                                    <option value="raspy">Raspy 沙啞</option>
+                                    <option value="breathy">Breathy 氣聲</option>
+                                    <option value="crisp">Crisp 清脆</option>
+                                    <option value="warm">Warm 溫暖</option>
+                                    <option value="bright">Bright 明亮</option>
+                                    <option value="dark">Dark 低沉</option>
+                                    <option value="nasal">Nasal 鼻音</option>
+                                </select>
+                            </div>
+                            <div class="form-group compact">
+                                <label for="vocal-register">音域</label>
+                                <select id="vocal-register">
+                                    <option value="">選擇音域...</option>
+                                    <option value="soprano">Soprano 女高音</option>
+                                    <option value="alto">Alto 女低音</option>
+                                    <option value="tenor">Tenor 男高音</option>
+                                    <option value="baritone">Baritone 男中音</option>
+                                    <option value="bass">Bass 男低音</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>演唱技巧</label>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag vocal-tech-tag" data-style="vibrato">Vibrato 顫音</button>
+                                <button type="button" class="style-tag vocal-tech-tag" data-style="falsetto">Falsetto 假聲</button>
+                                <button type="button" class="style-tag vocal-tech-tag" data-style="belting">Belting 飽滿高音</button>
+                                <button type="button" class="style-tag vocal-tech-tag" data-style="melisma">Melisma 轉音</button>
+                                <button type="button" class="style-tag vocal-tech-tag" data-style="vocal fry">Vocal Fry 氣泡音</button>
+                                <button type="button" class="style-tag vocal-tech-tag" data-style="ad-libs">Ad-libs 即興</button>
+                                <button type="button" class="style-tag vocal-tech-tag" data-style="harmonies">Harmonies 和聲</button>
+                                <button type="button" class="style-tag vocal-tech-tag" data-style="runs">Runs 花式轉音</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 樂器配器配置 -->
+                <div class="form-group">
+                    <label>樂器配器</label>
+                    <div class="instrument-config">
+                        <div class="instrument-category">
+                            <span class="category-label">弦樂</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag instrument-tag" data-style="acoustic guitar">Acoustic Guitar</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="electric guitar">Electric Guitar</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="bass guitar">Bass Guitar</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="violin">Violin</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="cello">Cello</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="strings ensemble">Strings</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="ukulele">Ukulele</button>
+                            </div>
+                        </div>
+                        <div class="instrument-category">
+                            <span class="category-label">鍵盤</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag instrument-tag" data-style="piano">Piano</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="electric piano">Electric Piano</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="organ">Organ</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="synth">Synth</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="synth pads">Synth Pads</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="synth lead">Synth Lead</button>
+                            </div>
+                        </div>
+                        <div class="instrument-category">
+                            <span class="category-label">節奏</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag instrument-tag" data-style="drums">Drums</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="808 drums">808</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="percussion">Percussion</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="hi-hat">Hi-hat</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="claps">Claps</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="drum machine">Drum Machine</button>
+                            </div>
+                        </div>
+                        <div class="instrument-category">
+                            <span class="category-label">其他</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag instrument-tag" data-style="brass section">Brass</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="saxophone">Saxophone</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="trumpet">Trumpet</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="flute">Flute</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="harmonica">Harmonica</button>
+                                <button type="button" class="style-tag instrument-tag" data-style="orchestra">Orchestra</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label>快速風格標籤</label>
                     <div class="style-tags">
-                        <button type="button" class="style-tag" data-style="acoustic">Acoustic</button>
-                        <button type="button" class="style-tag" data-style="electric guitar">Electric Guitar</button>
-                        <button type="button" class="style-tag" data-style="piano">Piano</button>
-                        <button type="button" class="style-tag" data-style="synth">Synth</button>
-                        <button type="button" class="style-tag" data-style="bass heavy">Bass Heavy</button>
-                        <button type="button" class="style-tag" data-style="strings">Strings</button>
-                        <button type="button" class="style-tag" data-style="drums">Drums</button>
-                        <button type="button" class="style-tag" data-style="808">808</button>
                         <button type="button" class="style-tag" data-style="lo-fi">Lo-Fi</button>
                         <button type="button" class="style-tag" data-style="cinematic">Cinematic</button>
                         <button type="button" class="style-tag" data-style="ambient">Ambient</button>
                         <button type="button" class="style-tag" data-style="groovy">Groovy</button>
+                        <button type="button" class="style-tag" data-style="upbeat">Upbeat</button>
+                        <button type="button" class="style-tag" data-style="chill">Chill</button>
+                        <button type="button" class="style-tag" data-style="ethereal">Ethereal</button>
+                        <button type="button" class="style-tag" data-style="punchy">Punchy</button>
                     </div>
                 </div>
 
@@ -405,15 +543,47 @@
                         <h4>迭代優化</h4>
                         <span class="iterate-count">第 <span id="iteration-num">1</span> 次優化</span>
                     </div>
+
+                    <!-- 優化目標選擇 -->
+                    <div class="iterate-target-selector">
+                        <label class="iterate-target-option active" data-target="lyrics">
+                            <input type="radio" name="iterate-target" value="lyrics" checked>
+                            <span class="target-icon">📝</span>
+                            <span class="target-label">歌詞</span>
+                        </label>
+                        <label class="iterate-target-option" data-target="style">
+                            <input type="radio" name="iterate-target" value="style">
+                            <span class="target-icon">🎨</span>
+                            <span class="target-label">Style</span>
+                        </label>
+                        <label class="iterate-target-option" data-target="both">
+                            <input type="radio" name="iterate-target" value="both">
+                            <span class="target-icon">🔄</span>
+                            <span class="target-label">全部</span>
+                        </label>
+                    </div>
+
                     <div class="iterate-input-wrapper">
                         <textarea id="iterate-instruction" rows="2" placeholder="輸入優化指示，例如：副歌更有力、加入更多押韻、改成更浪漫的風格..."></textarea>
-                        <div class="iterate-quick-tags">
+
+                        <!-- 歌詞優化快速標籤 -->
+                        <div id="lyrics-quick-tags" class="iterate-quick-tags">
                             <button type="button" class="iterate-tag" data-instruction="副歌更有記憶點">更有記憶點</button>
                             <button type="button" class="iterate-tag" data-instruction="加強押韻效果">加強押韻</button>
                             <button type="button" class="iterate-tag" data-instruction="情緒更強烈">情緒更強</button>
                             <button type="button" class="iterate-tag" data-instruction="歌詞更簡潔">更簡潔</button>
                             <button type="button" class="iterate-tag" data-instruction="加入更多 ad-libs">加 Ad-libs</button>
                             <button type="button" class="iterate-tag" data-instruction="調整結構，讓高潮更晚出現">延後高潮</button>
+                        </div>
+
+                        <!-- Style 優化快速標籤 -->
+                        <div id="style-quick-tags" class="iterate-quick-tags hidden">
+                            <button type="button" class="iterate-tag" data-instruction="更有能量感">更有能量</button>
+                            <button type="button" class="iterate-tag" data-instruction="更溫柔抒情">更抒情</button>
+                            <button type="button" class="iterate-tag" data-instruction="加入更多樂器層次">更多層次</button>
+                            <button type="button" class="iterate-tag" data-instruction="更復古懷舊">更復古</button>
+                            <button type="button" class="iterate-tag" data-instruction="更現代電子感">更現代</button>
+                            <button type="button" class="iterate-tag" data-instruction="加強人聲特色">強化人聲</button>
                         </div>
                     </div>
                     <button id="iterate-btn" class="btn-iterate">
