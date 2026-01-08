@@ -3118,6 +3118,51 @@ header {
     cursor: not-allowed;
 }
 
+/* Suno 複製按鈕 */
+.btn-suno-copy {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-suno-copy::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s;
+}
+
+.btn-suno-copy:hover:not(:disabled)::before {
+    left: 100%;
+}
+
+.btn-suno-copy:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 2px 12px rgba(249, 115, 22, 0.5);
+}
+
+.btn-suno-copy:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .lyrics-analysis {
     background: var(--bg-card);
     border: 1px solid var(--border);
