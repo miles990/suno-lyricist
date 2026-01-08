@@ -3718,3 +3718,40 @@ textarea,
         font-size: 0.8rem;
     }
 }
+
+/* ===== Download TXT Button ===== */
+.btn-download-txt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-download-txt:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-download-txt:disabled {
+    background: var(--secondary);
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+[data-theme="light"] .btn-download-txt {
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+}
+
+[data-theme="light"] .btn-download-txt:hover:not(:disabled) {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
