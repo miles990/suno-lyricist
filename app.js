@@ -3752,6 +3752,10 @@ function displayLyrics(lyrics, isIteration = false) {
     const analyzeBtn = document.getElementById('analyze-btn');
     if (analyzeBtn) analyzeBtn.disabled = false;
 
+    // 啟用評分按鈕
+    const qualityScoreBtn = document.getElementById('quality-score-btn');
+    if (qualityScoreBtn) qualityScoreBtn.disabled = false;
+
     // 啟用下載 TXT 按鈕
     const downloadTxtBtn = document.getElementById('download-txt-btn');
     if (downloadTxtBtn) downloadTxtBtn.disabled = false;
@@ -4985,6 +4989,158 @@ function initOnboarding() {
     setTimeout(showOnboarding, 500);
 }
 
+// ===== Quality Score System 功能 =====
+const QUALITY_GRADES = [
+    { min: 90, label: 'S 級 - 大師級作品', class: 'excellent' },
+    { min: 80, label: 'A 級 - 優秀作品', class: 'excellent' },
+    { min: 70, label: 'B 級 - 良好作品', class: 'good' },
+    { min: 60, label: 'C 級 - 合格作品', class: 'average' },
+    { min: 0, label: 'D 級 - 需要改進', class: 'poor' }
+];
+
+const QUALITY_SUGGESTIONS = {
+    structure: {
+        low: '建議增加更多段落變化，如加入 Bridge 或 Pre-Chorus 讓結構更豐富。',
+        medium: '結構基本完整，可考慮加入更多過渡段落增加層次。',
+        high: '結構非常完整，段落安排合理！'
+    },
+    rhyme: {
+        low: '押韻較少，建議在句尾增加更多韻腳，讓歌詞更朗朗上口。',
+        medium: '有一定押韻，可以嘗試更多內韻和交叉韻。',
+        high: '押韻豐富，韻律感很強！'
+    },
+    length: {
+        low: '歌詞偏短，建議擴展內容，增加更多描述和情感表達。',
+        medium: '長度適中，可根據需要適當擴展。',
+        high: '歌詞長度非常適合歌曲演唱！'
+    },
+    emotion: {
+        low: '情感表達較平淡，建議加入更多情感詞彙和意象。',
+        medium: '有一定情感表達，可以更深入挖掘主題情感。',
+        high: '情感表達豐富，很有感染力！'
+    }
+};
+
+function calculateQualityScore(lyrics) {
+    if (!lyrics) return null;
+
+    const lines = lyrics.split('\n').filter(l => l.trim() && !l.match(/^\[.*\]$/));
+    const sections = lyrics.match(/\[(Verse|Chorus|Bridge|Pre-Chorus|Outro|Intro|Hook|Drop)/gi) || [];
+    const chars = lines.join('').replace(/\s/g, '').length;
+
+    // 結構完整性評分 (0-25)
+    let structureScore = 0;
+    if (sections.length >= 1) structureScore += 5;
+    if (sections.length >= 3) structureScore += 5;
+    if (sections.length >= 5) structureScore += 5;
+    if (lyrics.toLowerCase().includes('chorus')) structureScore += 5;
+    if (lyrics.toLowerCase().includes('verse')) structureScore += 5;
+
+    // 押韻豐富度評分 (0-25) - 簡化版：檢測行尾重複音
+    let rhymeScore = 0;
+    const lineEndings = lines.map(l => l.trim().slice(-2));
+    const uniqueEndings = new Set(lineEndings);
+    const rhymeRatio = 1 - (uniqueEndings.size / lineEndings.length);
+    rhymeScore = Math.round(rhymeRatio * 25);
+
+    // 歌詞長度評分 (0-25)
+    let lengthScore = 0;
+    if (chars >= 50) lengthScore += 5;
+    if (chars >= 100) lengthScore += 5;
+    if (chars >= 200) lengthScore += 5;
+    if (chars >= 300) lengthScore += 5;
+    if (chars >= 400 && chars <= 800) lengthScore += 5;
+    else if (chars > 800) lengthScore += 3;
+
+    // 情感表達評分 (0-25) - 檢測情感詞彙
+    const emotionWords = ['愛', '心', '淚', '夢', '思念', '感', '痛', '喜', '悲', '望', '念', '憶', '情', '戀', '想', '怕', '恨', '歡', '樂', '哭', '笑'];
+    let emotionCount = 0;
+    emotionWords.forEach(word => {
+        if (lyrics.includes(word)) emotionCount++;
+    });
+    let emotionScore = Math.min(25, emotionCount * 3);
+
+    const total = structureScore + rhymeScore + lengthScore + emotionScore;
+
+    return {
+        total,
+        structure: structureScore,
+        rhyme: rhymeScore,
+        length: lengthScore,
+        emotion: emotionScore
+    };
+}
+
+function getScoreLevel(score, max) {
+    const ratio = score / max;
+    if (ratio >= 0.8) return 'high';
+    if (ratio >= 0.5) return 'medium';
+    return 'low';
+}
+
+function showQualityScore() {
+    const outputArea = document.getElementById('output-area');
+    const lyrics = outputArea?.dataset?.rawLyrics || outputArea?.textContent || '';
+
+    if (!lyrics || lyrics.includes('生成的歌詞會顯示在這裡')) {
+        showToast('請先生成歌詞', 'error');
+        return;
+    }
+
+    const scores = calculateQualityScore(lyrics);
+    if (!scores) return;
+
+    // 更新 UI
+    document.getElementById('total-score-value').textContent = scores.total;
+
+    // 更新等級
+    const grade = QUALITY_GRADES.find(g => scores.total >= g.min);
+    const gradeEl = document.getElementById('score-grade');
+    gradeEl.textContent = `等級: ${grade.label}`;
+    gradeEl.className = 'score-grade ' + grade.class;
+
+    // 更新各項分數條
+    ['structure', 'rhyme', 'length', 'emotion'].forEach(key => {
+        const bar = document.getElementById(`score-${key}`);
+        const val = document.getElementById(`score-${key}-val`);
+        if (bar) bar.style.width = `${(scores[key] / 25) * 100}%`;
+        if (val) val.textContent = scores[key];
+    });
+
+    // 生成建議
+    const suggestions = [];
+    ['structure', 'rhyme', 'length', 'emotion'].forEach(key => {
+        const level = getScoreLevel(scores[key], 25);
+        if (level !== 'high') {
+            suggestions.push(QUALITY_SUGGESTIONS[key][level]);
+        }
+    });
+
+    const suggestionEl = document.getElementById('quality-suggestion');
+    if (suggestions.length > 0) {
+        suggestionEl.innerHTML = '<strong>改進建議：</strong><br>' + suggestions.join('<br>');
+    } else {
+        suggestionEl.innerHTML = '🎉 太棒了！這是一首高質量的歌詞，各方面都表現出色！';
+    }
+
+    // 顯示面板
+    document.getElementById('quality-score-panel').classList.remove('hidden');
+}
+
+function initQualityScore() {
+    const scoreBtn = document.getElementById('quality-score-btn');
+    const closeBtn = document.getElementById('close-quality-score');
+
+    if (scoreBtn) {
+        scoreBtn.addEventListener('click', showQualityScore);
+    }
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            document.getElementById('quality-score-panel').classList.add('hidden');
+        });
+    }
+}
+
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
@@ -4996,3 +5152,4 @@ initClearTagButtons();
 initScrollToTop();
 initFormProgress();
 initOnboarding();
+initQualityScore();
