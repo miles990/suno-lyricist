@@ -3987,13 +3987,21 @@ function setIteratingState(isIterating) {
 function setGeneratingState(isGenerating) {
     elements.generateBtn.disabled = isGenerating;
     elements.generateBtn.querySelector('.btn-text').style.display = isGenerating ? 'none' : 'inline';
-    elements.generateBtn.querySelector('.btn-loading').style.display = isGenerating ? 'inline' : 'none';
+    elements.generateBtn.querySelector('.btn-loading').style.display = isGenerating ? 'inline-flex' : 'none';
 
     // 添加生成中動畫
     if (isGenerating) {
         elements.generateBtn.classList.add('generating');
+        // 啟動載入階段動畫
+        if (typeof window.startLoadingStageAnimation === 'function') {
+            window.startLoadingStageAnimation();
+        }
     } else {
         elements.generateBtn.classList.remove('generating');
+        // 停止載入階段動畫
+        if (typeof window.stopLoadingStageAnimation === 'function') {
+            window.stopLoadingStageAnimation();
+        }
     }
 }
 
@@ -4826,6 +4834,46 @@ function initFormProgress() {
         }
     });
 }
+
+// ===== Loading Stage Animation 功能 =====
+const LOADING_STAGES = [
+    '準備中...',
+    '分析主題...',
+    '構思結構...',
+    '撰寫主歌...',
+    '創作副歌...',
+    '編寫橋段...',
+    '潤飾歌詞...',
+    '最終調整...'
+];
+
+let loadingStageInterval = null;
+let loadingStageIndex = 0;
+
+function startLoadingStageAnimation() {
+    const stageEl = document.getElementById('loading-stage');
+    if (!stageEl) return;
+
+    loadingStageIndex = 0;
+    stageEl.textContent = LOADING_STAGES[0];
+
+    // 每 1.5 秒切換一個階段
+    loadingStageInterval = setInterval(() => {
+        loadingStageIndex = (loadingStageIndex + 1) % LOADING_STAGES.length;
+        stageEl.textContent = LOADING_STAGES[loadingStageIndex];
+    }, 1500);
+}
+
+function stopLoadingStageAnimation() {
+    if (loadingStageInterval) {
+        clearInterval(loadingStageInterval);
+        loadingStageInterval = null;
+    }
+}
+
+// 導出給 generate 函數使用
+window.startLoadingStageAnimation = startLoadingStageAnimation;
+window.stopLoadingStageAnimation = stopLoadingStageAnimation;
 
 init();
 initKeyboardShortcuts();
