@@ -4875,6 +4875,116 @@ function stopLoadingStageAnimation() {
 window.startLoadingStageAnimation = startLoadingStageAnimation;
 window.stopLoadingStageAnimation = stopLoadingStageAnimation;
 
+// ===== Onboarding Tour 功能 =====
+const ONBOARDING_STEPS = [
+    {
+        title: '歡迎使用 SunoLyricist!',
+        text: '這是一個 AI 歌詞創作助手，專為 Suno AI 音樂生成平台設計。讓我帶你快速了解主要功能。',
+        target: null
+    },
+    {
+        title: '輸入歌曲主題',
+        text: '在這裡輸入你的創作主題，例如「夏日海灘的愛情故事」。點擊 🎲 靈感 可獲取隨機創作靈感！',
+        target: '#song-theme'
+    },
+    {
+        title: '選擇音樂風格',
+        text: '選擇風格、情緒、人聲等設定。可以使用「智能推薦」根據主題自動推薦最適合的風格組合。',
+        target: '#genre'
+    },
+    {
+        title: '生成 AI 歌詞',
+        text: '完成設定後，點擊「生成歌詞」按鈕，AI 將根據你的設定創作專業歌詞和 Style Prompt。',
+        target: '#generate-btn'
+    },
+    {
+        title: '開始創作吧！',
+        text: '現在你已經準備好了！按 / 可查看快捷鍵，點擊右上角 ☀️/🌙 切換主題。祝你創作愉快！',
+        target: null
+    }
+];
+
+let onboardingStep = 0;
+
+function showOnboarding() {
+    const hasSeenOnboarding = localStorage.getItem('sunolyricist_onboarding_seen');
+    if (hasSeenOnboarding) return;
+
+    const overlay = document.getElementById('onboarding-overlay');
+    if (!overlay) return;
+
+    overlay.classList.remove('hidden');
+    updateOnboardingStep();
+}
+
+function updateOnboardingStep() {
+    const step = ONBOARDING_STEPS[onboardingStep];
+    const stepEl = document.getElementById('onboarding-step');
+    const titleEl = document.getElementById('onboarding-title');
+    const textEl = document.getElementById('onboarding-text');
+    const nextBtn = document.getElementById('onboarding-next');
+
+    if (stepEl) stepEl.textContent = `${onboardingStep + 1}/${ONBOARDING_STEPS.length}`;
+    if (titleEl) titleEl.textContent = step.title;
+    if (textEl) textEl.textContent = step.text;
+
+    // 更新按鈕文字
+    if (nextBtn) {
+        nextBtn.textContent = onboardingStep === ONBOARDING_STEPS.length - 1 ? '開始使用' : '下一步';
+    }
+
+    // 移除之前的高亮
+    document.querySelectorAll('.onboarding-highlight').forEach(el => {
+        el.classList.remove('onboarding-highlight');
+    });
+
+    // 添加新的高亮
+    if (step.target) {
+        const targetEl = document.querySelector(step.target);
+        if (targetEl) {
+            targetEl.classList.add('onboarding-highlight');
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+}
+
+function nextOnboardingStep() {
+    onboardingStep++;
+    if (onboardingStep >= ONBOARDING_STEPS.length) {
+        closeOnboarding();
+    } else {
+        updateOnboardingStep();
+    }
+}
+
+function closeOnboarding() {
+    const overlay = document.getElementById('onboarding-overlay');
+    if (overlay) overlay.classList.add('hidden');
+
+    // 移除高亮
+    document.querySelectorAll('.onboarding-highlight').forEach(el => {
+        el.classList.remove('onboarding-highlight');
+    });
+
+    // 記錄已看過
+    localStorage.setItem('sunolyricist_onboarding_seen', 'true');
+}
+
+function initOnboarding() {
+    const nextBtn = document.getElementById('onboarding-next');
+    const skipBtn = document.getElementById('onboarding-skip');
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', nextOnboardingStep);
+    }
+    if (skipBtn) {
+        skipBtn.addEventListener('click', closeOnboarding);
+    }
+
+    // 延遲 500ms 後顯示導覽（讓頁面先載入完成）
+    setTimeout(showOnboarding, 500);
+}
+
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
@@ -4885,3 +4995,4 @@ initInspirationBtn();
 initClearTagButtons();
 initScrollToTop();
 initFormProgress();
+initOnboarding();

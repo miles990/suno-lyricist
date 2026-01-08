@@ -12,6 +12,21 @@
         <span class="scroll-top-icon">↑</span>
     </button>
 
+    <!-- 首次使用導覽 -->
+    <div id="onboarding-overlay" class="onboarding-overlay hidden">
+        <div class="onboarding-tooltip" id="onboarding-tooltip">
+            <div class="onboarding-content">
+                <span class="onboarding-step" id="onboarding-step">1/5</span>
+                <h4 class="onboarding-title" id="onboarding-title">歡迎使用 SunoLyricist!</h4>
+                <p class="onboarding-text" id="onboarding-text">這是一個 AI 歌詞創作助手，讓我來帶你快速了解主要功能。</p>
+            </div>
+            <div class="onboarding-actions">
+                <button id="onboarding-skip" class="btn-onboarding-skip">跳過導覽</button>
+                <button id="onboarding-next" class="btn-onboarding-next">下一步</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <h1>SunoLyricist</h1>
