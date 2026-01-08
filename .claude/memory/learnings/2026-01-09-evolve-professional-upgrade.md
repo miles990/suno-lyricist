@@ -719,7 +719,106 @@ related_skills: [frontend-design, ux-design, javascript, suno-ai]
 | 第十八階段 | AI 生成載入動畫 | ~75 行 |
 | 第十九階段 | 首次使用導覽系統 | ~230 行 |
 | 第二十階段 | 歌詞質量評分系統 | ~350 行 |
-| **總計** | **27+ 核心功能** | **~5,205 行** |
+| 第二十一階段 | 風格組合收藏夾系統 | ~212 行 |
+| 第二十二階段 | 智能歌詞字數警告 | ~48 行 |
+| **總計** | **29+ 核心功能** | **~5,465 行** |
+
+---
+
+## 第二十一階段改進 (2026-01-09)
+
+### 1. 風格組合收藏夾系統
+
+**位置**: `app.js:5144-5356`, `index.html:409-424`, `styles.css:4322-4476`
+
+**功能**:
+- `STYLE_COMBO_STORAGE_KEY`: LocalStorage 鍵名
+- `MAX_COMBOS`: 最多保存 10 個組合
+- `getStyleCombos()`: 獲取已保存的組合列表
+- `saveStyleCombos()`: 保存組合到 LocalStorage
+- `getCurrentStyleSettings()`: 收集當前所有風格設定
+- `applyStyleCombo()`: 套用保存的組合
+- `saveCurrentStyleCombo()`: 保存當前配置為新組合
+- `deleteStyleCombo()`: 刪除指定組合
+- `loadStyleCombo()`: 載入組合並套用
+- `renderStyleCombos()`: 渲染組合列表 UI
+- `initStyleCombo()`: 初始化事件監聽
+
+**收集的設定項目**:
+1. Genre (音樂風格)
+2. Mood (情緒)
+3. Vocal Style (人聲風格)
+4. Tempo (節奏)
+5. BPM (節拍)
+6. Style Prompt (風格提示)
+7. Mix Tags (混音標籤)
+8. Vocal Techniques (人聲技巧)
+9. Instruments (樂器配器)
+
+**UI 設計**:
+- 💾「保存組合」按鈕
+- 📂「我的組合」按鈕
+- 滑入式組合面板
+- 組合項目卡片（顯示風格 + 情緒標籤）
+- 載入/刪除操作按鈕
+- 空狀態提示
+
+**技術特點**:
+- LocalStorage 持久化存儲
+- 最多保存 10 個組合（FIFO）
+- prompt() 收集組合名稱
+- confirm() 確認刪除操作
+- Toast 操作回饋
+
+### 第二十一階段統計
+
+| 檔案 | 第二十一階段新增行數 |
+|------|-----------------|
+| app.js | ~135 行 |
+| index.html | ~20 行 |
+| styles.css | ~155 行 |
+| 總計 | ~212 行 |
+
+---
+
+## 第二十二階段改進 (2026-01-09)
+
+### 1. 智能歌詞字數警告系統
+
+**位置**: `app.js:4529-4547`, `index.html:1300`, `styles.css:4478-4506`
+
+**功能**:
+- 整合到 `updateLyricsStats()` 函數
+- 基於 Suno AI 建議上限 (3000 字) 進行分級警告
+- 即時更新警告狀態
+
+**警告等級**:
+| 字數範圍 | 等級 | 提示訊息 | 顏色 |
+|---------|------|---------|------|
+| < 100 | info | 💡 歌詞較短，可考慮擴充 | 藍色 |
+| 200-800 | success | ✅ 長度適中，適合 Suno 生成 | 綠色 |
+| 2500-3000 | warning | ⚡ 接近 Suno 上限，建議精簡 | 黃色 |
+| > 3000 | danger | ⚠️ 超過 Suno 建議上限 (3000字) | 紅色 |
+
+**UI 設計**:
+- 小型標籤式警告 (0.75rem)
+- 圓角膠囊形狀
+- 狀態顏色區分（info 藍、success 綠、warning 黃、danger 紅）
+- danger 狀態 pulse 動畫效果
+
+**技術特點**:
+- 純 CSS 狀態管理（className 切換）
+- 實時計算字數（排除結構標籤）
+- MutationObserver 自動觸發更新
+
+### 第二十二階段統計
+
+| 檔案 | 第二十二階段新增行數 |
+|------|-----------------|
+| app.js | ~18 行 |
+| index.html | ~1 行 |
+| styles.css | ~29 行 |
+| 總計 | ~48 行 |
 
 ---
 
