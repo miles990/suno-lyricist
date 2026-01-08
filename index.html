@@ -140,22 +140,121 @@
                         <label for="song-genre">音樂風格</label>
                         <select id="song-genre">
                             <option value="">選擇風格...</option>
-                            <option value="pop">Pop 流行</option>
-                            <option value="rock">Rock 搖滾</option>
-                            <option value="hip-hop">Hip Hop 嘻哈</option>
-                            <option value="r&b">R&B</option>
-                            <option value="electronic">Electronic 電子</option>
-                            <option value="jazz">Jazz 爵士</option>
-                            <option value="country">Country 鄉村</option>
-                            <option value="folk">Folk 民謠</option>
-                            <option value="classical">Classical 古典</option>
-                            <option value="k-pop">K-Pop</option>
-                            <option value="j-pop">J-Pop</option>
-                            <option value="c-pop">C-Pop 華語流行</option>
-                            <option value="ballad">Ballad 抒情</option>
-                            <option value="lo-fi">Lo-Fi</option>
-                            <option value="metal">Metal 金屬</option>
+                            <optgroup label="🎤 流行 Pop">
+                                <option value="pop">Pop 流行 (120 BPM)</option>
+                                <option value="synth-pop">Synth Pop 合成器流行 (118 BPM)</option>
+                                <option value="indie-pop">Indie Pop 獨立流行 (110 BPM)</option>
+                                <option value="dream-pop">Dream Pop 夢幻流行 (90 BPM)</option>
+                                <option value="dance-pop">Dance Pop 舞曲流行 (128 BPM)</option>
+                                <option value="bedroom-pop">Bedroom Pop 臥室流行 (95 BPM)</option>
+                                <option value="k-pop">K-Pop 韓流 (130 BPM)</option>
+                                <option value="j-pop">J-Pop 日本流行 (125 BPM)</option>
+                                <option value="c-pop">C-Pop 華語流行 (115 BPM)</option>
+                                <option value="hyperpop">Hyperpop 超流行 (160 BPM)</option>
+                            </optgroup>
+                            <optgroup label="🎧 電子 Electronic">
+                                <option value="house">House 浩室 (122 BPM)</option>
+                                <option value="deep-house">Deep House 深浩室 (120 BPM)</option>
+                                <option value="tech-house">Tech House 科技浩室 (126 BPM)</option>
+                                <option value="progressive-house">Progressive House 漸進浩室 (128 BPM)</option>
+                                <option value="techno">Techno 鐵克諾 (130 BPM)</option>
+                                <option value="trance">Trance 出神 (138 BPM)</option>
+                                <option value="dubstep">Dubstep 迴響貝斯 (140 BPM)</option>
+                                <option value="drum-and-bass">Drum & Bass 鼓打貝斯 (174 BPM)</option>
+                                <option value="future-bass">Future Bass 未來貝斯 (150 BPM)</option>
+                                <option value="hardstyle">Hardstyle 硬派風格 (150 BPM)</option>
+                                <option value="synthwave">Synthwave 合成波 (126 BPM)</option>
+                                <option value="lo-fi">Lo-Fi 低保真 (85 BPM)</option>
+                                <option value="chillwave">Chillwave 冷浪 (100 BPM)</option>
+                                <option value="vaporwave">Vaporwave 蒸汽波 (115 BPM)</option>
+                            </optgroup>
+                            <optgroup label="🔥 嘻哈 Hip-Hop">
+                                <option value="hip-hop">Hip Hop 嘻哈 (95 BPM)</option>
+                                <option value="trap">Trap 陷阱音樂 (140 BPM)</option>
+                                <option value="drill">Drill 鑽頭音樂 (140 BPM)</option>
+                                <option value="boom-bap">Boom Bap 老派嘻哈 (90 BPM)</option>
+                                <option value="cloud-rap">Cloud Rap 雲說唱 (70 BPM)</option>
+                                <option value="phonk">Phonk 放克嘻哈 (130 BPM)</option>
+                                <option value="g-funk">G-Funk (95 BPM)</option>
+                            </optgroup>
+                            <optgroup label="🎸 搖滾 Rock">
+                                <option value="rock">Rock 搖滾 (120 BPM)</option>
+                                <option value="hard-rock">Hard Rock 硬搖滾 (140 BPM)</option>
+                                <option value="indie-rock">Indie Rock 獨立搖滾 (115 BPM)</option>
+                                <option value="punk-rock">Punk Rock 龐克搖滾 (180 BPM)</option>
+                                <option value="grunge">Grunge 油漬搖滾 (100 BPM)</option>
+                                <option value="post-rock">Post Rock 後搖滾 (95 BPM)</option>
+                                <option value="alternative">Alternative 另類搖滾 (110 BPM)</option>
+                            </optgroup>
+                            <optgroup label="🤘 金屬 Metal">
+                                <option value="metal">Metal 金屬 (130 BPM)</option>
+                                <option value="heavy-metal">Heavy Metal 重金屬 (160 BPM)</option>
+                                <option value="death-metal">Death Metal 死亡金屬 (180 BPM)</option>
+                                <option value="black-metal">Black Metal 黑金屬 (200 BPM)</option>
+                                <option value="metalcore">Metalcore 金屬核 (170 BPM)</option>
+                                <option value="doom-metal">Doom Metal 厄運金屬 (60 BPM)</option>
+                            </optgroup>
+                            <optgroup label="🌙 R&B / Soul">
+                                <option value="r&b">R&B (90 BPM)</option>
+                                <option value="neo-soul">Neo Soul 新靈魂 (85 BPM)</option>
+                                <option value="soul">Soul 靈魂樂 (75 BPM)</option>
+                                <option value="funk">Funk 放克 (115 BPM)</option>
+                                <option value="disco">Disco 迪斯可 (120 BPM)</option>
+                            </optgroup>
+                            <optgroup label="🎷 爵士 Jazz">
+                                <option value="jazz">Jazz 爵士 (120 BPM)</option>
+                                <option value="smooth-jazz">Smooth Jazz 滑順爵士 (95 BPM)</option>
+                                <option value="bebop">Bebop 咆勃爵士 (180 BPM)</option>
+                                <option value="jazz-fusion">Jazz Fusion 融合爵士 (110 BPM)</option>
+                                <option value="swing">Swing 搖擺爵士 (140 BPM)</option>
+                            </optgroup>
+                            <optgroup label="🍂 民謠 Folk/Country">
+                                <option value="folk">Folk 民謠 (95 BPM)</option>
+                                <option value="indie-folk">Indie Folk 獨立民謠 (90 BPM)</option>
+                                <option value="country">Country 鄉村 (100 BPM)</option>
+                                <option value="bluegrass">Bluegrass 藍草 (140 BPM)</option>
+                                <option value="americana">Americana 美式民謠 (85 BPM)</option>
+                            </optgroup>
+                            <optgroup label="💕 抒情 Ballad">
+                                <option value="ballad">Ballad 抒情 (70 BPM)</option>
+                                <option value="power-ballad">Power Ballad 力量抒情 (80 BPM)</option>
+                            </optgroup>
+                            <optgroup label="🌍 拉丁/世界 Latin/World">
+                                <option value="reggaeton">Reggaeton 雷鬼頓 (95 BPM)</option>
+                                <option value="reggae">Reggae 雷鬼 (80 BPM)</option>
+                                <option value="afrobeat">Afrobeat 非洲節拍 (110 BPM)</option>
+                                <option value="bossa-nova">Bossa Nova 巴薩諾瓦 (120 BPM)</option>
+                                <option value="salsa">Salsa 騷莎 (180 BPM)</option>
+                                <option value="flamenco">Flamenco 佛朗明哥 (120 BPM)</option>
+                            </optgroup>
+                            <optgroup label="🎻 古典 Classical">
+                                <option value="classical">Classical 古典 (90 BPM)</option>
+                                <option value="orchestral">Orchestral 管弦樂 (80 BPM)</option>
+                                <option value="cinematic">Cinematic 電影配樂 (95 BPM)</option>
+                            </optgroup>
+                            <optgroup label="🌌 氛圍/實驗 Ambient">
+                                <option value="ambient">Ambient 氛圍 (60 BPM)</option>
+                                <option value="dark-ambient">Dark Ambient 暗黑氛圍 (70 BPM)</option>
+                                <option value="experimental">Experimental 實驗音樂 (90 BPM)</option>
+                                <option value="idm">IDM 智慧舞曲 (130 BPM)</option>
+                            </optgroup>
+                            <optgroup label="🎵 其他 Other">
+                                <option value="blues">Blues 藍調 (75 BPM)</option>
+                                <option value="gospel">Gospel 福音 (70 BPM)</option>
+                                <option value="emo">Emo 情緒搖滾 (155 BPM)</option>
+                            </optgroup>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="song-bpm">
+                            BPM
+                            <span id="bpm-suggestion" class="bpm-suggestion"></span>
+                        </label>
+                        <div class="bpm-input-wrapper">
+                            <input type="number" id="song-bpm" min="40" max="220" placeholder="自動建議">
+                            <button type="button" id="bpm-auto-btn" class="btn-icon bpm-auto" title="自動設定建議 BPM">🎯</button>
+                        </div>
+                        <small class="bpm-hint">根據風格自動建議 BPM，也可手動調整</small>
                     </div>
                 </div>
 
@@ -251,6 +350,57 @@
                     <label for="style-prompt">風格描述 (Style Prompt)</label>
                     <textarea id="style-prompt" rows="2" placeholder="例：Sultry RnB, smooth vocals, groovy bass, 90s vibe" maxlength="1000"></textarea>
                     <small>描述音樂風格、樂器、人聲特色等，這會直接影響 Suno 生成的音樂</small>
+                </div>
+
+                <!-- Mix 混音設定 -->
+                <div class="form-group">
+                    <label>
+                        <span>混音風格</span>
+                        <span class="label-badge new">Pro</span>
+                    </label>
+                    <div class="mix-config">
+                        <div class="mix-category">
+                            <span class="category-label">整體音色</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag mix-tag" data-style="analog warmth">Analog Warmth 類比溫暖</button>
+                                <button type="button" class="style-tag mix-tag" data-style="digital precision">Digital Precision 數位精準</button>
+                                <button type="button" class="style-tag mix-tag" data-style="lo-fi gritty">Lo-Fi Gritty 低保真粗糙</button>
+                                <button type="button" class="style-tag mix-tag" data-style="pristine polished">Pristine Polished 精緻打磨</button>
+                                <button type="button" class="style-tag mix-tag" data-style="raw unpolished">Raw Unpolished 原始粗獷</button>
+                            </div>
+                        </div>
+                        <div class="mix-category">
+                            <span class="category-label">頻率平衡</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag mix-tag" data-style="bass-forward">Bass-Forward 低音突出</button>
+                                <button type="button" class="style-tag mix-tag" data-style="mid-range focused">Mid-Range Focused 中頻飽滿</button>
+                                <button type="button" class="style-tag mix-tag" data-style="bright crisp highs">Bright Crisp Highs 高頻明亮</button>
+                                <button type="button" class="style-tag mix-tag" data-style="full-spectrum">Full-Spectrum 全頻均衡</button>
+                                <button type="button" class="style-tag mix-tag" data-style="low-end heavy">Low-End Heavy 重低音</button>
+                            </div>
+                        </div>
+                        <div class="mix-category">
+                            <span class="category-label">空間感</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag mix-tag" data-style="wide stereo field">Wide Stereo 寬廣立體</button>
+                                <button type="button" class="style-tag mix-tag" data-style="mono-centered">Mono-Centered 單聲道集中</button>
+                                <button type="button" class="style-tag mix-tag" data-style="big hall reverb">Big Hall Reverb 大廳混響</button>
+                                <button type="button" class="style-tag mix-tag" data-style="tight room reverb">Tight Room 緊密房間</button>
+                                <button type="button" class="style-tag mix-tag" data-style="no reverb dry">No Reverb Dry 乾燥無混響</button>
+                            </div>
+                        </div>
+                        <div class="mix-category">
+                            <span class="category-label">動態與效果</span>
+                            <div class="style-tags compact">
+                                <button type="button" class="style-tag mix-tag" data-style="heavily compressed loud">Heavily Compressed 重壓縮響亮</button>
+                                <button type="button" class="style-tag mix-tag" data-style="natural dynamic range">Natural Dynamics 自然動態</button>
+                                <button type="button" class="style-tag mix-tag" data-style="sidechain pumping">Sidechain Pumping 側鏈律動</button>
+                                <button type="button" class="style-tag mix-tag" data-style="tape saturation">Tape Saturation 磁帶飽和</button>
+                                <button type="button" class="style-tag mix-tag" data-style="vinyl crackle">Vinyl Crackle 黑膠噪音</button>
+                            </div>
+                        </div>
+                    </div>
+                    <small class="mix-hint">選擇混音特性來影響整體音色質感 • 基於 Suno AI Secrets 專業指南</small>
                 </div>
 
                 <div class="form-row">

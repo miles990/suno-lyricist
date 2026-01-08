@@ -5,6 +5,80 @@ let iterationCount = 0;
 let currentLyrics = '';
 let currentStylePrompt = '';
 
+// ===== BPM 智能建議系統 =====
+// 基於 Suno AI Secrets 知識庫的 Genre/BPM 映射
+const GENRE_BPM_MAP = {
+    // 流行 Pop
+    'pop': 120, 'synth-pop': 118, 'indie-pop': 110, 'dream-pop': 90,
+    'dance-pop': 128, 'bedroom-pop': 95, 'k-pop': 130, 'j-pop': 125,
+    'c-pop': 115, 'hyperpop': 160,
+    // 電子 Electronic
+    'house': 122, 'deep-house': 120, 'tech-house': 126, 'progressive-house': 128,
+    'techno': 130, 'trance': 138, 'dubstep': 140, 'drum-and-bass': 174,
+    'future-bass': 150, 'hardstyle': 150, 'synthwave': 126, 'lo-fi': 85,
+    'chillwave': 100, 'vaporwave': 115, 'electronic': 128,
+    // 嘻哈 Hip-Hop
+    'hip-hop': 95, 'trap': 140, 'drill': 140, 'boom-bap': 90,
+    'cloud-rap': 70, 'phonk': 130, 'g-funk': 95,
+    // 搖滾 Rock
+    'rock': 120, 'hard-rock': 140, 'indie-rock': 115, 'punk-rock': 180,
+    'grunge': 100, 'post-rock': 95, 'alternative': 110,
+    // 金屬 Metal
+    'metal': 130, 'heavy-metal': 160, 'death-metal': 180, 'black-metal': 200,
+    'metalcore': 170, 'doom-metal': 60,
+    // R&B / Soul
+    'r&b': 90, 'neo-soul': 85, 'soul': 75, 'funk': 115, 'disco': 120,
+    // 爵士 Jazz
+    'jazz': 120, 'smooth-jazz': 95, 'bebop': 180, 'jazz-fusion': 110, 'swing': 140,
+    // 民謠 Folk/Country
+    'folk': 95, 'indie-folk': 90, 'country': 100, 'bluegrass': 140, 'americana': 85,
+    // 抒情 Ballad
+    'ballad': 70, 'power-ballad': 80,
+    // 拉丁/世界 Latin/World
+    'reggaeton': 95, 'reggae': 80, 'afrobeat': 110, 'bossa-nova': 120,
+    'salsa': 180, 'flamenco': 120,
+    // 古典 Classical
+    'classical': 90, 'orchestral': 80, 'cinematic': 95,
+    // 氛圍/實驗 Ambient
+    'ambient': 60, 'dark-ambient': 70, 'experimental': 90, 'idm': 130,
+    // 其他 Other
+    'blues': 75, 'gospel': 70, 'emo': 155
+};
+
+// 獲取 BPM 建議
+function getSuggestedBPM(genre) {
+    return GENRE_BPM_MAP[genre] || null;
+}
+
+// 更新 BPM 建議顯示
+function updateBPMSuggestion(genre) {
+    const bpm = getSuggestedBPM(genre);
+    const suggestionEl = document.getElementById('bpm-suggestion');
+    const bpmInput = document.getElementById('song-bpm');
+
+    if (suggestionEl && bpm) {
+        suggestionEl.textContent = `建議: ${bpm}`;
+        suggestionEl.classList.add('active');
+    } else if (suggestionEl) {
+        suggestionEl.textContent = '';
+        suggestionEl.classList.remove('active');
+    }
+}
+
+// 自動設定 BPM
+function autoSetBPM() {
+    const genreSelect = document.getElementById('song-genre');
+    const bpmInput = document.getElementById('song-bpm');
+
+    if (genreSelect && bpmInput) {
+        const bpm = getSuggestedBPM(genreSelect.value);
+        if (bpm) {
+            bpmInput.value = bpm;
+            showToast(`已設定 BPM: ${bpm}`, 'success');
+        }
+    }
+}
+
 // ===== Style Prompt 預設模板庫 =====
 const STYLE_PRESETS = {
     // 抒情類
@@ -196,6 +270,248 @@ const STYLE_PRESETS = {
         suggestedTempo: 'medium',
         instruments: ['orchestra', 'strings ensemble', 'brass section', 'drums'],
         vocalTechniques: ['operatic', 'stacked harmonies']
+    },
+    // ===== 新增擴展模板 (基於 Suno AI Secrets) =====
+    // 電子擴展
+    'deep-house': {
+        name: '深浩室',
+        icon: '🌊',
+        category: 'electronic',
+        description: '深沉律動的浩室音樂',
+        stylePrompt: 'Deep House, warm bass, atmospheric pads, hypnotic groove, late night club vibes, wide stereo field, 120 BPM, [MIX: BASS-FORWARD; WIDE STEREO SYNTHS]',
+        suggestedGenre: 'deep-house',
+        suggestedMood: 'peaceful',
+        suggestedVocal: 'whisper',
+        suggestedTempo: 'medium',
+        instruments: ['synth pads', 'synth bass', 'drums', '808 drums'],
+        vocalTechniques: ['breathy vocals', 'airy textures']
+    },
+    'synthwave-retro': {
+        name: 'Synthwave復古',
+        icon: '🌆',
+        category: 'electronic',
+        description: '霓虹燈下的復古未來',
+        stylePrompt: 'Synthwave, analog synths, neon lights, retro futuristic, driving arpeggios, nostalgic, 80s sci-fi atmosphere, 126 BPM, [MIX: ANALOG WARMTH; BRIGHT CRISP HIGHS]',
+        suggestedGenre: 'synthwave',
+        suggestedMood: 'nostalgic',
+        suggestedVocal: 'powerful',
+        suggestedTempo: 'fast',
+        instruments: ['analog synth', 'synth lead', 'drums', 'arpeggiator'],
+        vocalTechniques: ['belting', 'echo effects']
+    },
+    'dubstep-heavy': {
+        name: 'Dubstep重擊',
+        icon: '💥',
+        category: 'electronic',
+        description: '重低音撕裂節拍',
+        stylePrompt: 'Dubstep, massive wobble bass, aggressive drops, half-time drums, dark atmosphere, distorted synths, 140 BPM, [MIX: LOW-END HEAVY; HEAVY SIDECHAIN TO KICK]',
+        suggestedGenre: 'dubstep',
+        suggestedMood: 'angry',
+        suggestedVocal: 'powerful',
+        suggestedTempo: 'very-fast',
+        instruments: ['synth bass', 'synth lead', '808 drums', 'risers'],
+        vocalTechniques: ['growling', 'screaming']
+    },
+    'trance-euphoric': {
+        name: 'Trance激昂',
+        icon: '✨',
+        category: 'electronic',
+        description: '激昂出神的電子音樂',
+        stylePrompt: 'Euphoric Trance, soaring leads, emotional build-ups, uplifting melodies, atmospheric pads, festival energy, 138 BPM, [MIX: WIDE STEREO FIELD; BRIGHT CRISP HIGHS]',
+        suggestedGenre: 'trance',
+        suggestedMood: 'hopeful',
+        suggestedVocal: 'female',
+        suggestedTempo: 'very-fast',
+        instruments: ['synth lead', 'synth pads', 'drums', 'arpeggiator'],
+        vocalTechniques: ['belting', 'passionate belting']
+    },
+    'future-bass-pop': {
+        name: 'Future Bass',
+        icon: '🌈',
+        category: 'electronic',
+        description: '繽紛的未來貝斯風格',
+        stylePrompt: 'Future Bass, wobbly chords, bright supersaws, emotional drops, pitched vocals, colorful synths, 150 BPM, [MIX: SYNTHS SIDECHAINED TO KICK; STEREO WIDTH ON SYNTHS]',
+        suggestedGenre: 'future-bass',
+        suggestedMood: 'energetic',
+        suggestedVocal: 'female',
+        suggestedTempo: 'very-fast',
+        instruments: ['synth', 'synth pads', '808 drums', 'synth lead'],
+        vocalTechniques: ['ad-libs', 'harmonies']
+    },
+    // 嘻哈擴展
+    'drill-dark': {
+        name: 'Drill暗黑',
+        icon: '🖤',
+        category: 'hiphop',
+        description: '陰暗兇猛的鑽頭音樂',
+        stylePrompt: 'UK Drill, sliding 808s, menacing melody, dark pads, aggressive flow, street energy, 140 BPM, [MIX: BASS AND KICK DOMINANT; MINIMAL REVERB]',
+        suggestedGenre: 'drill',
+        suggestedMood: 'angry',
+        suggestedVocal: 'rap',
+        suggestedTempo: 'very-fast',
+        instruments: ['808 drums', 'hi-hat', 'synth'],
+        vocalTechniques: ['autotuned delivery', 'ad-libs']
+    },
+    'phonk-drift': {
+        name: 'Phonk漂移',
+        icon: '🚗',
+        category: 'hiphop',
+        description: '地下賽車風格',
+        stylePrompt: 'Phonk, Memphis samples, cowbell, distorted bass, drift racing energy, dark aggressive, 130 BPM, [MIX: HEAVILY COMPRESSED LOUD; TAPE SATURATION]',
+        suggestedGenre: 'phonk',
+        suggestedMood: 'energetic',
+        suggestedVocal: 'rap',
+        suggestedTempo: 'fast',
+        instruments: ['808 drums', 'hi-hat', 'synth', 'percussion'],
+        vocalTechniques: ['ad-libs', 'autotuned delivery']
+    },
+    // R&B 擴展
+    'neo-soul': {
+        name: 'Neo Soul',
+        icon: '💫',
+        category: 'rnb',
+        description: '現代新靈魂風格',
+        stylePrompt: 'Neo Soul, warm Rhodes piano, organic drums, live bass, soulful harmonies, intimate vocal delivery, 85 BPM, [MIX: NATURAL DYNAMIC RANGE; WARM ANALOG TONE]',
+        suggestedGenre: 'neo-soul',
+        suggestedMood: 'peaceful',
+        suggestedVocal: 'soft',
+        suggestedTempo: 'slow',
+        instruments: ['rhodes', 'bass guitar', 'drums', 'electric piano'],
+        vocalTechniques: ['melisma', 'runs', 'soulful cry']
+    },
+    'funk-groove': {
+        name: 'Funk律動',
+        icon: '🕺',
+        category: 'rnb',
+        description: '復古放克律動',
+        stylePrompt: 'Funk, tight groovy bass, wah guitar, horn stabs, disco influence, dance floor energy, 115 BPM, [MIX: BASS AND KICK LOCKED TOGETHER; PUNCHY DRUMS]',
+        suggestedGenre: 'funk',
+        suggestedMood: 'energetic',
+        suggestedVocal: 'powerful',
+        suggestedTempo: 'medium',
+        instruments: ['bass guitar', 'electric guitar', 'brass section', 'drums'],
+        vocalTechniques: ['ad-libs', 'belting']
+    },
+    // 搖滾擴展
+    'punk-energy': {
+        name: 'Punk能量',
+        icon: '⚡',
+        category: 'rock',
+        description: '狂躁龐克能量',
+        stylePrompt: 'Punk Rock, fast power chords, aggressive drums, raw vocals, rebellious energy, DIY aesthetic, 180 BPM, [MIX: RAW UNPOLISHED; GUITARS WIDE AND POWERFUL]',
+        suggestedGenre: 'punk-rock',
+        suggestedMood: 'angry',
+        suggestedVocal: 'powerful',
+        suggestedTempo: 'very-fast',
+        instruments: ['electric guitar', 'bass guitar', 'drums'],
+        vocalTechniques: ['screaming', 'raspy lead vocal']
+    },
+    'post-rock-ambient': {
+        name: 'Post Rock',
+        icon: '🌌',
+        category: 'rock',
+        description: '氛圍後搖滾',
+        stylePrompt: 'Post Rock, atmospheric guitars, crescendo build-ups, reverb-drenched, cinematic scope, emotional journey, 95 BPM, [MIX: BIG HALL REVERB; NATURAL DYNAMIC RANGE]',
+        suggestedGenre: 'post-rock',
+        suggestedMood: 'dreamy',
+        suggestedVocal: 'soft',
+        suggestedTempo: 'slow',
+        instruments: ['electric guitar', 'drums', 'strings ensemble', 'synth pads'],
+        vocalTechniques: ['airy textures', 'ghostly echoes']
+    },
+    'grunge-raw': {
+        name: 'Grunge油漬',
+        icon: '🎸',
+        category: 'rock',
+        description: '90年代油漬搖滾',
+        stylePrompt: 'Grunge, distorted guitars, angsty vocals, raw production, Seattle sound, emotional intensity, 100 BPM, [MIX: RAW UNPOLISHED; DRUMS AGGRESSIVE WITH ROOM]',
+        suggestedGenre: 'grunge',
+        suggestedMood: 'melancholic',
+        suggestedVocal: 'male',
+        suggestedTempo: 'medium',
+        instruments: ['electric guitar', 'bass guitar', 'drums'],
+        vocalTechniques: ['raspy lead vocal', 'growling']
+    },
+    // 爵士擴展
+    'smooth-jazz': {
+        name: '滑順爵士',
+        icon: '🎷',
+        category: 'jazz',
+        description: '輕柔的滑順爵士',
+        stylePrompt: 'Smooth Jazz, sultry saxophone, mellow piano, soft brushed drums, warm bass, late night mood, 95 BPM, [MIX: NATURAL ROOM AMBIENCE; WARM VINTAGE TONE]',
+        suggestedGenre: 'smooth-jazz',
+        suggestedMood: 'romantic',
+        suggestedVocal: 'soft',
+        suggestedTempo: 'slow',
+        instruments: ['saxophone', 'piano', 'bass guitar', 'drums'],
+        vocalTechniques: ['vibrato', 'tender croons']
+    },
+    'bebop-swing': {
+        name: 'Bebop搖擺',
+        icon: '🎺',
+        category: 'jazz',
+        description: '經典咆勃爵士',
+        stylePrompt: 'Bebop Jazz, complex harmonies, fast improvisation, walking bass, swing drums, virtuosic solos, 180 BPM, [MIX: DYNAMIC RANGE PRESERVED; NATURAL ROOM]',
+        suggestedGenre: 'bebop',
+        suggestedMood: 'energetic',
+        suggestedVocal: 'soft',
+        suggestedTempo: 'very-fast',
+        instruments: ['trumpet', 'saxophone', 'piano', 'bass guitar', 'drums'],
+        vocalTechniques: ['jazz scatting', 'playful ornaments']
+    },
+    // 世界音樂
+    'reggaeton-latin': {
+        name: 'Reggaeton',
+        icon: '🌴',
+        category: 'latin',
+        description: '拉丁雷鬼頓節奏',
+        stylePrompt: 'Reggaeton, dembow rhythm, Latin percussion, catchy hooks, urban latin vibes, 95 BPM, [MIX: BASS-FORWARD; PUNCHY DRUMS]',
+        suggestedGenre: 'reggaeton',
+        suggestedMood: 'energetic',
+        suggestedVocal: 'male',
+        suggestedTempo: 'medium',
+        instruments: ['808 drums', 'percussion', 'synth'],
+        vocalTechniques: ['ad-libs', 'melodic rap']
+    },
+    'afrobeat-groove': {
+        name: 'Afrobeat',
+        icon: '🥁',
+        category: 'latin',
+        description: '非洲節拍律動',
+        stylePrompt: 'Afrobeat, polyrhythmic drums, horn section, call and response, infectious groove, African influence, 110 BPM, [MIX: DRUMS PUNCHY AND UPFRONT; NATURAL DYNAMIC RANGE]',
+        suggestedGenre: 'afrobeat',
+        suggestedMood: 'energetic',
+        suggestedVocal: 'powerful',
+        suggestedTempo: 'medium',
+        instruments: ['percussion', 'brass section', 'drums', 'bass guitar'],
+        vocalTechniques: ['call and response', 'ad-libs']
+    },
+    // 氛圍/實驗
+    'ambient-space': {
+        name: '太空氛圍',
+        icon: '🌠',
+        category: 'ambient',
+        description: '漂浮在星際的氛圍',
+        stylePrompt: 'Space Ambient, ethereal pads, distant reverb, cosmic textures, floating atmosphere, meditative, 60 BPM, [MIX: AMBIENT REVERB TAILS; AIRY TOP END]',
+        suggestedGenre: 'ambient',
+        suggestedMood: 'peaceful',
+        suggestedVocal: 'whisper',
+        suggestedTempo: 'slow',
+        instruments: ['synth pads', 'theremin', 'drone'],
+        vocalTechniques: ['airy textures', 'ghostly echoes']
+    },
+    'dark-ambient-horror': {
+        name: '暗黑氛圍',
+        icon: '👻',
+        category: 'ambient',
+        description: '恐怖電影般的陰暗',
+        stylePrompt: 'Dark Ambient, ominous drones, haunting textures, tension building, cinematic horror, unsettling atmosphere, 70 BPM, [MIX: DARK ATMOSPHERIC; LOW-END HEAVY]',
+        suggestedGenre: 'dark-ambient',
+        suggestedMood: 'melancholic',
+        suggestedVocal: 'whisper',
+        suggestedTempo: 'slow',
+        instruments: ['synth pads', 'strings ensemble', 'noise'],
+        vocalTechniques: ['emotive whispers', 'hushed tones']
     }
 };
 
@@ -209,6 +525,9 @@ const STYLE_PRESET_CATEGORIES = {
     'folk': { name: '民謠', icon: '🍂' },
     'hiphop': { name: '嘻哈', icon: '🔥' },
     'kpop': { name: 'K-Pop', icon: '💜' },
+    'jazz': { name: '爵士', icon: '🎷' },
+    'latin': { name: '世界', icon: '🌍' },
+    'ambient': { name: '氛圍', icon: '🌌' },
     'cinematic': { name: '電影', icon: '🎬' }
 };
 
@@ -1342,6 +1661,9 @@ const elements = {
     toggleApiKey: document.getElementById('toggle-api-key'),
     songTheme: document.getElementById('song-theme'),
     songGenre: document.getElementById('song-genre'),
+    songBpm: document.getElementById('song-bpm'),
+    bpmAutoBtn: document.getElementById('bpm-auto-btn'),
+    bpmSuggestion: document.getElementById('bpm-suggestion'),
     songMood: document.getElementById('song-mood'),
     songLanguage: document.getElementById('song-language'),
     structureCheckboxes: document.querySelectorAll('input[name="structure"]'),
@@ -1387,6 +1709,9 @@ const elements = {
 
     // Instrument Config
     instrumentTags: document.querySelectorAll('.instrument-tag'),
+
+    // Mix Config
+    mixTags: document.querySelectorAll('.mix-tag'),
 
     // Structure Editor
     structureList: document.getElementById('structure-list'),
@@ -1615,6 +1940,11 @@ function bindEvents() {
         btn.addEventListener('click', () => toggleStyleTag(btn));
     });
 
+    // Mix 混音標籤（可多選）
+    elements.mixTags.forEach(btn => {
+        btn.addEventListener('click', () => toggleStyleTag(btn));
+    });
+
     // 結構模板按鈕
     elements.structureTemplates.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1709,11 +2039,22 @@ function bindEvents() {
         if (e.target === elements.templateModal) hideModal();
     });
 
-    // 風格選擇時顯示智能建議
+    // 風格選擇時顯示智能建議和 BPM 建議
     if (elements.songGenre) {
         elements.songGenre.addEventListener('change', (e) => {
             showSmartSuggestions(e.target.value);
+            updateBPMSuggestion(e.target.value);
+            // 如果 BPM 為空，自動填入建議值
+            if (elements.songBpm && !elements.songBpm.value) {
+                const bpm = getSuggestedBPM(e.target.value);
+                if (bpm) elements.songBpm.value = bpm;
+            }
         });
+    }
+
+    // BPM 自動設定按鈕
+    if (elements.bpmAutoBtn) {
+        elements.bpmAutoBtn.addEventListener('click', autoSetBPM);
     }
 
     // 快速開始按鈕
@@ -1897,6 +2238,14 @@ async function generateLyrics() {
         .filter(btn => btn.classList.contains('active'))
         .map(btn => btn.dataset.style);
 
+    // 收集 Mix 混音設定
+    const selectedMixTags = Array.from(elements.mixTags || [])
+        .filter(btn => btn.classList.contains('active'))
+        .map(btn => btn.dataset.style);
+
+    // 收集 BPM
+    const bpm = elements.songBpm?.value || '';
+
     const styleOptions = {
         stylePrompt: elements.stylePrompt.value.trim(),
         vocalStyle: elements.vocalStyle.value,
@@ -1918,7 +2267,11 @@ async function generateLyrics() {
         vocalRegister: vocalRegister,
         vocalTechniques: selectedVocalTechs,
         // 樂器配器配置
-        instruments: selectedInstruments
+        instruments: selectedInstruments,
+        // Mix 混音設定
+        mixSettings: selectedMixTags,
+        // BPM
+        bpm: bpm
     };
 
     // 獲取 AI 模式
@@ -2064,9 +2417,16 @@ function buildPrompt(theme, genre, mood, language, structures, extraInstructions
         stylePromptParts.push(`vocals: "${vocalMap[styleOptions.vocalStyle]}"`);
     }
 
-    // 速度
-    if (styleOptions.tempo) {
+    // 速度 - 優先使用 BPM，否則用預設範圍
+    if (styleOptions.bpm) {
+        stylePromptParts.push(`tempo: "${styleOptions.bpm} BPM"`);
+    } else if (styleOptions.tempo) {
         stylePromptParts.push(`tempo: "${tempoMap[styleOptions.tempo]}"`);
+    }
+
+    // Mix 混音設定
+    if (styleOptions.mixSettings && styleOptions.mixSettings.length > 0) {
+        stylePromptParts.push(`[MIX: ${styleOptions.mixSettings.join('; ').toUpperCase()}]`);
     }
 
     // 自訂風格描述

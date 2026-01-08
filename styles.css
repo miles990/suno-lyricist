@@ -187,6 +187,43 @@ small {
     background: var(--secondary);
 }
 
+/* ===== BPM Input ===== */
+.bpm-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.bpm-input-wrapper input {
+    flex: 1;
+}
+
+.bpm-auto {
+    background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+    border-color: transparent;
+}
+
+.bpm-auto:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+.bpm-suggestion {
+    font-size: 0.75rem;
+    color: var(--success);
+    margin-left: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.bpm-suggestion.active {
+    opacity: 1;
+}
+
+.bpm-hint {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
 /* ===== API Mode Selector ===== */
 .api-mode-selector {
     display: flex;
@@ -1262,10 +1299,41 @@ footer {
 
 /* Vocal tech and instrument tags */
 .vocal-tech-tag.active,
-.instrument-tag.active {
+.instrument-tag.active,
+.mix-tag.active {
     background: var(--primary);
     border-color: var(--primary);
     color: white;
+}
+
+/* ===== Mix Config ===== */
+.mix-config {
+    background: var(--bg-input);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.mix-category {
+    margin-bottom: 0.75rem;
+}
+
+.mix-category:last-child {
+    margin-bottom: 0;
+}
+
+.mix-hint {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.label-badge.new {
+    background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
+    color: white;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
 }
 
 .iterate-input-wrapper {
