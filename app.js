@@ -459,7 +459,10 @@ function buildPrompt(theme, genre, mood, language, structures, extraInstructions
         'en': 'English',
         'ja': '日本語',
         'ko': '한국어',
-        'mixed-en-zh': '中英混合（主要中文，穿插英文）'
+        'es': 'Spanish',
+        'mixed-en-zh': '中英混合（主要中文，穿插英文）',
+        'mixed-en-ja': '日英混合（主要日文，穿插英文）',
+        'mixed-en-ko': '韓英混合（主要韓文，穿插英文）'
     };
 
     const genreMap = {
