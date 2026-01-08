@@ -1886,6 +1886,9 @@ function init() {
     // 初始化 Ad-Libs 即興口白
     initAdLibs();
 
+    // 初始化歌詞分析
+    initLyricsAnalysis();
+
     // 檢查是否首次使用，顯示引導精靈
     const hasUsedBefore = localStorage.getItem('suno-has-used');
     if (!hasUsedBefore) {
@@ -2183,6 +2186,107 @@ function toggleMaxModeOptions() {
     } else {
         elements.maxModeOptions.classList.add('hidden');
     }
+}
+
+// ===== Lyrics Analysis (歌詞分析) =====
+function initLyricsAnalysis() {
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const closeBtn = document.getElementById('close-analysis');
+    const analysisPanel = document.getElementById('lyrics-analysis');
+
+    analyzeBtn?.addEventListener('click', analyzeLyrics);
+    closeBtn?.addEventListener('click', () => {
+        analysisPanel?.classList.add('hidden');
+    });
+}
+
+function analyzeLyrics() {
+    const lyrics = elements.outputArea.dataset.rawLyrics || elements.outputArea.textContent;
+    if (!lyrics || lyrics.includes('生成的歌詞會顯示在這裡')) {
+        showToast('請先生成歌詞', 'warning');
+        return;
+    }
+
+    // 基本統計
+    const lines = lyrics.split('\n').filter(l => l.trim());
+    const chars = lyrics.replace(/\s/g, '').length;
+
+    // 段落分析 - 尋找 [標籤]
+    const sectionMatches = lyrics.match(/\[([^\]]+)\]/g) || [];
+    const sections = sectionMatches.length;
+
+    // 結構分析
+    const structureMap = {};
+    sectionMatches.forEach(tag => {
+        const key = tag.toLowerCase();
+        structureMap[key] = (structureMap[key] || 0) + 1;
+    });
+
+    const structureStr = Object.entries(structureMap)
+        .map(([tag, count]) => `${tag}×${count}`)
+        .join(' → ') || '未檢測到標準結構標籤';
+
+    // 押韻密度估算 (簡單版: 檢查行尾相似度)
+    let rhymeCount = 0;
+    const cleanLines = lines.filter(l => !l.startsWith('[') && l.trim().length > 2);
+    for (let i = 0; i < cleanLines.length - 1; i++) {
+        const line1 = cleanLines[i].trim();
+        const line2 = cleanLines[i + 1].trim();
+        if (line1.length > 0 && line2.length > 0) {
+            if (checkPinyinRhyme(line1, line2)) {
+                rhymeCount++;
+            }
+        }
+    }
+    const rhymeDensity = cleanLines.length > 1
+        ? Math.round((rhymeCount / (cleanLines.length - 1)) * 100)
+        : 0;
+
+    // 建議生成
+    const suggestions = [];
+    if (sections < 3) suggestions.push('建議增加段落結構標籤');
+    if (rhymeDensity < 30) suggestions.push('押韻密度較低，可考慮加強押韻');
+    if (chars < 200) suggestions.push('歌詞較短，可擴展內容');
+    if (chars > 800) suggestions.push('歌詞較長，注意控制時長');
+    if (!structureMap['[chorus]'] && !structureMap['[hook]']) {
+        suggestions.push('未檢測到副歌/Hook，建議加入記憶點');
+    }
+
+    // 更新 UI
+    document.getElementById('analysis-chars').textContent = chars;
+    document.getElementById('analysis-lines').textContent = lines.length;
+    document.getElementById('analysis-sections').textContent = sections;
+    document.getElementById('analysis-rhyme').textContent = rhymeDensity + '%';
+    document.getElementById('analysis-structure').textContent = structureStr;
+    document.getElementById('analysis-suggestion').textContent =
+        suggestions.length > 0 ? suggestions.join('；') : '結構良好！';
+
+    document.getElementById('lyrics-analysis')?.classList.remove('hidden');
+}
+
+// 簡化的押韻檢測
+function checkPinyinRhyme(line1, line2) {
+    const end1 = line1.slice(-3).toLowerCase();
+    const end2 = line2.slice(-3).toLowerCase();
+
+    // 英文押韻 - 檢查結尾母音
+    const vowelPattern = /[aeiou]+[^aeiou]*$/i;
+    const match1 = end1.match(vowelPattern);
+    const match2 = end2.match(vowelPattern);
+
+    if (match1 && match2 && match1[0] === match2[0]) {
+        return true;
+    }
+
+    // 字符相似度
+    let similar = 0;
+    for (let i = 0; i < Math.min(end1.length, end2.length); i++) {
+        if (end1[end1.length - 1 - i] === end2[end2.length - 1 - i]) {
+            similar++;
+        }
+    }
+
+    return similar >= 2;
 }
 
 // ===== Ad-Libs (即興口白) =====
@@ -3260,6 +3364,10 @@ function displayLyrics(lyrics, isIteration = false) {
     elements.outputArea.dataset.rawLyrics = lyrics;
     elements.copyBtn.disabled = false;
     elements.editBtn.disabled = false;
+
+    // 啟用分析按鈕
+    const analyzeBtn = document.getElementById('analyze-btn');
+    if (analyzeBtn) analyzeBtn.disabled = false;
 
     // 添加成功動畫
     elements.outputArea.classList.add('success-animation');

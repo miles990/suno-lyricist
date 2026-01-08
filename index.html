@@ -1001,12 +1001,54 @@
                 <div class="output-header">
                     <h3>生成結果</h3>
                     <div class="output-actions">
+                        <button id="analyze-btn" class="btn-analyze" disabled title="分析歌詞結構">📊 分析</button>
                         <button id="copy-btn" class="btn-secondary" disabled>複製</button>
                         <button id="edit-btn" class="btn-secondary" disabled>編輯</button>
                     </div>
                 </div>
                 <div id="output-area" class="output-area">
                     <p class="placeholder-text">生成的歌詞會顯示在這裡...</p>
+                </div>
+                <!-- 歌詞分析結果 -->
+                <div id="lyrics-analysis" class="lyrics-analysis hidden">
+                    <div class="analysis-header">
+                        <h4>📊 歌詞分析</h4>
+                        <button id="close-analysis" class="btn-close-analysis">✕</button>
+                    </div>
+                    <div class="analysis-content">
+                        <div class="analysis-grid">
+                            <div class="analysis-card">
+                                <span class="analysis-icon">📝</span>
+                                <span class="analysis-label">總字數</span>
+                                <span id="analysis-chars" class="analysis-value">-</span>
+                            </div>
+                            <div class="analysis-card">
+                                <span class="analysis-icon">📄</span>
+                                <span class="analysis-label">總行數</span>
+                                <span id="analysis-lines" class="analysis-value">-</span>
+                            </div>
+                            <div class="analysis-card">
+                                <span class="analysis-icon">🎵</span>
+                                <span class="analysis-label">段落數</span>
+                                <span id="analysis-sections" class="analysis-value">-</span>
+                            </div>
+                            <div class="analysis-card">
+                                <span class="analysis-icon">🔤</span>
+                                <span class="analysis-label">押韻密度</span>
+                                <span id="analysis-rhyme" class="analysis-value">-</span>
+                            </div>
+                        </div>
+                        <div class="analysis-details">
+                            <div class="analysis-detail-item">
+                                <span class="detail-label">結構分析</span>
+                                <span id="analysis-structure" class="detail-value">-</span>
+                            </div>
+                            <div class="analysis-detail-item">
+                                <span class="detail-label">建議</span>
+                                <span id="analysis-suggestion" class="detail-value">-</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 迭代優化區塊 -->
