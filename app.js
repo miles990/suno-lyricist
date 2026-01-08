@@ -79,6 +79,89 @@ function autoSetBPM() {
     }
 }
 
+// ===== 智能 Mix 預設系統 =====
+// 基於 Suno AI Secrets 的類型特定 Mix 設定
+const GENRE_MIX_PRESETS = {
+    // 電子/EDM
+    'house': ['bass-forward', 'wide stereo field', 'sidechain pumping'],
+    'deep-house': ['bass-forward', 'wide stereo field', 'natural dynamic range'],
+    'tech-house': ['bass-forward', 'bright crisp highs', 'sidechain pumping'],
+    'techno': ['low-end heavy', 'wide stereo field', 'heavily compressed loud'],
+    'trance': ['wide stereo field', 'bright crisp highs', 'sidechain pumping'],
+    'dubstep': ['low-end heavy', 'wide stereo field', 'heavily compressed loud'],
+    'drum-and-bass': ['bass-forward', 'wide stereo field', 'heavily compressed loud'],
+    'future-bass': ['bass-forward', 'wide stereo field', 'sidechain pumping'],
+    'lo-fi': ['analog warmth', 'tape saturation', 'vinyl crackle'],
+    'synthwave': ['analog warmth', 'wide stereo field', 'bright crisp highs'],
+    'electronic': ['wide stereo field', 'bright crisp highs', 'sidechain pumping'],
+    // 嘻哈
+    'hip-hop': ['bass-forward', 'mid-range focused', 'tape saturation'],
+    'trap': ['low-end heavy', 'wide stereo field', 'heavily compressed loud'],
+    'drill': ['low-end heavy', 'no reverb dry', 'heavily compressed loud'],
+    'boom-bap': ['analog warmth', 'mid-range focused', 'tape saturation'],
+    'phonk': ['bass-forward', 'tape saturation', 'heavily compressed loud'],
+    // 搖滾
+    'rock': ['mid-range focused', 'wide stereo field', 'natural dynamic range'],
+    'hard-rock': ['mid-range focused', 'wide stereo field', 'heavily compressed loud'],
+    'indie-rock': ['analog warmth', 'natural dynamic range', 'tight room reverb'],
+    'punk-rock': ['raw unpolished', 'mid-range focused', 'heavily compressed loud'],
+    'grunge': ['raw unpolished', 'mid-range focused', 'big hall reverb'],
+    'post-rock': ['wide stereo field', 'big hall reverb', 'natural dynamic range'],
+    // 金屬
+    'metal': ['mid-range focused', 'heavily compressed loud', 'tight room reverb'],
+    'heavy-metal': ['mid-range focused', 'heavily compressed loud', 'wide stereo field'],
+    // R&B/Soul
+    'r&b': ['analog warmth', 'mid-range focused', 'natural dynamic range'],
+    'neo-soul': ['analog warmth', 'natural dynamic range', 'tape saturation'],
+    'soul': ['analog warmth', 'mid-range focused', 'natural dynamic range'],
+    'funk': ['bass-forward', 'mid-range focused', 'natural dynamic range'],
+    // 爵士
+    'jazz': ['analog warmth', 'natural dynamic range', 'tight room reverb'],
+    'smooth-jazz': ['analog warmth', 'natural dynamic range', 'big hall reverb'],
+    // 民謠
+    'folk': ['analog warmth', 'natural dynamic range', 'tight room reverb'],
+    'country': ['analog warmth', 'mid-range focused', 'natural dynamic range'],
+    // 抒情
+    'ballad': ['analog warmth', 'big hall reverb', 'natural dynamic range'],
+    // 流行
+    'pop': ['digital precision', 'full-spectrum', 'heavily compressed loud'],
+    'k-pop': ['digital precision', 'bright crisp highs', 'heavily compressed loud'],
+    'j-pop': ['digital precision', 'bright crisp highs', 'wide stereo field'],
+    // 氛圍
+    'ambient': ['wide stereo field', 'big hall reverb', 'natural dynamic range'],
+    'dark-ambient': ['low-end heavy', 'big hall reverb', 'natural dynamic range'],
+    // 古典
+    'classical': ['natural dynamic range', 'big hall reverb', 'full-spectrum'],
+    'orchestral': ['natural dynamic range', 'big hall reverb', 'full-spectrum'],
+    'cinematic': ['wide stereo field', 'big hall reverb', 'natural dynamic range']
+};
+
+// 獲取 Mix 預設
+function getSuggestedMix(genre) {
+    return GENRE_MIX_PRESETS[genre] || null;
+}
+
+// 應用智能 Mix 預設
+function applySmartMix(genre) {
+    const mixPreset = getSuggestedMix(genre);
+    if (!mixPreset) return;
+
+    // 清除所有現有 mix 選擇
+    document.querySelectorAll('.mix-tag.active').forEach(tag => {
+        tag.classList.remove('active');
+    });
+
+    // 應用預設選擇
+    mixPreset.forEach(mixStyle => {
+        const tag = document.querySelector(`.mix-tag[data-style="${mixStyle}"]`);
+        if (tag) {
+            tag.classList.add('active');
+        }
+    });
+
+    showToast(`已套用 ${genre.toUpperCase()} 專業混音設定`, 'success');
+}
+
 // ===== Style Prompt 預設模板庫 =====
 const STYLE_PRESETS = {
     // 抒情類
@@ -2055,6 +2138,19 @@ function bindEvents() {
     // BPM 自動設定按鈕
     if (elements.bpmAutoBtn) {
         elements.bpmAutoBtn.addEventListener('click', autoSetBPM);
+    }
+
+    // Smart Mix 智能推薦按鈕
+    const smartMixBtn = document.getElementById('smart-mix-btn');
+    if (smartMixBtn) {
+        smartMixBtn.addEventListener('click', () => {
+            const genre = elements.songGenre.value;
+            if (genre) {
+                applySmartMix(genre);
+            } else {
+                showToast('請先選擇音樂風格', 'warning');
+            }
+        });
     }
 
     // 快速開始按鈕
