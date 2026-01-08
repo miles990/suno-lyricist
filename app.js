@@ -1511,34 +1511,140 @@ function formatFilename(isoString) {
     return isoString.replace(/[:.]/g, '-').slice(0, 19);
 }
 
+// ===== 版本歷史搜尋篩選系統 =====
+let historySearchQuery = '';
+let historyFilterGenre = '';
+let historySortOrder = 'newest';
+
+// 篩選版本歷史
+function filterVersionHistory() {
+    let filtered = [...versionHistory];
+
+    // 搜尋篩選（主題、歌詞、Style Prompt）
+    if (historySearchQuery.trim()) {
+        const query = historySearchQuery.toLowerCase().trim();
+        filtered = filtered.filter(v => {
+            const theme = (v.theme || '').toLowerCase();
+            const lyrics = (v.lyrics || '').toLowerCase();
+            const style = (v.stylePrompt || '').toLowerCase();
+            return theme.includes(query) || lyrics.includes(query) || style.includes(query);
+        });
+    }
+
+    // 風格篩選
+    if (historyFilterGenre) {
+        filtered = filtered.filter(v => v.genre === historyFilterGenre);
+    }
+
+    // 排序
+    switch (historySortOrder) {
+        case 'oldest':
+            filtered.sort((a, b) => a.id - b.id);
+            break;
+        case 'iterations':
+            filtered.sort((a, b) => (b.iteration || 0) - (a.iteration || 0));
+            break;
+        case 'newest':
+        default:
+            filtered.sort((a, b) => b.id - a.id);
+            break;
+    }
+
+    return filtered;
+}
+
+// 更新風格篩選選項
+function updateHistoryGenreFilter() {
+    const filterEl = document.getElementById('history-filter-genre');
+    if (!filterEl) return;
+
+    // 收集所有使用過的風格
+    const genres = new Set();
+    versionHistory.forEach(v => {
+        if (v.genre) genres.add(v.genre);
+    });
+
+    // 保留當前選擇
+    const currentValue = filterEl.value;
+
+    // 重建選項
+    let html = '<option value="">所有風格</option>';
+    [...genres].sort().forEach(genre => {
+        const selected = genre === currentValue ? 'selected' : '';
+        const displayName = genre.replace(/-/g, ' ');
+        html += `<option value="${genre}" ${selected}>${displayName}</option>`;
+    });
+
+    filterEl.innerHTML = html;
+}
+
+// 高亮搜尋匹配文字
+function highlightMatch(text, query) {
+    if (!query || !text) return text;
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+}
+
 // 更新版本歷史 UI
 function updateVersionHistoryUI() {
     const listEl = document.getElementById('version-list');
     const countEl = document.getElementById('version-count');
+    const resultCountEl = document.getElementById('history-result-count');
 
     if (countEl) {
         countEl.textContent = versionHistory.length;
     }
 
+    // 更新風格篩選選項
+    updateHistoryGenreFilter();
+
     if (!listEl) return;
 
     if (versionHistory.length === 0) {
         listEl.innerHTML = '<div class="version-empty">尚無版本記錄</div>';
+        if (resultCountEl) resultCountEl.textContent = '';
         return;
     }
 
-    // 按時間倒序顯示
-    const sortedVersions = [...versionHistory].reverse();
+    // 應用篩選和排序
+    const filteredVersions = filterVersionHistory();
 
-    listEl.innerHTML = sortedVersions.map(v => `
+    // 更新結果計數
+    if (resultCountEl) {
+        const isFiltered = historySearchQuery || historyFilterGenre;
+        resultCountEl.textContent = isFiltered
+            ? `${filteredVersions.length} / ${versionHistory.length} 筆`
+            : `共 ${versionHistory.length} 筆`;
+    }
+
+    // 無結果提示
+    if (filteredVersions.length === 0) {
+        listEl.innerHTML = `
+            <div class="version-empty">
+                <span class="empty-icon">🔍</span>
+                <p>找不到符合條件的版本</p>
+                <button type="button" class="btn-clear-filter" onclick="clearHistoryFilters()">清除篩選</button>
+            </div>`;
+        return;
+    }
+
+    listEl.innerHTML = filteredVersions.map(v => {
+        // 如果有搜尋，高亮顯示匹配內容
+        const themeDisplay = v.theme
+            ? highlightMatch(v.theme.slice(0, 20) + (v.theme.length > 20 ? '...' : ''), historySearchQuery)
+            : '';
+        const lyricsPreview = highlightMatch((v.lyrics || '').slice(0, 50) + '...', historySearchQuery);
+
+        return `
         <div class="version-item" data-id="${v.id}">
             <div class="version-info">
                 <div class="version-time">${formatTimestamp(v.timestamp)}</div>
                 <div class="version-meta">
-                    ${v.theme ? `<span class="version-theme">${v.theme.slice(0, 20)}${v.theme.length > 20 ? '...' : ''}</span>` : ''}
+                    ${themeDisplay ? `<span class="version-theme">${themeDisplay}</span>` : ''}
+                    ${v.genre ? `<span class="version-genre">${v.genre.replace(/-/g, ' ')}</span>` : ''}
                     ${v.iteration > 0 ? `<span class="version-iteration">第 ${v.iteration} 次迭代</span>` : '<span class="version-iteration">初始版本</span>'}
                 </div>
-                <div class="version-preview">${(v.lyrics || '').slice(0, 50)}...</div>
+                <div class="version-preview">${lyricsPreview}</div>
             </div>
             <div class="version-actions">
                 <button class="version-btn restore" title="恢復此版本" onclick="restoreVersion(${v.id})">
@@ -1552,7 +1658,77 @@ function updateVersionHistoryUI() {
                 </button>
             </div>
         </div>
-    `).join('');
+    `}).join('');
+}
+
+// 清除所有篩選
+function clearHistoryFilters() {
+    historySearchQuery = '';
+    historyFilterGenre = '';
+    historySortOrder = 'newest';
+
+    const searchInput = document.getElementById('history-search');
+    const genreFilter = document.getElementById('history-filter-genre');
+    const sortFilter = document.getElementById('history-filter-sort');
+    const clearBtn = document.getElementById('history-search-clear');
+
+    if (searchInput) searchInput.value = '';
+    if (genreFilter) genreFilter.value = '';
+    if (sortFilter) sortFilter.value = 'newest';
+    if (clearBtn) clearBtn.classList.add('hidden');
+
+    updateVersionHistoryUI();
+}
+
+// 初始化版本歷史搜尋篩選
+function initHistorySearch() {
+    const searchInput = document.getElementById('history-search');
+    const clearBtn = document.getElementById('history-search-clear');
+    const genreFilter = document.getElementById('history-filter-genre');
+    const sortFilter = document.getElementById('history-filter-sort');
+
+    // 搜尋輸入（防抖）
+    let searchTimeout;
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                historySearchQuery = e.target.value;
+                updateVersionHistoryUI();
+
+                // 顯示/隱藏清除按鈕
+                if (clearBtn) {
+                    clearBtn.classList.toggle('hidden', !e.target.value);
+                }
+            }, 200);
+        });
+    }
+
+    // 清除按鈕
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            historySearchQuery = '';
+            clearBtn.classList.add('hidden');
+            updateVersionHistoryUI();
+        });
+    }
+
+    // 風格篩選
+    if (genreFilter) {
+        genreFilter.addEventListener('change', (e) => {
+            historyFilterGenre = e.target.value;
+            updateVersionHistoryUI();
+        });
+    }
+
+    // 排序篩選
+    if (sortFilter) {
+        sortFilter.addEventListener('change', (e) => {
+            historySortOrder = e.target.value;
+            updateVersionHistoryUI();
+        });
+    }
 }
 
 // 開啟歷史面板
@@ -2200,6 +2376,9 @@ function bindEvents() {
     if (historyOverlay) {
         historyOverlay.addEventListener('click', closeHistoryPanel);
     }
+
+    // 初始化版本歷史搜尋篩選
+    initHistorySearch();
 
     // 標籤按鈕
     elements.tagButtons.forEach(btn => {
