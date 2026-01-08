@@ -2182,6 +2182,57 @@ function toggleMaxModeOptions() {
     }
 }
 
+// ===== Pro Tips (專業小技巧) =====
+const PRO_TIPS = [
+    '前 20-30 個詞最重要，關鍵標籤請放在最前面',
+    '每個部分使用 1-3 個描述詞，避免過載',
+    '最多使用 2-3 種樂器，保持聲音清晰',
+    '"西班牙尼龍吉他琶音" 優於 "吉他"，越具體越好',
+    '複雜曲目至少需預算 3-10 次生成才能成功',
+    '使用 [MIX: ...] 標籤是製作魔法發生的地方',
+    'BPM 指導一切，務必在曲風行中包含 BPM',
+    '為主歌/副歌/橋段定義不同的氛圍和能量',
+    '定義人聲的即興詞 (Ad-libs) 增加真實感',
+    '聲音混濁？將效果減少到最多 3-4 個',
+    '使用 [TRANSITION] 標籤創造平滑的風格轉換',
+    '簡單請求成功率 70-90%，複雜效果 30-60%',
+    '標籤可能需要 2-3 次生成才能穩定生效',
+    '使用對比描述詞可創造戲劇性的風格變化'
+];
+
+let currentTipIndex = 0;
+
+function initProTips() {
+    const tipText = document.getElementById('pro-tip-text');
+    const nextBtn = document.getElementById('pro-tip-next');
+
+    if (!tipText || !nextBtn) return;
+
+    // 隨機開始
+    currentTipIndex = Math.floor(Math.random() * PRO_TIPS.length);
+    tipText.textContent = PRO_TIPS[currentTipIndex];
+
+    // 點擊下一則
+    nextBtn.addEventListener('click', () => {
+        currentTipIndex = (currentTipIndex + 1) % PRO_TIPS.length;
+        tipText.style.opacity = '0';
+        setTimeout(() => {
+            tipText.textContent = PRO_TIPS[currentTipIndex];
+            tipText.style.opacity = '1';
+        }, 150);
+    });
+
+    // 自動輪播（每 8 秒）
+    setInterval(() => {
+        currentTipIndex = (currentTipIndex + 1) % PRO_TIPS.length;
+        tipText.style.opacity = '0';
+        setTimeout(() => {
+            tipText.textContent = PRO_TIPS[currentTipIndex];
+            tipText.style.opacity = '1';
+        }, 150);
+    }, 8000);
+}
+
 // ===== Song Lab (歌曲實驗室) =====
 const labElements = {
     genre: null,
@@ -2234,6 +2285,9 @@ function initSongLab() {
 
     // 載入已保存的組合
     renderLabSaved();
+
+    // 初始化專業小技巧
+    initProTips();
 }
 
 function randomizeSelect(select) {
