@@ -4692,6 +4692,37 @@ function initClearTagButtons() {
     }
 }
 
+// ===== Scroll to Top 功能 =====
+function initScrollToTop() {
+    const scrollTopBtn = document.getElementById('scroll-top-btn');
+    if (!scrollTopBtn) return;
+
+    // 監聽滾動事件
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                // 當滾動超過 300px 時顯示按鈕
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.add('visible');
+                } else {
+                    scrollTopBtn.classList.remove('visible');
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    // 點擊返回頂部
+    scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
@@ -4700,3 +4731,4 @@ initLyricsStatsObserver();
 initDownloadTxt();
 initInspirationBtn();
 initClearTagButtons();
+initScrollToTop();
