@@ -79,6 +79,192 @@ function autoSetBPM() {
     }
 }
 
+// ===== 智能主題分析系統 =====
+// 主題關鍵詞與推薦風格映射
+const THEME_KEYWORDS = {
+    // 愛情/浪漫
+    love: { genres: ['ballad', 'r&b', 'pop'], moods: ['romantic'], vocals: ['soft', 'female'], keywords: ['愛', '戀', '心', 'love', 'heart', '愛情', '浪漫', '想你', '喜歡'] },
+    heartbreak: { genres: ['ballad', 'r&b'], moods: ['sad', 'melancholic'], vocals: ['soft'], keywords: ['分手', '離開', '眼淚', '傷心', 'broken', 'tears', '失戀', '心碎'] },
+    // 季節/自然
+    summer: { genres: ['pop', 'dance-pop', 'reggaeton'], moods: ['happy', 'energetic'], keywords: ['夏天', '夏日', '海灘', '陽光', 'summer', 'beach', 'sun'] },
+    night: { genres: ['r&b', 'lo-fi', 'jazz'], moods: ['dreamy', 'peaceful'], keywords: ['夜', '晚', '月', 'night', 'moon', 'midnight', '夜晚', '星空'] },
+    rain: { genres: ['lo-fi', 'jazz', 'ballad'], moods: ['melancholic', 'peaceful'], keywords: ['雨', 'rain', '下雨', '雨天'] },
+    // 情緒
+    party: { genres: ['edm', 'dance-pop', 'house'], moods: ['energetic', 'happy'], vocals: ['powerful'], keywords: ['派對', 'party', '跳舞', 'dance', '嗨', 'club'] },
+    chill: { genres: ['lo-fi', 'chillwave', 'ambient'], moods: ['peaceful', 'dreamy'], keywords: ['放鬆', 'chill', 'relax', '慵懶', '悠閒'] },
+    hype: { genres: ['hip-hop', 'trap', 'edm'], moods: ['energetic', 'angry'], vocals: ['rap', 'powerful'], keywords: ['嘻哈', 'rap', '說唱', 'flow', 'hustle', '錢', 'money'] },
+    // 城市/生活
+    city: { genres: ['synthwave', 'pop', 'r&b'], moods: ['nostalgic', 'dreamy'], keywords: ['城市', 'city', '都市', '街', '霓虹', 'neon'] },
+    journey: { genres: ['folk', 'indie-rock', 'cinematic'], moods: ['hopeful', 'nostalgic'], keywords: ['旅行', 'journey', 'road', '路上', '遠方', '流浪'] },
+    // 復古
+    retro: { genres: ['synthwave', 'disco', 'funk'], moods: ['nostalgic', 'energetic'], keywords: ['復古', 'retro', '80s', '90s', '懷舊', 'vintage'] },
+    // 黑暗/神秘
+    dark: { genres: ['dark-ambient', 'metal', 'trap'], moods: ['angry', 'melancholic'], keywords: ['黑暗', 'dark', '惡夢', '恐懼', 'nightmare', '暗'] },
+    // 勵志
+    inspirational: { genres: ['pop', 'rock', 'gospel'], moods: ['hopeful', 'energetic'], vocals: ['powerful'], keywords: ['夢想', 'dream', '希望', 'hope', '堅強', '勇氣', 'believe', '相信'] }
+};
+
+// 分析主題並生成推薦
+function analyzeTheme(theme) {
+    if (!theme || theme.trim().length === 0) {
+        return null;
+    }
+
+    const lowerTheme = theme.toLowerCase();
+    const recommendations = {
+        genres: [],
+        moods: [],
+        vocals: [],
+        instruments: [],
+        tempo: null
+    };
+
+    // 匹配關鍵詞
+    for (const [category, config] of Object.entries(THEME_KEYWORDS)) {
+        for (const keyword of config.keywords) {
+            if (lowerTheme.includes(keyword.toLowerCase())) {
+                if (config.genres) recommendations.genres.push(...config.genres);
+                if (config.moods) recommendations.moods.push(...config.moods);
+                if (config.vocals) recommendations.vocals.push(...config.vocals);
+                break;
+            }
+        }
+    }
+
+    // 去重
+    recommendations.genres = [...new Set(recommendations.genres)].slice(0, 3);
+    recommendations.moods = [...new Set(recommendations.moods)].slice(0, 2);
+    recommendations.vocals = [...new Set(recommendations.vocals)].slice(0, 2);
+
+    // 根據推薦的 genre 添加樂器和 tempo
+    if (recommendations.genres.length > 0) {
+        const primaryGenre = recommendations.genres[0];
+        const genreSuggestion = GENRE_SUGGESTIONS[primaryGenre];
+        if (genreSuggestion) {
+            recommendations.instruments = genreSuggestion.instruments.slice(0, 3);
+            recommendations.tempo = genreSuggestion.tempos[0];
+        }
+    }
+
+    return recommendations.genres.length > 0 ? recommendations : null;
+}
+
+// 顯示主題推薦
+function showThemeSuggestions(recommendations) {
+    const panel = document.getElementById('theme-suggestions');
+    const tagsContainer = document.getElementById('suggestion-tags');
+
+    if (!recommendations || !panel || !tagsContainer) return;
+
+    let tagsHTML = '';
+
+    // 風格標籤
+    recommendations.genres.forEach(genre => {
+        const genreText = genre.replace(/-/g, ' ');
+        tagsHTML += `<span class="suggestion-tag" data-type="genre" data-value="${genre}">
+            <span class="tag-category">風格</span> ${genreText}
+        </span>`;
+    });
+
+    // 情緒標籤
+    recommendations.moods.forEach(mood => {
+        tagsHTML += `<span class="suggestion-tag" data-type="mood" data-value="${mood}">
+            <span class="tag-category">情緒</span> ${mood}
+        </span>`;
+    });
+
+    // 人聲標籤
+    recommendations.vocals.forEach(vocal => {
+        tagsHTML += `<span class="suggestion-tag" data-type="vocal" data-value="${vocal}">
+            <span class="tag-category">人聲</span> ${vocal}
+        </span>`;
+    });
+
+    // 樂器標籤
+    recommendations.instruments.forEach(inst => {
+        tagsHTML += `<span class="suggestion-tag" data-type="instrument" data-value="${inst}">
+            <span class="tag-category">樂器</span> ${inst}
+        </span>`;
+    });
+
+    tagsContainer.innerHTML = tagsHTML;
+    panel.classList.remove('hidden');
+
+    // 綁定標籤點擊事件
+    tagsContainer.querySelectorAll('.suggestion-tag').forEach(tag => {
+        tag.addEventListener('click', () => applySingleSuggestion(tag));
+    });
+}
+
+// 套用單個推薦
+function applySingleSuggestion(tag) {
+    const type = tag.dataset.type;
+    const value = tag.dataset.value;
+
+    switch (type) {
+        case 'genre':
+            document.getElementById('song-genre').value = value;
+            updateBPMSuggestion(value);
+            autoSetBPM();
+            break;
+        case 'mood':
+            document.getElementById('song-mood').value = value;
+            break;
+        case 'vocal':
+            document.getElementById('vocal-style').value = value;
+            break;
+        case 'instrument':
+            const instTag = document.querySelector(`.instrument-tag[data-style="${value}"]`);
+            if (instTag && !instTag.classList.contains('active')) {
+                instTag.click();
+            }
+            break;
+    }
+
+    tag.style.opacity = '0.5';
+    tag.style.pointerEvents = 'none';
+    showToast(`已套用: ${value}`, 'success');
+}
+
+// 套用全部推薦
+function applyAllSuggestions() {
+    const tags = document.querySelectorAll('#suggestion-tags .suggestion-tag');
+    tags.forEach(tag => {
+        if (tag.style.opacity !== '0.5') {
+            applySingleSuggestion(tag);
+        }
+    });
+}
+
+// 初始化智能分析功能
+function initSmartAnalyze() {
+    const analyzeBtn = document.getElementById('smart-analyze-btn');
+    const themeInput = document.getElementById('song-theme');
+    const applyBtn = document.getElementById('apply-suggestions');
+
+    if (analyzeBtn && themeInput) {
+        analyzeBtn.addEventListener('click', () => {
+            const theme = themeInput.value;
+            if (!theme.trim()) {
+                showToast('請先輸入歌曲主題', 'error');
+                return;
+            }
+
+            const recommendations = analyzeTheme(theme);
+            if (recommendations) {
+                showThemeSuggestions(recommendations);
+                showToast('已分析主題並生成推薦', 'success');
+            } else {
+                showToast('無法識別主題關鍵詞，請嘗試更具體的描述', 'info');
+            }
+        });
+    }
+
+    if (applyBtn) {
+        applyBtn.addEventListener('click', applyAllSuggestions);
+    }
+}
+
 // ===== 智能 Mix 預設系統 =====
 // 基於 Suno AI Secrets 的類型特定 Mix 設定
 const GENRE_MIX_PRESETS = {
@@ -1888,6 +2074,9 @@ function init() {
 
     // 初始化歌詞分析
     initLyricsAnalysis();
+
+    // 初始化智能主題分析
+    initSmartAnalyze();
 
     // 檢查是否首次使用，顯示引導精靈
     const hasUsedBefore = localStorage.getItem('suno-has-used');

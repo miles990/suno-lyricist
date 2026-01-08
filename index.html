@@ -87,8 +87,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="song-theme">歌曲主題</label>
+                    <label for="song-theme">
+                        歌曲主題
+                        <button type="button" id="smart-analyze-btn" class="btn-smart-analyze" title="根據主題智能推薦風格">🔮 智能推薦</button>
+                    </label>
                     <input type="text" id="song-theme" placeholder="例：夏日海灘的愛情故事">
+                    <div id="theme-suggestions" class="theme-suggestions hidden">
+                        <div class="suggestion-header">
+                            <span class="suggestion-icon">💡</span>
+                            <span>根據主題推薦</span>
+                            <button type="button" id="apply-suggestions" class="btn-apply-suggestions">套用全部</button>
+                        </div>
+                        <div class="suggestion-tags" id="suggestion-tags">
+                            <!-- 動態生成推薦標籤 -->
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
