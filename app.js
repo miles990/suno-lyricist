@@ -184,6 +184,15 @@ const elements = {
     tabs: document.querySelectorAll('.tab'),
     tabContents: document.querySelectorAll('.tab-content'),
 
+    // API Mode
+    apiModeBackend: document.getElementById('api-mode-backend'),
+    apiModeDirect: document.getElementById('api-mode-direct'),
+    backendConfig: document.getElementById('backend-config'),
+    directApiConfig: document.getElementById('direct-api-config'),
+    backendUrl: document.getElementById('backend-url'),
+    checkBackend: document.getElementById('check-backend'),
+    backendStatus: document.getElementById('backend-status'),
+
     // AI Generate
     apiKey: document.getElementById('api-key'),
     toggleApiKey: document.getElementById('toggle-api-key'),
@@ -244,10 +253,22 @@ const elements = {
 
 // ===== 初始化 =====
 function init() {
-    // 從 localStorage 載入 API Key
+    // 從 localStorage 載入設定
     const savedApiKey = localStorage.getItem('claude-api-key');
     if (savedApiKey) {
         elements.apiKey.value = savedApiKey;
+    }
+
+    const savedBackendUrl = localStorage.getItem('backend-url');
+    if (savedBackendUrl) {
+        elements.backendUrl.value = savedBackendUrl;
+    }
+
+    const savedApiMode = localStorage.getItem('api-mode') || 'backend';
+    if (savedApiMode === 'direct') {
+        elements.apiModeDirect.checked = true;
+        elements.backendConfig.classList.add('hidden');
+        elements.directApiConfig.classList.remove('hidden');
     }
 
     // 綁定事件
@@ -255,6 +276,11 @@ function init() {
 
     // 更新編輯器計數
     updateEditorCounts();
+
+    // 檢查後端狀態
+    if (savedApiMode === 'backend') {
+        checkBackendStatus();
+    }
 }
 
 // ===== 事件綁定 =====
@@ -263,6 +289,22 @@ function bindEvents() {
     elements.tabs.forEach(tab => {
         tab.addEventListener('click', () => switchTab(tab.dataset.tab));
     });
+
+    // API Mode 切換
+    elements.apiModeBackend.addEventListener('change', () => {
+        toggleApiMode('backend');
+    });
+    elements.apiModeDirect.addEventListener('change', () => {
+        toggleApiMode('direct');
+    });
+
+    // 後端 URL 儲存
+    elements.backendUrl.addEventListener('change', () => {
+        localStorage.setItem('backend-url', elements.backendUrl.value);
+    });
+
+    // 檢查後端連線
+    elements.checkBackend.addEventListener('click', checkBackendStatus);
 
     // API Key 顯示/隱藏
     elements.toggleApiKey.addEventListener('click', toggleApiKeyVisibility);
@@ -371,6 +413,50 @@ function switchTab(tabId) {
     });
 }
 
+// ===== API Mode 切換 =====
+function toggleApiMode(mode) {
+    localStorage.setItem('api-mode', mode);
+    if (mode === 'backend') {
+        elements.backendConfig.classList.remove('hidden');
+        elements.directApiConfig.classList.add('hidden');
+        checkBackendStatus();
+    } else {
+        elements.backendConfig.classList.add('hidden');
+        elements.directApiConfig.classList.remove('hidden');
+    }
+}
+
+// ===== 檢查後端狀態 =====
+async function checkBackendStatus() {
+    const url = elements.backendUrl.value.trim();
+    elements.backendStatus.textContent = '檢查中...';
+    elements.backendStatus.className = '';
+
+    try {
+        const response = await fetch(`${url}/api/health`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.auth?.auth_available) {
+                elements.backendStatus.textContent = `已連線 (${data.auth.auth_method})`;
+                elements.backendStatus.className = 'connected';
+            } else {
+                elements.backendStatus.textContent = '已連線，但未認證。請執行 claude login';
+                elements.backendStatus.className = 'error';
+            }
+        } else {
+            elements.backendStatus.textContent = '連線失敗，請確認後端已啟動';
+            elements.backendStatus.className = 'error';
+        }
+    } catch (error) {
+        elements.backendStatus.textContent = '無法連線，請啟動後端: cd backend && python main.py';
+        elements.backendStatus.className = 'error';
+    }
+}
+
 // ===== API Key 顯示/隱藏 =====
 function toggleApiKeyVisibility() {
     const input = elements.apiKey;
@@ -379,8 +465,11 @@ function toggleApiKeyVisibility() {
 
 // ===== 生成歌詞 =====
 async function generateLyrics() {
+    const isBackendMode = elements.apiModeBackend.checked;
     const apiKey = elements.apiKey.value.trim();
-    if (!apiKey) {
+
+    // 驗證認證
+    if (!isBackendMode && !apiKey) {
         showToast('請輸入 Claude API Key', 'error');
         return;
     }
@@ -440,7 +529,12 @@ async function generateLyrics() {
     setGeneratingState(true);
 
     try {
-        const lyrics = await callClaudeAPI(apiKey, prompt);
+        let lyrics;
+        if (isBackendMode) {
+            lyrics = await callBackendAPI(prompt);
+        } else {
+            lyrics = await callClaudeAPI(apiKey, prompt);
+        }
         displayLyrics(lyrics);
         showToast('歌詞生成成功！', 'success');
     } catch (error) {
@@ -633,7 +727,34 @@ ${styleOptions.lyricBleedProtection ? '1. 最開頭加入 ///*****/// 分隔符\
     return prompt;
 }
 
-// ===== 呼叫 Claude API =====
+// ===== 呼叫後端 API =====
+async function callBackendAPI(prompt) {
+    const url = elements.backendUrl.value.trim();
+    const response = await fetch(`${url}/api/generate`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            prompt: prompt,
+            max_tokens: 2000
+        })
+    });
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.detail || `HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (!data.success) {
+        throw new Error(data.error || '生成失敗');
+    }
+    return data.content;
+}
+
+// ===== 呼叫 Claude API (直接) =====
 async function callClaudeAPI(apiKey, prompt) {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',

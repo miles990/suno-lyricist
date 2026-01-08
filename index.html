@@ -23,6 +23,31 @@
         <div id="ai-generate" class="tab-content active">
             <div class="form-section">
                 <div class="form-group">
+                    <label>API 模式</label>
+                    <div class="api-mode-selector">
+                        <label class="radio-label">
+                            <input type="radio" name="api-mode" value="backend" id="api-mode-backend" checked>
+                            <span>本地後端</span>
+                            <small>使用 claude login 認證 (Max/Pro)</small>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="api-mode" value="direct" id="api-mode-direct">
+                            <span>直接 API</span>
+                            <small>使用 API Key (按量計費)</small>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="backend-config" class="form-group">
+                    <label for="backend-url">後端 URL</label>
+                    <div class="api-key-wrapper">
+                        <input type="text" id="backend-url" value="http://localhost:8000">
+                        <button id="check-backend" class="btn-icon" title="檢查連線">🔍</button>
+                    </div>
+                    <small id="backend-status">啟動後端: cd backend && pip install -r requirements.txt && python main.py</small>
+                </div>
+
+                <div id="direct-api-config" class="form-group hidden">
                     <label for="api-key">Claude API Key</label>
                     <div class="api-key-wrapper">
                         <input type="password" id="api-key" placeholder="sk-ant-...">

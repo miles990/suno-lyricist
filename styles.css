@@ -187,6 +187,56 @@ small {
     background: var(--secondary);
 }
 
+/* ===== API Mode Selector ===== */
+.api-mode-selector {
+    display: flex;
+    gap: 1rem;
+}
+
+.api-mode-selector .radio-label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: var(--bg-input);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.api-mode-selector .radio-label:hover {
+    border-color: var(--primary);
+}
+
+.api-mode-selector .radio-label:has(input:checked) {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.api-mode-selector input[type="radio"] {
+    display: none;
+}
+
+.api-mode-selector span {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.api-mode-selector small {
+    margin-top: 0;
+    font-size: 0.75rem;
+}
+
+#backend-status.connected {
+    color: var(--success);
+}
+
+#backend-status.error {
+    color: var(--danger);
+}
+
 /* ===== Structure Options ===== */
 .structure-options {
     display: flex;
