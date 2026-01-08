@@ -4267,6 +4267,7 @@ const KEYBOARD_SHORTCUTS = {
     'h': { action: 'history', description: '開啟歷史面板', key: 'H' },
     'a': { action: 'analyze', description: '分析歌詞', key: 'A' },
     'r': { action: 'random', description: '隨機風格組合', key: 'R' },
+    't': { action: 'theme', description: '切換深/淺色模式', key: 'T' },
     '/': { action: 'help', description: '顯示快捷鍵說明', key: '/' },
     'Escape': { action: 'close', description: '關閉彈窗', key: 'Esc' }
 };
@@ -4314,6 +4315,13 @@ function initKeyboardShortcuts() {
                 if (randomAllBtn) {
                     randomAllBtn.click();
                     showToast('已隨機生成風格組合！', 'success');
+                }
+                break;
+            case 'theme':
+                // 觸發主題切換
+                const themeToggleBtn = document.getElementById('theme-toggle-btn');
+                if (themeToggleBtn) {
+                    themeToggleBtn.click();
                 }
                 break;
             case 'help':
@@ -4384,7 +4392,72 @@ function closeAllPanels() {
     if (themeSuggestions) themeSuggestions.classList.add('hidden');
 }
 
+// ===== 深色/淺色主題切換 =====
+function initThemeToggle() {
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const themeIcon = themeToggleBtn?.querySelector('.theme-icon');
+
+    // 從 localStorage 載入主題設定
+    const savedTheme = localStorage.getItem('suno-lyricist-theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme === 'light');
+    } else {
+        // 檢測系統偏好
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (!prefersDark) {
+            document.documentElement.setAttribute('data-theme', 'light');
+            updateThemeIcon(true);
+        }
+    }
+
+    function updateThemeIcon(isLight) {
+        if (themeIcon) {
+            themeIcon.textContent = isLight ? '☀️' : '🌙';
+        }
+        if (themeToggleBtn) {
+            themeToggleBtn.title = isLight ? '切換到深色模式' : '切換到淺色模式';
+        }
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+        if (newTheme === 'dark') {
+            document.documentElement.removeAttribute('data-theme');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+
+        localStorage.setItem('suno-lyricist-theme', newTheme);
+        updateThemeIcon(newTheme === 'light');
+
+        showToast(`已切換到${newTheme === 'light' ? '淺色' : '深色'}模式`, 'success');
+    }
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+    }
+
+    // 監聽系統主題變化
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        const savedTheme = localStorage.getItem('suno-lyricist-theme');
+        // 只在沒有手動設定時跟隨系統
+        if (!savedTheme) {
+            if (e.matches) {
+                document.documentElement.removeAttribute('data-theme');
+                updateThemeIcon(false);
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                updateThemeIcon(true);
+            }
+        }
+    });
+}
+
 // ===== 啟動應用 =====
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
+initThemeToggle();

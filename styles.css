@@ -3463,3 +3463,165 @@ header {
         box-shadow: none;
     }
 }
+
+/* ===== Light Theme Variables ===== */
+[data-theme="light"] {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --secondary: #64748b;
+    --secondary-hover: #475569;
+    --success: #16a34a;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --bg-dark: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-input: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --border-focus: #6366f1;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Theme Toggle Button ===== */
+.btn-theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-theme-toggle:hover {
+    transform: scale(1.1);
+    background: var(--bg-input);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+}
+
+.btn-theme-toggle .theme-icon {
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+[data-theme="light"] .btn-theme-toggle .theme-icon {
+    transform: rotate(360deg);
+}
+
+/* Light theme specific adjustments */
+[data-theme="light"] .form-section,
+[data-theme="light"] .result-section {
+    background: var(--bg-card);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+    background: var(--bg-input);
+    border-color: var(--border);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] select:focus,
+[data-theme="light"] textarea:focus {
+    background: #ffffff;
+    border-color: var(--border-focus);
+}
+
+[data-theme="light"] .tab {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .tab:hover {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .tab.active {
+    color: var(--primary);
+}
+
+[data-theme="light"] .style-tag,
+[data-theme="light"] .structure-tag {
+    background: var(--bg-input);
+    border-color: var(--border);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .style-tag:hover,
+[data-theme="light"] .structure-tag:hover {
+    background: #e2e8f0;
+}
+
+[data-theme="light"] .style-tag.active,
+[data-theme="light"] .structure-tag.active {
+    background: var(--primary);
+    color: white;
+}
+
+[data-theme="light"] .history-panel {
+    background: var(--bg-card);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .version-card {
+    background: var(--bg-input);
+    border-color: var(--border);
+}
+
+[data-theme="light"] .version-card:hover {
+    background: #e2e8f0;
+}
+
+[data-theme="light"] code,
+[data-theme="light"] pre {
+    background: var(--bg-input);
+    border-color: var(--border);
+}
+
+[data-theme="light"] .toast {
+    background: var(--bg-card);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .modal-content {
+    background: var(--bg-card);
+}
+
+[data-theme="light"] .keyboard-shortcuts-panel {
+    background: var(--bg-card);
+}
+
+[data-theme="light"] kbd {
+    background: var(--bg-input);
+    border-color: var(--border);
+    box-shadow: 0 2px 0 var(--border);
+}
+
+/* Theme transition */
+body,
+.form-section,
+.result-section,
+input,
+select,
+textarea,
+.tab,
+.style-tag,
+.structure-tag,
+.history-panel,
+.version-card,
+.toast,
+.modal-content,
+.btn-theme-toggle {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
