@@ -716,7 +716,8 @@ related_skills: [frontend-design, ux-design, javascript, suno-ai]
 | 第十五階段 | 標籤快速清除 | ~86 行 |
 | 第十六階段 | 返回頂部按鈕 | ~113 行 |
 | 第十七階段 | 表單完成度進度條 | ~196 行 |
-| **總計** | **24+ 核心功能** | **~4,550 行** |
+| 第十八階段 | AI 生成載入動畫 | ~75 行 |
+| **總計** | **25+ 核心功能** | **~4,625 行** |
 
 ---
 
@@ -817,3 +818,47 @@ related_skills: [frontend-design, ux-design, javascript, suno-ai]
 | index.html | ~12 行 |
 | styles.css | ~91 行 |
 | 總計 | ~196 行 |
+
+---
+
+## 第十八階段改進 (2026-01-09)
+
+### 1. AI 生成載入階段動畫
+
+**位置**: `app.js:4830-4868, 3986-4006`, `index.html:1230-1233`, `styles.css:1537-1563`
+
+**功能**:
+- `LOADING_STAGES`: 8 個創作階段提示
+- `startLoadingStageAnimation()`: 啟動動畫循環
+- `stopLoadingStageAnimation()`: 停止動畫
+- 整合到 `setGeneratingState()` 函數
+
+**載入階段提示**:
+1. 準備中...
+2. 分析主題...
+3. 構思結構...
+4. 撰寫主歌...
+5. 創作副歌...
+6. 編寫橋段...
+7. 潤飾歌詞...
+8. 最終調整...
+
+**技術特點**:
+- `setInterval` 每 1.5 秒切換階段
+- `spin` 動畫旋轉 spinner
+- `fadeInOut` 動畫讓文字過渡自然
+- `window` 掛載函數供跨作用域調用
+
+**UI 設計**:
+- 白色旋轉圓圈 spinner (16px)
+- 動態文字配合 fade 動畫
+- inline-flex 對齊 spinner 和文字
+
+### 第十八階段統計
+
+| 檔案 | 第十八階段新增行數 |
+|------|-----------------|
+| app.js | ~48 行 |
+| index.html | ~4 行 |
+| styles.css | ~28 行 |
+| 總計 | ~75 行 |
