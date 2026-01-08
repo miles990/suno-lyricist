@@ -560,11 +560,34 @@ small {
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.25s ease;
 }
 
 .btn-primary:hover:not(:disabled) {
     background: var(--primary-hover);
+}
+
+/* Enhanced Generate Button */
+#generate-btn {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    font-size: 1.2rem;
+    padding: 1.1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+#generate-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+    background: linear-gradient(135deg, #5558e8, #7c3aed);
+}
+
+#generate-btn:active:not(:disabled) {
+    transform: translateY(0);
 }
 
 .btn-primary:disabled {
@@ -3170,19 +3193,20 @@ header {
     cursor: not-allowed;
 }
 
-/* Suno 複製按鈕 */
+/* Suno 複製按鈕 - 突出的成功動作按鈕 */
 .btn-suno-copy {
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%);
+    background: linear-gradient(135deg, #10b981, #059669);
     color: white;
     border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 500;
+    transition: all 0.25s ease;
+    font-weight: 600;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
 }
 
 .btn-suno-copy::before {
@@ -3206,13 +3230,14 @@ header {
 }
 
 .btn-suno-copy:hover:not(:disabled) {
-    transform: scale(1.05);
-    box-shadow: 0 2px 12px rgba(249, 115, 22, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
 }
 
 .btn-suno-copy:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    background: var(--bg-input);
 }
 
 .lyrics-analysis {
@@ -5378,27 +5403,6 @@ textarea,
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
-}
-
-/* ===== Enhanced Copy to Suno Button ===== */
-.btn-suno-copy {
-    background: linear-gradient(135deg, #10b981, #059669) !important;
-    color: white !important;
-    font-weight: 600;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    border: none;
-    transition: all 0.25s ease;
-}
-
-.btn-suno-copy:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
-}
-
-.btn-suno-copy:disabled {
-    background: var(--bg-tertiary) !important;
-    color: var(--text-muted) !important;
 }
 
 /* ===== Quick Mode Responsive ===== */
