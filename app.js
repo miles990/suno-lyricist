@@ -5,6 +5,726 @@ let iterationCount = 0;
 let currentLyrics = '';
 let currentStylePrompt = '';
 
+// ===== Style Prompt 預設模板庫 =====
+const STYLE_PRESETS = {
+    // 抒情類
+    'romantic-ballad': {
+        name: '浪漫抒情',
+        icon: '💕',
+        category: 'ballad',
+        description: '溫柔浪漫的情歌風格',
+        stylePrompt: 'Romantic Ballad, soft female vocals, piano, strings ensemble, warm reverb, intimate, emotional, 90 BPM',
+        suggestedGenre: 'ballad',
+        suggestedMood: 'romantic',
+        suggestedVocal: 'female',
+        suggestedTempo: 'slow',
+        instruments: ['piano', 'strings ensemble', 'acoustic guitar'],
+        vocalTechniques: ['vibrato', 'breathy vocals']
+    },
+    'emotional-piano': {
+        name: '深情鋼琴',
+        icon: '🎹',
+        category: 'ballad',
+        description: '以鋼琴為主的深情曲風',
+        stylePrompt: 'Emotional Piano Ballad, male vocals, grand piano, subtle strings, melancholic, heartfelt, intimate room acoustics, 70 BPM',
+        suggestedGenre: 'ballad',
+        suggestedMood: 'melancholic',
+        suggestedVocal: 'male',
+        suggestedTempo: 'slow',
+        instruments: ['piano', 'strings ensemble'],
+        vocalTechniques: ['vibrato', 'falsetto']
+    },
+    // 流行類
+    'energetic-pop': {
+        name: '活力流行',
+        icon: '⚡',
+        category: 'pop',
+        description: '充滿能量的流行舞曲',
+        stylePrompt: 'Energetic Pop, catchy hooks, synth, punchy drums, upbeat, bright female vocals, dance-worthy, 120 BPM',
+        suggestedGenre: 'pop',
+        suggestedMood: 'energetic',
+        suggestedVocal: 'female',
+        suggestedTempo: 'fast',
+        instruments: ['synth', 'drums', 'synth pads'],
+        vocalTechniques: ['belting', 'ad-libs']
+    },
+    'chill-pop': {
+        name: '慵懶流行',
+        icon: '🌴',
+        category: 'pop',
+        description: '放鬆慵懶的流行風格',
+        stylePrompt: 'Chill Pop, laid-back groove, soft synth pads, mellow bass, dreamy vocals, summer vibes, 95 BPM',
+        suggestedGenre: 'pop',
+        suggestedMood: 'peaceful',
+        suggestedVocal: 'soft',
+        suggestedTempo: 'medium',
+        instruments: ['synth pads', 'bass guitar', 'acoustic guitar'],
+        vocalTechniques: ['breathy vocals']
+    },
+    'retro-80s': {
+        name: '80年代復古',
+        icon: '📼',
+        category: 'pop',
+        description: '經典 80 年代合成器風格',
+        stylePrompt: '80s Synthpop, retro synthesizers, gated reverb drums, vintage feel, nostalgic, analog warmth, 110 BPM',
+        suggestedGenre: 'electronic',
+        suggestedMood: 'nostalgic',
+        suggestedVocal: 'powerful',
+        suggestedTempo: 'medium',
+        instruments: ['synth', 'synth pads', 'drum machine'],
+        vocalTechniques: ['belting']
+    },
+    // 電子類
+    'edm-drop': {
+        name: '電子舞曲',
+        icon: '🎧',
+        category: 'electronic',
+        description: '強力電音節拍',
+        stylePrompt: 'EDM, powerful drops, heavy bass, synth leads, euphoric build-ups, festival energy, 128 BPM',
+        suggestedGenre: 'electronic',
+        suggestedMood: 'energetic',
+        suggestedVocal: 'powerful',
+        suggestedTempo: 'fast',
+        instruments: ['synth', 'synth lead', '808 drums'],
+        vocalTechniques: ['autotuned delivery']
+    },
+    'lo-fi-chill': {
+        name: 'Lo-Fi 放鬆',
+        icon: '☕',
+        category: 'electronic',
+        description: '放鬆學習的 Lo-Fi 風格',
+        stylePrompt: 'Lo-Fi Hip Hop, vinyl crackle, mellow piano, soft drums, tape saturation, cozy, study vibes, 85 BPM',
+        suggestedGenre: 'lo-fi',
+        suggestedMood: 'peaceful',
+        suggestedVocal: 'whisper',
+        suggestedTempo: 'slow',
+        instruments: ['piano', 'drums', 'bass guitar'],
+        vocalTechniques: ['breathy vocals']
+    },
+    // R&B / Soul
+    'smooth-rnb': {
+        name: '絲滑R&B',
+        icon: '🌙',
+        category: 'rnb',
+        description: '經典 R&B 靈魂風格',
+        stylePrompt: 'Smooth R&B, soulful vocals, groovy bass, Rhodes piano, sensual, late night vibes, 90s influence, 95 BPM',
+        suggestedGenre: 'r&b',
+        suggestedMood: 'romantic',
+        suggestedVocal: 'soft',
+        suggestedTempo: 'medium',
+        instruments: ['electric piano', 'bass guitar', 'drums'],
+        vocalTechniques: ['melisma', 'runs', 'ad-libs']
+    },
+    // 搖滾類
+    'indie-rock': {
+        name: '獨立搖滾',
+        icon: '🎸',
+        category: 'rock',
+        description: '獨立樂團風格',
+        stylePrompt: 'Indie Rock, jangly guitars, driving drums, raw vocals, garage feel, authentic, 115 BPM',
+        suggestedGenre: 'rock',
+        suggestedMood: 'energetic',
+        suggestedVocal: 'male',
+        suggestedTempo: 'medium',
+        instruments: ['electric guitar', 'bass guitar', 'drums'],
+        vocalTechniques: ['raspy lead vocal']
+    },
+    'acoustic-folk': {
+        name: '民謠原聲',
+        icon: '🍂',
+        category: 'folk',
+        description: '溫暖的民謠風格',
+        stylePrompt: 'Acoustic Folk, fingerpicking guitar, warm vocals, harmonica, storytelling, intimate, natural dynamics, 100 BPM',
+        suggestedGenre: 'folk',
+        suggestedMood: 'nostalgic',
+        suggestedVocal: 'soft',
+        suggestedTempo: 'medium',
+        instruments: ['acoustic guitar', 'harmonica'],
+        vocalTechniques: ['vibrato', 'breath detail']
+    },
+    // 嘻哈類
+    'trap-beat': {
+        name: 'Trap節拍',
+        icon: '🔥',
+        category: 'hiphop',
+        description: '現代 Trap 風格',
+        stylePrompt: 'Trap, 808 bass, hi-hat rolls, dark atmosphere, autotuned vocals, hard-hitting, 140 BPM',
+        suggestedGenre: 'hip-hop',
+        suggestedMood: 'angry',
+        suggestedVocal: 'rap',
+        suggestedTempo: 'very-fast',
+        instruments: ['808 drums', 'hi-hat', 'synth'],
+        vocalTechniques: ['autotuned delivery', 'ad-libs']
+    },
+    'boom-bap': {
+        name: '老派嘻哈',
+        icon: '📻',
+        category: 'hiphop',
+        description: '經典老派嘻哈節拍',
+        stylePrompt: 'Boom Bap, classic hip hop drums, vinyl samples, jazzy piano, old school flow, 90 BPM',
+        suggestedGenre: 'hip-hop',
+        suggestedMood: 'nostalgic',
+        suggestedVocal: 'rap',
+        suggestedTempo: 'medium',
+        instruments: ['drums', 'piano', 'bass guitar'],
+        vocalTechniques: ['spoken word verse']
+    },
+    // K-Pop
+    'kpop-dance': {
+        name: 'K-Pop舞曲',
+        icon: '💜',
+        category: 'kpop',
+        description: '韓流舞曲風格',
+        stylePrompt: 'K-Pop, catchy hooks, powerful choreography beat, synth drops, energetic vocals, polished production, 125 BPM',
+        suggestedGenre: 'k-pop',
+        suggestedMood: 'energetic',
+        suggestedVocal: 'powerful',
+        suggestedTempo: 'fast',
+        instruments: ['synth', 'drums', 'synth lead'],
+        vocalTechniques: ['belting', 'runs', 'harmonies']
+    },
+    // 古典/電影配樂
+    'cinematic-epic': {
+        name: '電影史詩',
+        icon: '🎬',
+        category: 'cinematic',
+        description: '壯闘的電影配樂風格',
+        stylePrompt: 'Cinematic Epic, orchestral swells, powerful drums, strings, brass section, heroic, emotional crescendo',
+        suggestedGenre: 'classical',
+        suggestedMood: 'hopeful',
+        suggestedVocal: 'choir',
+        suggestedTempo: 'medium',
+        instruments: ['orchestra', 'strings ensemble', 'brass section', 'drums'],
+        vocalTechniques: ['operatic', 'stacked harmonies']
+    }
+};
+
+// Style Preset 分類
+const STYLE_PRESET_CATEGORIES = {
+    'ballad': { name: '抒情', icon: '💕' },
+    'pop': { name: '流行', icon: '🎤' },
+    'electronic': { name: '電子', icon: '🎧' },
+    'rnb': { name: 'R&B', icon: '🌙' },
+    'rock': { name: '搖滾', icon: '🎸' },
+    'folk': { name: '民謠', icon: '🍂' },
+    'hiphop': { name: '嘻哈', icon: '🔥' },
+    'kpop': { name: 'K-Pop', icon: '💜' },
+    'cinematic': { name: '電影', icon: '🎬' }
+};
+
+// 套用 Style Preset
+function applyStylePreset(presetId) {
+    const preset = STYLE_PRESETS[presetId];
+    if (!preset) return;
+
+    // 套用 Style Prompt
+    if (elements.stylePrompt) {
+        elements.stylePrompt.value = preset.stylePrompt;
+        currentStylePrompt = preset.stylePrompt;
+    }
+
+    // 套用建議的風格選項
+    if (preset.suggestedGenre && elements.songGenre) {
+        elements.songGenre.value = preset.suggestedGenre;
+    }
+    if (preset.suggestedMood && elements.songMood) {
+        elements.songMood.value = preset.suggestedMood;
+    }
+    if (preset.suggestedVocal && elements.vocalStyle) {
+        elements.vocalStyle.value = preset.suggestedVocal;
+    }
+    if (preset.suggestedTempo && elements.tempo) {
+        elements.tempo.value = preset.suggestedTempo;
+    }
+
+    // 重置所有樂器標籤
+    document.querySelectorAll('.instrument-tag').forEach(tag => {
+        tag.classList.remove('active');
+    });
+
+    // 套用建議的樂器
+    if (preset.instruments) {
+        preset.instruments.forEach(inst => {
+            const tag = document.querySelector(`.instrument-tag[data-style="${inst}"]`);
+            if (tag) tag.classList.add('active');
+        });
+    }
+
+    // 重置所有人聲技巧標籤
+    document.querySelectorAll('.vocal-tech-tag').forEach(tag => {
+        tag.classList.remove('active');
+    });
+
+    // 套用建議的人聲技巧
+    if (preset.vocalTechniques) {
+        preset.vocalTechniques.forEach(tech => {
+            const tag = document.querySelector(`.vocal-tech-tag[data-style="${tech}"]`);
+            if (tag) tag.classList.add('active');
+        });
+    }
+
+    // 顯示成功動畫
+    showPresetAppliedAnimation(preset.name);
+    showToast(`已套用「${preset.name}」風格模板`, 'success');
+}
+
+// 顯示套用成功動畫
+function showPresetAppliedAnimation(presetName) {
+    // 創建成功動畫元素
+    const animation = document.createElement('div');
+    animation.className = 'preset-applied-animation';
+    animation.innerHTML = `<span class="preset-check">✓</span><span>${presetName}</span>`;
+    document.body.appendChild(animation);
+
+    // 2秒後移除
+    setTimeout(() => {
+        animation.classList.add('fade-out');
+        setTimeout(() => animation.remove(), 300);
+    }, 1500);
+}
+
+// 渲染 Style Preset 選擇器
+function renderStylePresets() {
+    const container = document.getElementById('style-presets-container');
+    if (!container) return;
+
+    // 按分類組織 presets
+    const byCategory = {};
+    Object.entries(STYLE_PRESETS).forEach(([id, preset]) => {
+        if (!byCategory[preset.category]) {
+            byCategory[preset.category] = [];
+        }
+        byCategory[preset.category].push({ id, ...preset });
+    });
+
+    // 生成分類標籤
+    const categories = Object.entries(STYLE_PRESET_CATEGORIES);
+    const categoryTabs = categories.map(([catId, cat]) =>
+        `<button type="button" class="preset-category-tab" data-category="${catId}">
+            <span class="cat-icon">${cat.icon}</span>
+            <span class="cat-name">${cat.name}</span>
+        </button>`
+    ).join('');
+
+    // 生成所有 preset 卡片
+    const allPresets = Object.entries(STYLE_PRESETS).map(([id, preset]) =>
+        `<button type="button" class="style-preset-card" data-preset="${id}" data-category="${preset.category}">
+            <span class="preset-icon">${preset.icon}</span>
+            <span class="preset-name">${preset.name}</span>
+            <span class="preset-desc">${preset.description}</span>
+        </button>`
+    ).join('');
+
+    container.innerHTML = `
+        <div class="preset-categories">
+            <button type="button" class="preset-category-tab active" data-category="all">
+                <span class="cat-icon">✨</span>
+                <span class="cat-name">全部</span>
+            </button>
+            ${categoryTabs}
+        </div>
+        <div class="preset-grid">
+            ${allPresets}
+        </div>
+    `;
+
+    // 綁定分類標籤事件
+    container.querySelectorAll('.preset-category-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            // 更新 active 狀態
+            container.querySelectorAll('.preset-category-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            // 過濾顯示的 presets
+            const category = tab.dataset.category;
+            container.querySelectorAll('.style-preset-card').forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // 綁定 preset 卡片事件
+    container.querySelectorAll('.style-preset-card').forEach(card => {
+        card.addEventListener('click', () => {
+            applyStylePreset(card.dataset.preset);
+            // 高亮選中的卡片
+            container.querySelectorAll('.style-preset-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+        });
+    });
+}
+
+// ===== 智能風格建議系統 =====
+const GENRE_SUGGESTIONS = {
+    'pop': {
+        moods: ['happy', 'energetic', 'romantic'],
+        vocals: ['female', 'male', 'duet'],
+        tempos: ['medium', 'fast'],
+        instruments: ['synth', 'drums', 'bass guitar', 'piano']
+    },
+    'rock': {
+        moods: ['energetic', 'angry', 'hopeful'],
+        vocals: ['male', 'powerful'],
+        tempos: ['medium', 'fast'],
+        instruments: ['electric guitar', 'bass guitar', 'drums']
+    },
+    'ballad': {
+        moods: ['sad', 'romantic', 'melancholic', 'nostalgic'],
+        vocals: ['soft', 'female', 'male'],
+        tempos: ['slow'],
+        instruments: ['piano', 'strings ensemble', 'acoustic guitar']
+    },
+    'hip-hop': {
+        moods: ['energetic', 'angry'],
+        vocals: ['rap', 'male'],
+        tempos: ['medium', 'fast', 'very-fast'],
+        instruments: ['808 drums', 'hi-hat', 'synth']
+    },
+    'electronic': {
+        moods: ['energetic', 'dreamy', 'peaceful'],
+        vocals: ['female', 'whisper'],
+        tempos: ['fast', 'very-fast'],
+        instruments: ['synth', 'synth pads', 'synth lead', 'drum machine']
+    },
+    'r&b': {
+        moods: ['romantic', 'melancholic', 'peaceful'],
+        vocals: ['soft', 'female', 'male'],
+        tempos: ['slow', 'medium'],
+        instruments: ['electric piano', 'bass guitar', 'drums']
+    },
+    'jazz': {
+        moods: ['peaceful', 'romantic', 'nostalgic'],
+        vocals: ['soft', 'female'],
+        tempos: ['slow', 'medium'],
+        instruments: ['piano', 'bass guitar', 'drums', 'saxophone']
+    },
+    'folk': {
+        moods: ['peaceful', 'nostalgic', 'hopeful'],
+        vocals: ['soft', 'male', 'female'],
+        tempos: ['slow', 'medium'],
+        instruments: ['acoustic guitar', 'harmonica', 'violin']
+    },
+    'lo-fi': {
+        moods: ['peaceful', 'dreamy', 'melancholic'],
+        vocals: ['whisper', 'soft'],
+        tempos: ['slow'],
+        instruments: ['piano', 'drums']
+    },
+    'k-pop': {
+        moods: ['energetic', 'happy', 'romantic'],
+        vocals: ['powerful', 'female', 'male', 'duet'],
+        tempos: ['fast', 'medium'],
+        instruments: ['synth', 'drums', 'synth lead']
+    }
+};
+
+// 顯示智能建議
+function showSmartSuggestions(genre) {
+    const suggestions = GENRE_SUGGESTIONS[genre];
+    if (!suggestions) return;
+
+    // 高亮建議的選項
+    highlightSuggestedOptions('song-mood', suggestions.moods);
+    highlightSuggestedOptions('vocal-style', suggestions.vocals);
+    highlightSuggestedOptions('tempo', suggestions.tempos);
+
+    // 高亮建議的樂器
+    document.querySelectorAll('.instrument-tag').forEach(tag => {
+        if (suggestions.instruments.includes(tag.dataset.style)) {
+            tag.classList.add('suggested');
+        } else {
+            tag.classList.remove('suggested');
+        }
+    });
+}
+
+// 高亮建議的下拉選項
+function highlightSuggestedOptions(selectId, suggestedValues) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    // 在選項旁邊添加建議標記
+    Array.from(select.options).forEach(option => {
+        // 移除舊的建議標記
+        option.text = option.text.replace(' ⭐', '');
+        if (suggestedValues.includes(option.value)) {
+            option.text += ' ⭐';
+        }
+    });
+}
+
+// ===== 快速開始引導精靈 =====
+function showQuickStartWizard() {
+    const modal = document.createElement('div');
+    modal.id = 'quick-start-modal';
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content wizard-content">
+            <div class="modal-header">
+                <h3>✨ 快速開始</h3>
+                <button class="modal-close" onclick="closeQuickStartWizard()">&times;</button>
+            </div>
+            <div class="modal-body wizard-body">
+                <div class="wizard-step active" data-step="1">
+                    <h4>1. 你想創作什麼類型的歌？</h4>
+                    <div class="wizard-options genre-options">
+                        <button class="wizard-option" data-value="ballad" data-field="genre">
+                            <span class="option-icon">💕</span>
+                            <span class="option-text">抒情歌</span>
+                        </button>
+                        <button class="wizard-option" data-value="pop" data-field="genre">
+                            <span class="option-icon">🎤</span>
+                            <span class="option-text">流行曲</span>
+                        </button>
+                        <button class="wizard-option" data-value="electronic" data-field="genre">
+                            <span class="option-icon">🎧</span>
+                            <span class="option-text">電子音樂</span>
+                        </button>
+                        <button class="wizard-option" data-value="hip-hop" data-field="genre">
+                            <span class="option-icon">🔥</span>
+                            <span class="option-text">嘻哈饒舌</span>
+                        </button>
+                        <button class="wizard-option" data-value="rock" data-field="genre">
+                            <span class="option-icon">🎸</span>
+                            <span class="option-text">搖滾</span>
+                        </button>
+                        <button class="wizard-option" data-value="r&b" data-field="genre">
+                            <span class="option-icon">🌙</span>
+                            <span class="option-text">R&B</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="wizard-step" data-step="2">
+                    <h4>2. 歌曲的情緒氛圍？</h4>
+                    <div class="wizard-options mood-options">
+                        <button class="wizard-option" data-value="happy" data-field="mood">
+                            <span class="option-icon">😊</span>
+                            <span class="option-text">開心快樂</span>
+                        </button>
+                        <button class="wizard-option" data-value="sad" data-field="mood">
+                            <span class="option-icon">😢</span>
+                            <span class="option-text">傷心難過</span>
+                        </button>
+                        <button class="wizard-option" data-value="romantic" data-field="mood">
+                            <span class="option-icon">💕</span>
+                            <span class="option-text">浪漫甜蜜</span>
+                        </button>
+                        <button class="wizard-option" data-value="energetic" data-field="mood">
+                            <span class="option-icon">⚡</span>
+                            <span class="option-text">充滿活力</span>
+                        </button>
+                        <button class="wizard-option" data-value="peaceful" data-field="mood">
+                            <span class="option-icon">🌿</span>
+                            <span class="option-text">平靜放鬆</span>
+                        </button>
+                        <button class="wizard-option" data-value="nostalgic" data-field="mood">
+                            <span class="option-icon">📷</span>
+                            <span class="option-text">懷舊感傷</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="wizard-step" data-step="3">
+                    <h4>3. 輸入歌曲主題</h4>
+                    <div class="wizard-input-section">
+                        <input type="text" id="wizard-theme" class="wizard-input" placeholder="例如：夏天的海邊約會、失戀後的成長...">
+                        <div class="wizard-theme-suggestions">
+                            <span class="suggestion-label">靈感提示：</span>
+                            <button class="theme-suggestion" data-theme="初戀的回憶">初戀的回憶</button>
+                            <button class="theme-suggestion" data-theme="追夢的旅程">追夢的旅程</button>
+                            <button class="theme-suggestion" data-theme="深夜的孤獨">深夜的孤獨</button>
+                            <button class="theme-suggestion" data-theme="夏日派對">夏日派對</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="wizard-footer">
+                <div class="wizard-progress">
+                    <span class="progress-dot active" data-step="1"></span>
+                    <span class="progress-dot" data-step="2"></span>
+                    <span class="progress-dot" data-step="3"></span>
+                </div>
+                <div class="wizard-buttons">
+                    <button class="btn-secondary wizard-prev" style="display:none">上一步</button>
+                    <button class="btn-primary wizard-next">下一步</button>
+                    <button class="btn-primary wizard-finish" style="display:none">開始創作 ✨</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // 初始化引導精靈
+    initQuickStartWizard();
+}
+
+// 快速開始引導精靈狀態
+let wizardState = {
+    step: 1,
+    genre: '',
+    mood: '',
+    theme: ''
+};
+
+// 初始化引導精靈
+function initQuickStartWizard() {
+    const modal = document.getElementById('quick-start-modal');
+    if (!modal) return;
+
+    // 選項點擊
+    modal.querySelectorAll('.wizard-option').forEach(option => {
+        option.addEventListener('click', () => {
+            const field = option.dataset.field;
+            const value = option.dataset.value;
+
+            // 更新狀態
+            wizardState[field] = value;
+
+            // 更新 UI
+            option.closest('.wizard-options').querySelectorAll('.wizard-option').forEach(o => o.classList.remove('selected'));
+            option.classList.add('selected');
+
+            // 如果不是最後一步，自動進入下一步
+            if (wizardState.step < 3) {
+                setTimeout(() => nextWizardStep(), 300);
+            }
+        });
+    });
+
+    // 主題建議點擊
+    modal.querySelectorAll('.theme-suggestion').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.getElementById('wizard-theme').value = btn.dataset.theme;
+            wizardState.theme = btn.dataset.theme;
+        });
+    });
+
+    // 主題輸入
+    const themeInput = document.getElementById('wizard-theme');
+    if (themeInput) {
+        themeInput.addEventListener('input', (e) => {
+            wizardState.theme = e.target.value;
+        });
+    }
+
+    // 按鈕事件
+    modal.querySelector('.wizard-prev')?.addEventListener('click', prevWizardStep);
+    modal.querySelector('.wizard-next')?.addEventListener('click', nextWizardStep);
+    modal.querySelector('.wizard-finish')?.addEventListener('click', finishWizard);
+
+    // 關閉按鈕
+    modal.querySelector('.modal-close')?.addEventListener('click', closeQuickStartWizard);
+
+    // 點擊背景關閉
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeQuickStartWizard();
+    });
+}
+
+// 下一步
+function nextWizardStep() {
+    if (wizardState.step >= 3) return;
+    wizardState.step++;
+    updateWizardUI();
+}
+
+// 上一步
+function prevWizardStep() {
+    if (wizardState.step <= 1) return;
+    wizardState.step--;
+    updateWizardUI();
+}
+
+// 更新引導精靈 UI
+function updateWizardUI() {
+    const modal = document.getElementById('quick-start-modal');
+    if (!modal) return;
+
+    // 更新步驟顯示
+    modal.querySelectorAll('.wizard-step').forEach(step => {
+        step.classList.toggle('active', parseInt(step.dataset.step) === wizardState.step);
+    });
+
+    // 更新進度點
+    modal.querySelectorAll('.progress-dot').forEach(dot => {
+        dot.classList.toggle('active', parseInt(dot.dataset.step) <= wizardState.step);
+    });
+
+    // 更新按鈕
+    const prevBtn = modal.querySelector('.wizard-prev');
+    const nextBtn = modal.querySelector('.wizard-next');
+    const finishBtn = modal.querySelector('.wizard-finish');
+
+    if (prevBtn) prevBtn.style.display = wizardState.step > 1 ? '' : 'none';
+    if (nextBtn) nextBtn.style.display = wizardState.step < 3 ? '' : 'none';
+    if (finishBtn) finishBtn.style.display = wizardState.step === 3 ? '' : 'none';
+}
+
+// 完成引導精靈
+function finishWizard() {
+    // 套用設定到主介面
+    if (wizardState.genre && elements.songGenre) {
+        elements.songGenre.value = wizardState.genre;
+        showSmartSuggestions(wizardState.genre);
+    }
+    if (wizardState.mood && elements.songMood) {
+        elements.songMood.value = wizardState.mood;
+    }
+    if (wizardState.theme && elements.songTheme) {
+        elements.songTheme.value = wizardState.theme;
+    }
+
+    // 根據選擇推薦一個 Style Preset
+    const recommendedPreset = getRecommendedPreset(wizardState.genre, wizardState.mood);
+    if (recommendedPreset) {
+        applyStylePreset(recommendedPreset);
+    }
+
+    // 關閉引導精靈
+    closeQuickStartWizard();
+
+    // 顯示成功提示
+    showToast('設定完成！可以開始生成歌詞了', 'success');
+}
+
+// 根據選擇推薦 Preset
+function getRecommendedPreset(genre, mood) {
+    const presetMap = {
+        'ballad-romantic': 'romantic-ballad',
+        'ballad-sad': 'emotional-piano',
+        'ballad-melancholic': 'emotional-piano',
+        'pop-energetic': 'energetic-pop',
+        'pop-happy': 'energetic-pop',
+        'pop-peaceful': 'chill-pop',
+        'pop-nostalgic': 'retro-80s',
+        'electronic-energetic': 'edm-drop',
+        'electronic-peaceful': 'lo-fi-chill',
+        'r&b-romantic': 'smooth-rnb',
+        'r&b-peaceful': 'smooth-rnb',
+        'hip-hop-energetic': 'trap-beat',
+        'hip-hop-nostalgic': 'boom-bap',
+        'rock-energetic': 'indie-rock',
+        'folk-nostalgic': 'acoustic-folk',
+        'folk-peaceful': 'acoustic-folk'
+    };
+
+    const key = `${genre}-${mood}`;
+    return presetMap[key] || null;
+}
+
+// 關閉引導精靈
+function closeQuickStartWizard() {
+    const modal = document.getElementById('quick-start-modal');
+    if (modal) {
+        modal.remove();
+    }
+    // 重置狀態
+    wizardState = { step: 1, genre: '', mood: '', theme: '' };
+}
+
 // ===== 版本歷史系統 =====
 const VERSION_STORAGE_KEY = 'suno-lyrics-versions';
 const MAX_VERSIONS = 50;
@@ -738,6 +1458,9 @@ function init() {
     // 初始化結構編輯器
     renderStructureList();
 
+    // 初始化 Style Preset 選擇器
+    renderStylePresets();
+
     // 更新編輯器計數
     updateEditorCounts();
 
@@ -747,6 +1470,16 @@ function init() {
     // 檢查後端狀態
     if (savedApiMode === 'backend') {
         checkBackendStatus();
+    }
+
+    // 檢查是否首次使用，顯示引導精靈
+    const hasUsedBefore = localStorage.getItem('suno-has-used');
+    if (!hasUsedBefore) {
+        // 延遲顯示引導精靈，讓頁面先載入完成
+        setTimeout(() => {
+            showQuickStartWizard();
+            localStorage.setItem('suno-has-used', 'true');
+        }, 500);
     }
 }
 
@@ -941,6 +1674,19 @@ function bindEvents() {
     elements.templateModal.addEventListener('click', (e) => {
         if (e.target === elements.templateModal) hideModal();
     });
+
+    // 風格選擇時顯示智能建議
+    if (elements.songGenre) {
+        elements.songGenre.addEventListener('change', (e) => {
+            showSmartSuggestions(e.target.value);
+        });
+    }
+
+    // 快速開始按鈕
+    const quickStartBtn = document.getElementById('quick-start-btn');
+    if (quickStartBtn) {
+        quickStartBtn.addEventListener('click', showQuickStartWizard);
+    }
 }
 
 // ===== 風格標籤切換 =====
@@ -1643,6 +2389,12 @@ function displayLyrics(lyrics, isIteration = false) {
     elements.copyBtn.disabled = false;
     elements.editBtn.disabled = false;
 
+    // 添加成功動畫
+    elements.outputArea.classList.add('success-animation');
+    setTimeout(() => {
+        elements.outputArea.classList.remove('success-animation');
+    }, 600);
+
     // 儲存當前歌詞並顯示迭代區塊
     currentLyrics = lyrics;
     elements.iterateSection.classList.remove('hidden');
@@ -1869,6 +2621,13 @@ function setGeneratingState(isGenerating) {
     elements.generateBtn.disabled = isGenerating;
     elements.generateBtn.querySelector('.btn-text').style.display = isGenerating ? 'none' : 'inline';
     elements.generateBtn.querySelector('.btn-loading').style.display = isGenerating ? 'inline' : 'none';
+
+    // 添加生成中動畫
+    if (isGenerating) {
+        elements.generateBtn.classList.add('generating');
+    } else {
+        elements.generateBtn.classList.remove('generating');
+    }
 }
 
 // ===== 編輯生成的歌詞 =====
