@@ -1883,6 +1883,9 @@ function init() {
     // 初始化歌曲實驗室
     initSongLab();
 
+    // 初始化 Ad-Libs 即興口白
+    initAdLibs();
+
     // 檢查是否首次使用，顯示引導精靈
     const hasUsedBefore = localStorage.getItem('suno-has-used');
     if (!hasUsedBefore) {
@@ -2180,6 +2183,71 @@ function toggleMaxModeOptions() {
     } else {
         elements.maxModeOptions.classList.add('hidden');
     }
+}
+
+// ===== Ad-Libs (即興口白) =====
+const ADLIBS_PRESETS = {
+    'pop': ['WHOA-OH!', 'HEY!', 'COME ON!', 'TONIGHT!', 'YEAH!', 'OH-OH!', 'BABY!'],
+    'hiphop': ['UH!', 'YEAH!', 'LETS GO!', 'SKRRT!', 'WHAT!', 'AYY!', 'GANG!'],
+    'trap': ['YEAH', 'UH', 'WHAT', 'LETS RIDE', 'DRIP', 'ICY', 'BRR'],
+    'rnb': ['YEAH', 'OOH', 'BABY', 'COME ON', 'MMM', 'GIRL', 'OH'],
+    'rock': ['YEAH!', 'COME ON!', 'ALRIGHT!', 'WHOO!', 'HEY!', 'OH YEAH!'],
+    'edm': ['DROP!', 'HANDS UP!', 'JUMP!', 'ONE MORE TIME!', 'LETS GO!', 'EVERYBODY!'],
+    'gospel': ['OH LORD!', 'HALLELUJAH!', 'YES!', 'AMEN!', 'PRAISE!', 'GLORY!'],
+    'jazz': ['YEAH', 'OOH', 'SCOOBY DOO', 'BA DA', 'SHOO BE DOO'],
+    'country': ['YEE-HAW!', 'COME ON!', 'ALRIGHT!', 'HEY Y ALL!'],
+    'reggae': ['YEAH MON!', 'ONE LOVE!', 'JAH!', 'IRIE!']
+};
+
+function initAdLibs() {
+    const adlibsInput = document.getElementById('adlibs-input');
+    const adlibsClear = document.getElementById('adlibs-clear');
+    const adlibsRandom = document.getElementById('adlibs-random-btn');
+    const presetBtns = document.querySelectorAll('.adlibs-preset');
+
+    if (!adlibsInput) return;
+
+    // 預設按鈕點擊
+    presetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const adlibs = JSON.parse(btn.dataset.adlibs);
+            adlibsInput.value = adlibs.map(a => `"${a}"`).join(', ');
+
+            // 更新 active 狀態
+            presetBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            showToast('已套用 ' + btn.textContent.trim() + ' 即興口白', 'success');
+        });
+    });
+
+    // 清空按鈕
+    adlibsClear?.addEventListener('click', () => {
+        adlibsInput.value = '';
+        presetBtns.forEach(b => b.classList.remove('active'));
+    });
+
+    // 隨機生成
+    adlibsRandom?.addEventListener('click', () => {
+        const genre = elements.songGenre?.value || 'pop';
+        const genreKey = Object.keys(ADLIBS_PRESETS).find(key =>
+            genre.toLowerCase().includes(key)
+        ) || 'pop';
+
+        const presets = ADLIBS_PRESETS[genreKey];
+        // 隨機選 3-5 個
+        const count = Math.floor(Math.random() * 3) + 3;
+        const shuffled = [...presets].sort(() => Math.random() - 0.5);
+        const selected = shuffled.slice(0, count);
+
+        adlibsInput.value = selected.map(a => `"${a}"`).join(', ');
+        showToast('已根據風格隨機生成即興口白', 'success');
+    });
+}
+
+function getAdLibsValue() {
+    const input = document.getElementById('adlibs-input');
+    return input?.value || '';
 }
 
 // ===== Pro Tips (專業小技巧) =====
@@ -2862,6 +2930,12 @@ function buildPrompt(theme, genre, mood, language, structures, extraInstructions
     // Realism 描述詞（用於原聲/民謠/古典音樂）
     if (styleOptions.realismTags.length > 0) {
         stylePromptParts.push(`production: "${styleOptions.realismTags.join(', ')}"`);
+    }
+
+    // Ad-Libs 即興口白
+    const adlibsValue = getAdLibsValue();
+    if (adlibsValue) {
+        stylePromptParts.push(`ad-libs: (${adlibsValue})`);
     }
 
     // 母帶處理風格

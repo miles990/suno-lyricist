@@ -2695,3 +2695,115 @@ header {
 .pro-tips-text {
     transition: opacity 0.15s ease;
 }
+
+/* ===== Ad-Libs 即興口白 ===== */
+.adlibs-config {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.adlibs-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.adlibs-preset {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.7rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.adlibs-preset:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.adlibs-preset.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.preset-icon {
+    font-size: 0.9rem;
+}
+
+.adlibs-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.adlibs-input-wrapper input {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+.adlibs-input-wrapper input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.btn-adlibs-clear {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-adlibs-clear:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: white;
+}
+
+.btn-adlibs-random {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    border: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    transition: all 0.2s;
+    vertical-align: middle;
+}
+
+.btn-adlibs-random:hover {
+    transform: rotate(180deg) scale(1.1);
+}
+
+.adlibs-hint {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.label-badge.new {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
