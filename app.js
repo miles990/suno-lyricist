@@ -5897,3 +5897,114 @@ initQualityScore();
 initStyleCombo();
 initShareLyrics();
 initProAudioLab();
+initQuickMode();
+
+// ===== 快速模式 =====
+function initQuickMode() {
+    const quickModeBtn = document.getElementById('quick-mode-btn');
+    const advancedModeBtn = document.getElementById('advanced-mode-btn');
+    const quickModePanel = document.getElementById('quick-mode-panel');
+    const advancedModePanel = document.getElementById('advanced-mode-panel');
+    const quickGenerateBtn = document.getElementById('quick-generate-btn');
+    const quickThemeInput = document.getElementById('quick-theme-input');
+    const quickInspirationBtn = document.getElementById('quick-inspiration-btn');
+
+    if (!quickModeBtn || !advancedModeBtn) return;
+
+    // 從 localStorage 讀取上次的模式
+    const savedMode = localStorage.getItem('ui-mode') || 'quick';
+    if (savedMode === 'advanced') {
+        switchToAdvancedMode();
+    } else {
+        switchToQuickMode();
+    }
+
+    // 快速模式按鈕
+    quickModeBtn.addEventListener('click', switchToQuickMode);
+
+    // 進階模式按鈕
+    advancedModeBtn.addEventListener('click', switchToAdvancedMode);
+
+    // 快速生成按鈕
+    if (quickGenerateBtn && quickThemeInput) {
+        quickGenerateBtn.addEventListener('click', async () => {
+            const theme = quickThemeInput.value.trim();
+            if (!theme) {
+                showToast('請輸入歌曲主題', 'error');
+                quickThemeInput.focus();
+                return;
+            }
+
+            // 同步主題到主輸入框
+            if (elements.songTheme) {
+                elements.songTheme.value = theme;
+            }
+
+            // 設定為全自動模式
+            if (elements.aiModeAuto) {
+                elements.aiModeAuto.checked = true;
+                toggleAiMode('auto');
+            }
+
+            // 添加按鈕動畫
+            quickGenerateBtn.classList.add('generating');
+            quickGenerateBtn.querySelector('.quick-btn-text').textContent = '生成中...';
+
+            try {
+                await generateLyrics();
+            } finally {
+                quickGenerateBtn.classList.remove('generating');
+                quickGenerateBtn.querySelector('.quick-btn-text').textContent = '一鍵生成歌詞';
+            }
+        });
+
+        // Enter 鍵觸發生成
+        quickThemeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                quickGenerateBtn.click();
+            }
+        });
+    }
+
+    // 快速靈感按鈕
+    if (quickInspirationBtn && quickThemeInput) {
+        quickInspirationBtn.addEventListener('click', () => {
+            // 添加骰子動畫
+            quickInspirationBtn.classList.add('rolling');
+            setTimeout(() => quickInspirationBtn.classList.remove('rolling'), 500);
+
+            // 獲取隨機靈感
+            const inspiration = getRandomInspiration();
+            quickThemeInput.value = inspiration;
+            quickThemeInput.focus();
+
+            showToast(`靈感：${inspiration}`, 'success');
+        });
+    }
+
+    function switchToQuickMode() {
+        quickModeBtn.classList.add('active');
+        advancedModeBtn.classList.remove('active');
+        if (quickModePanel) quickModePanel.style.display = 'block';
+        if (advancedModePanel) advancedModePanel.style.display = 'none';
+        localStorage.setItem('ui-mode', 'quick');
+
+        // 同步主題輸入框的值
+        if (quickThemeInput && elements.songTheme?.value) {
+            quickThemeInput.value = elements.songTheme.value;
+        }
+    }
+
+    function switchToAdvancedMode() {
+        advancedModeBtn.classList.add('active');
+        quickModeBtn.classList.remove('active');
+        if (quickModePanel) quickModePanel.style.display = 'none';
+        if (advancedModePanel) advancedModePanel.style.display = 'block';
+        localStorage.setItem('ui-mode', 'advanced');
+
+        // 同步快速輸入框的值到主輸入框
+        if (quickThemeInput?.value && elements.songTheme) {
+            elements.songTheme.value = quickThemeInput.value;
+        }
+    }
+}

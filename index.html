@@ -97,6 +97,43 @@
 
         <!-- AI 生成頁面 -->
         <div id="ai-generate" class="tab-content active">
+            <!-- 快速模式切換 -->
+            <div class="mode-toggle-container">
+                <div class="mode-toggle">
+                    <button id="quick-mode-btn" class="mode-btn active" title="極簡介面，一鍵生成">
+                        <span class="mode-icon">🚀</span>
+                        <span class="mode-text">快速模式</span>
+                    </button>
+                    <button id="advanced-mode-btn" class="mode-btn" title="完整設定，精細控制">
+                        <span class="mode-icon">🎛️</span>
+                        <span class="mode-text">進階模式</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 快速模式介面 -->
+            <div id="quick-mode-panel" class="quick-mode-panel">
+                <div class="quick-mode-hero">
+                    <h2 class="quick-mode-title">想創作什麼歌？</h2>
+                    <p class="quick-mode-subtitle">輸入主題，AI 幫你搞定一切</p>
+                </div>
+                <div class="quick-mode-input">
+                    <div class="quick-input-wrapper">
+                        <input type="text" id="quick-theme-input" placeholder="例：夏日海灘的愛情故事、失戀後的療癒、追夢的勇氣..." class="quick-theme-field">
+                        <button type="button" id="quick-inspiration-btn" class="quick-inspiration" title="隨機靈感">🎲</button>
+                    </div>
+                    <button id="quick-generate-btn" class="quick-generate-btn">
+                        <span class="quick-btn-icon">✨</span>
+                        <span class="quick-btn-text">一鍵生成歌詞</span>
+                    </button>
+                </div>
+                <div class="quick-mode-hint">
+                    <span>💡 AI 會自動選擇最適合的風格、結構和情緒</span>
+                </div>
+            </div>
+
+            <!-- 進階模式內容（原有表單） -->
+            <div id="advanced-mode-panel">
             <!-- 表單完成度進度條 -->
             <div class="form-progress-container">
                 <div class="form-progress-header">
@@ -1263,6 +1300,7 @@
                     </span>
                 </button>
             </div>
+            </div><!-- end advanced-mode-panel -->
 
             <div class="output-section">
                 <div class="output-header">
