@@ -1941,6 +1941,27 @@
                     </div>
                 </div>
 
+                <!-- 🆕 我的收藏：用戶保存的風格組合 -->
+                <div class="my-favorites-panel" id="my-favorites-panel">
+                    <div class="favorites-header">
+                        <h3>⭐ 我的收藏</h3>
+                        <span class="favorites-hint">保存你喜歡的風格組合</span>
+                    </div>
+                    <div class="favorites-actions">
+                        <button class="btn-save-current" id="save-current-combo" title="保存當前組合">
+                            <span class="btn-icon">💾</span>
+                            <span class="btn-text">保存當前組合</span>
+                        </button>
+                    </div>
+                    <div class="favorites-grid" id="favorites-grid">
+                        <div class="favorites-empty" id="favorites-empty">
+                            <span class="empty-icon">💫</span>
+                            <span class="empty-text">還沒有收藏</span>
+                            <span class="empty-hint">選擇風格後點擊「保存當前組合」</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 風格融合分析 -->
                 <div class="fusion-analysis" id="fusion-analysis">
                     <div class="fusion-header">
@@ -1950,6 +1971,41 @@
                     <div class="fusion-content" id="fusion-content">
                         <div class="fusion-placeholder">
                             選擇主風格和副風格後，將顯示融合分析結果
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🆕 風格探索器：發現尚未命名的音樂風格 -->
+                <div class="style-explorer-panel" id="style-explorer-panel">
+                    <div class="explorer-header">
+                        <h3>🔮 風格探索器</h3>
+                        <span class="explorer-subtitle">發現尚未命名的音樂風格</span>
+                    </div>
+                    <div class="explorer-content">
+                        <div class="explorer-mode-tabs">
+                            <button class="explorer-tab active" data-mode="random">🎲 隨機探索</button>
+                            <button class="explorer-tab" data-mode="cross-culture">🌏 跨文化融合</button>
+                            <button class="explorer-tab" data-mode="time-travel">⏰ 時代交錯</button>
+                            <button class="explorer-tab" data-mode="extreme">💥 極端實驗</button>
+                        </div>
+                        <div class="explorer-result" id="explorer-result">
+                            <div class="explorer-placeholder">
+                                點擊「生成新風格」開始探索音樂的無限可能
+                            </div>
+                        </div>
+                        <div class="explorer-actions">
+                            <button class="explorer-generate-btn" id="explorer-generate-btn">
+                                <span class="btn-icon">✨</span>
+                                <span class="btn-text">生成新風格</span>
+                            </button>
+                            <button class="explorer-apply-btn" id="explorer-apply-btn" disabled>
+                                <span class="btn-icon">🎯</span>
+                                <span class="btn-text">套用此風格</span>
+                            </button>
+                        </div>
+                        <div class="explorer-history" id="explorer-history">
+                            <span class="history-label">探索歷史：</span>
+                            <div class="history-items" id="history-items"></div>
                         </div>
                     </div>
                 </div>

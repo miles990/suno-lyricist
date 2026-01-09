@@ -5628,40 +5628,52 @@ function initShareLyrics() {
 
 // ===== 第二十四階段：Pro Audio Lab (風格融合 + 音質優化) =====
 
-// 風格融合兼容性矩陣（擴展版 v2.0）
+// 風格融合兼容性矩陣（擴展版 v3.0 - 高級融合模式）
 const FUSION_COMPATIBILITY = {
     // 主流流行
-    'pop': { compatible: ['synth-pop', 'indie-pop', 'r&b', 'electronic', 'rock', 'hip-hop', 'dance', 'k-pop'], experimental: ['jazz', 'classical', 'metal', 'reggae', 'latin'] },
-    'k-pop': { compatible: ['pop', 'hip-hop', 'electronic', 'r&b', 'dance'], experimental: ['rock', 'jazz', 'latin'] },
-    'synth-pop': { compatible: ['pop', 'electronic', 'new-wave', 'dance', 'synthwave'], experimental: ['rock', 'hip-hop', 'jazz'] },
-    'hyperpop': { compatible: ['electronic', 'pop', 'hip-hop', 'experimental', 'glitch'], experimental: ['metal', 'classical', 'ambient'] },
+    'pop': { compatible: ['synth-pop', 'indie-pop', 'r&b', 'electronic', 'rock', 'hip-hop', 'dance', 'k-pop', 'hyperpop'], experimental: ['jazz', 'classical', 'metal', 'reggae', 'latin', 'visual-kei'] },
+    'k-pop': { compatible: ['pop', 'hip-hop', 'electronic', 'r&b', 'dance', 'city-pop', 'hyperpop'], experimental: ['rock', 'jazz', 'latin', 'edm'] },
+    'synth-pop': { compatible: ['pop', 'electronic', 'new-wave', 'dance', 'synthwave', 'city-pop'], experimental: ['rock', 'hip-hop', 'jazz', 'french-touch'] },
+    'hyperpop': { compatible: ['electronic', 'pop', 'hip-hop', 'experimental', 'glitch', 'jersey-club'], experimental: ['metal', 'classical', 'ambient', 'hardcore'] },
+    'city-pop': { compatible: ['pop', 'synth-pop', 'jazz', 'funk', 'r&b', 'disco'], experimental: ['electronic', 'hip-hop', 'future-funk'] },
 
     // 搖滾家族
-    'rock': { compatible: ['indie-rock', 'punk', 'grunge', 'metal', 'pop', 'blues', 'alternative'], experimental: ['jazz', 'electronic', 'classical', 'hip-hop'] },
-    'punk': { compatible: ['rock', 'hardcore', 'pop-punk', 'ska', 'grunge'], experimental: ['electronic', 'hip-hop', 'folk'] },
-    'metal': { compatible: ['rock', 'hardcore', 'progressive', 'symphonic', 'industrial'], experimental: ['electronic', 'classical', 'jazz'] },
-    'grunge': { compatible: ['rock', 'punk', 'alternative', 'indie-rock'], experimental: ['electronic', 'folk', 'blues'] },
-    'post-rock': { compatible: ['ambient', 'shoegaze', 'experimental', 'indie-rock'], experimental: ['electronic', 'classical', 'jazz'] },
-    'indie-rock': { compatible: ['rock', 'indie-pop', 'alternative', 'post-punk', 'shoegaze'], experimental: ['electronic', 'folk', 'jazz'] },
+    'rock': { compatible: ['indie-rock', 'punk', 'grunge', 'metal', 'pop', 'blues', 'alternative', 'post-punk'], experimental: ['jazz', 'electronic', 'classical', 'hip-hop', 'visual-kei'] },
+    'punk': { compatible: ['rock', 'hardcore', 'pop-punk', 'ska', 'grunge', 'post-punk'], experimental: ['electronic', 'hip-hop', 'folk'] },
+    'metal': { compatible: ['rock', 'hardcore', 'progressive', 'symphonic', 'industrial', 'power-metal'], experimental: ['electronic', 'classical', 'jazz', 'orchestral'] },
+    'grunge': { compatible: ['rock', 'punk', 'alternative', 'indie-rock', 'shoegaze'], experimental: ['electronic', 'folk', 'blues'] },
+    'post-rock': { compatible: ['ambient', 'shoegaze', 'experimental', 'indie-rock', 'cinematic'], experimental: ['electronic', 'classical', 'jazz'] },
+    'indie-rock': { compatible: ['rock', 'indie-pop', 'alternative', 'post-punk', 'shoegaze', 'mathrock'], experimental: ['electronic', 'folk', 'jazz'] },
+    'visual-kei': { compatible: ['rock', 'metal', 'punk', 'electronic', 'symphonic', 'gothic'], experimental: ['pop', 'hip-hop', 'uk-garage', 'industrial'] },
+    'mathrock': { compatible: ['rock', 'indie-rock', 'progressive', 'post-rock', 'experimental'], experimental: ['electronic', 'jazz', 'metal'] },
 
     // 嘻哈家族
-    'hip-hop': { compatible: ['trap', 'drill', 'r&b', 'pop', 'electronic', 'jazz', 'boom-bap'], experimental: ['rock', 'country', 'classical', 'reggae'] },
-    'trap': { compatible: ['hip-hop', 'electronic', 'drill', 'r&b', 'pop'], experimental: ['rock', 'latin', 'metal'] },
-    'drill': { compatible: ['hip-hop', 'trap', 'grime', 'r&b'], experimental: ['electronic', 'rock', 'afrobeat'] },
-    'phonk': { compatible: ['hip-hop', 'trap', 'electronic', 'memphis'], experimental: ['metal', 'synthwave', 'horror'] },
-    'boom-bap': { compatible: ['hip-hop', 'jazz', 'funk', 'soul'], experimental: ['rock', 'electronic', 'latin'] },
+    'hip-hop': { compatible: ['trap', 'drill', 'r&b', 'pop', 'electronic', 'jazz', 'boom-bap', 'phonk'], experimental: ['rock', 'country', 'classical', 'reggae', 'jersey-club'] },
+    'trap': { compatible: ['hip-hop', 'electronic', 'drill', 'r&b', 'pop', 'phonk', 'latin-trap'], experimental: ['rock', 'latin', 'metal', 'jersey-club'] },
+    'drill': { compatible: ['hip-hop', 'trap', 'grime', 'r&b', 'uk-drill'], experimental: ['electronic', 'rock', 'afrobeat'] },
+    'phonk': { compatible: ['hip-hop', 'trap', 'electronic', 'memphis', 'drift-phonk', 'house-phonk'], experimental: ['metal', 'synthwave', 'horror', 'industrial'] },
+    'boom-bap': { compatible: ['hip-hop', 'jazz', 'funk', 'soul', 'neo-soul'], experimental: ['rock', 'electronic', 'latin'] },
+    'drift-phonk': { compatible: ['phonk', 'trap', 'electronic', 'house', 'bass'], experimental: ['metal', 'industrial', 'synthwave'] },
 
     // 電子音樂家族
-    'electronic': { compatible: ['pop', 'hip-hop', 'techno', 'house', 'ambient', 'synthwave', 'edm'], experimental: ['jazz', 'classical', 'folk', 'metal'] },
-    'house': { compatible: ['techno', 'electronic', 'disco', 'funk', 'pop', 'garage'], experimental: ['hip-hop', 'jazz', 'latin'] },
-    'techno': { compatible: ['house', 'electronic', 'industrial', 'ambient', 'minimal'], experimental: ['rock', 'classical', 'jazz'] },
-    'trance': { compatible: ['electronic', 'techno', 'ambient', 'progressive', 'psytrance'], experimental: ['classical', 'metal', 'world'] },
-    'dubstep': { compatible: ['electronic', 'trap', 'dnb', 'grime', 'bass'], experimental: ['metal', 'orchestral', 'hip-hop'] },
-    'future-bass': { compatible: ['electronic', 'pop', 'trap', 'r&b', 'synthwave'], experimental: ['jazz', 'classical', 'hip-hop'] },
-    'synthwave': { compatible: ['electronic', 'synth-pop', 'retro', 'new-wave', 'cinematic'], experimental: ['metal', 'hip-hop', 'rock'] },
-    'lo-fi': { compatible: ['hip-hop', 'jazz', 'ambient', 'chill', 'indie'], experimental: ['electronic', 'folk', 'classical'] },
-    'dnb': { compatible: ['electronic', 'jungle', 'bass', 'liquid', 'techstep'], experimental: ['jazz', 'metal', 'orchestral'] },
-    'ambient': { compatible: ['electronic', 'new-age', 'post-rock', 'classical', 'drone'], experimental: ['metal', 'hip-hop', 'folk'] },
+    'electronic': { compatible: ['pop', 'hip-hop', 'techno', 'house', 'ambient', 'synthwave', 'edm', 'future-bass'], experimental: ['jazz', 'classical', 'folk', 'metal', 'tribal'] },
+    'house': { compatible: ['techno', 'electronic', 'disco', 'funk', 'pop', 'uk-garage', 'afro-house'], experimental: ['hip-hop', 'jazz', 'latin'] },
+    'techno': { compatible: ['house', 'electronic', 'industrial', 'ambient', 'minimal', 'dark-techno'], experimental: ['rock', 'classical', 'jazz'] },
+    'trance': { compatible: ['electronic', 'techno', 'ambient', 'progressive', 'psytrance', 'uplifting'], experimental: ['classical', 'metal', 'world', 'orchestral'] },
+    'dubstep': { compatible: ['electronic', 'trap', 'dnb', 'grime', 'bass', 'riddim'], experimental: ['metal', 'orchestral', 'hip-hop'] },
+    'future-bass': { compatible: ['electronic', 'pop', 'trap', 'r&b', 'synthwave', 'jersey-club'], experimental: ['jazz', 'classical', 'hip-hop'] },
+    'synthwave': { compatible: ['electronic', 'synth-pop', 'retro', 'new-wave', 'cinematic', 'darksynth'], experimental: ['metal', 'hip-hop', 'rock', 'horror'] },
+    'lo-fi': { compatible: ['hip-hop', 'jazz', 'ambient', 'chill', 'indie', 'city-pop'], experimental: ['electronic', 'folk', 'classical'] },
+    'dnb': { compatible: ['electronic', 'jungle', 'bass', 'liquid', 'techstep', 'neurofunk'], experimental: ['jazz', 'metal', 'orchestral'] },
+    'ambient': { compatible: ['electronic', 'new-age', 'post-rock', 'classical', 'drone', 'dark-ambient'], experimental: ['metal', 'hip-hop', 'folk'] },
+    'uk-garage': { compatible: ['house', 'electronic', 'r&b', '2-step', 'bass', 'future-garage'], experimental: ['hip-hop', 'visual-kei', 'soul', 'french-touch'] },
+    'jersey-club': { compatible: ['electronic', 'hip-hop', 'trap', 'house', 'hyperpop', 'bass'], experimental: ['r&b', 'pop', 'afrobeat'] },
+    'hardstyle': { compatible: ['electronic', 'techno', 'hardcore', 'trance', 'gabber'], experimental: ['metal', 'orchestral', 'cinematic'] },
+    'psytrance': { compatible: ['trance', 'electronic', 'progressive', 'goa', 'ambient'], experimental: ['rock', 'metal', 'world'] },
+    'french-touch': { compatible: ['house', 'electronic', 'disco', 'funk', 'synth-pop'], experimental: ['hip-hop', 'pop', 'rock'] },
+    'witch-house': { compatible: ['electronic', 'dark-ambient', 'industrial', 'trap', 'shoegaze'], experimental: ['metal', 'hip-hop', 'experimental'] },
+    'anti-drop': { compatible: ['electronic', 'house', 'trap', 'future-bass', 'pop'], experimental: ['ambient', 'experimental', 'cinematic'] },
+    'melbourne-bounce': { compatible: ['house', 'electronic', 'edm', 'bounce', 'electro'], experimental: ['hip-hop', 'pop', 'trap'] },
 
     // R&B/靈魂樂家族
     'r&b': { compatible: ['pop', 'hip-hop', 'jazz', 'soul', 'funk', 'neo-soul'], experimental: ['rock', 'electronic', 'country', 'latin'] },
@@ -5844,7 +5856,87 @@ const FUSION_NAMES = {
     'k-pop+electronic': 'K-Electronic / Korean EDM',
     'k-pop+hip-hop': 'K-Hip-Hop / Korean Urban',
     'hyperpop+electronic': 'Hyperpop / Glitchcore',
-    'hyperpop+hip-hop': 'Digicore / Glitch Rap'
+    'hyperpop+hip-hop': 'Digicore / Glitch Rap',
+
+    // ===== 高級融合 v3.0（來自 Reference Project）=====
+
+    // 跨文化三重融合
+    'uk-garage+visual-kei': 'UK-Visual Fusion / British-Japanese Rock',
+    'uk-garage+soul': 'UK Soul Garage / 2-Step Soul',
+    'visual-kei+electronic': 'Cyber Visual-Kei / Digital J-Rock',
+    'visual-kei+symphonic': 'Symphonic Visual-Kei / Theatrical J-Rock',
+
+    // 新興電子子類型融合
+    'jersey-club+hyperpop': 'Jersey Hyperpop / Club-Core',
+    'jersey-club+r&b': 'Jersey R&B / Club Soul',
+    'jersey-club+trap': 'Jersey Trap / Club Trap',
+    'witch-house+trap': 'Dark Trap / Witch Trap',
+    'witch-house+industrial': 'Industrial Witch / Dark Electronic',
+    'hardstyle+orchestral': 'Orchestral Hardstyle / Epic Hard',
+    'hardstyle+metal': 'Hardstyle Metal / Raw Metal',
+    'psytrance+rock': 'Psy-Rock / Psychedelic Fusion',
+    'psytrance+orchestral': 'Orchestral Psytrance / Epic Psy',
+    'anti-drop+pop': 'Anti-Drop Pop / Build-Release Pop',
+    'french-touch+disco': 'French Disco / Nu-French',
+    'melbourne-bounce+trap': 'Bounce Trap / Festival Bounce',
+    'drift-phonk+metal': 'Dark Phonk / Metal Phonk',
+    'drift-phonk+industrial': 'Industrial Phonk / Cyber Phonk',
+
+    // 世界音樂 × 電子融合
+    'tribal+electronic': 'Tribal Electronic / Ethnic EDM',
+    'tribal+trap': 'Tribal Trap / Indigenous Bass',
+    'chinese-traditional+cinematic': 'Chinese Cinematic / Oriental Epic',
+    'chinese-traditional+electronic': 'Chinese Electronic / Oriental EDM',
+    'cantonese+orchestral': 'Cantonese Orchestral / HK Film Score',
+    'celtic+electronic': 'Celtic Electronic / Modern Celtic',
+    'celtic+cinematic': 'Celtic Cinematic / Fantasy Score',
+    'celtic+metal': 'Celtic Metal / Folk Metal',
+    'japanese-traditional+electronic': 'J-Electronic / Wa-Techno',
+    'japanese-traditional+rock': 'J-Traditional Rock / Wa-Rock',
+    'taiwanese-indigenous+electronic': 'Indigenous Electronic / Tribal EDM',
+    'taiwanese-indigenous+hip-hop': 'Indigenous Hip-Hop / Tribal Rap',
+    'baile-funk+dark-pop': 'Dark Baile / Brazilian Dark Pop',
+    'baile-funk+trap': 'Baile Trap / Brazilian Trap',
+
+    // 遊戲音樂 / 電影配樂融合
+    'jrpg+orchestral': 'JRPG Orchestral / Game Epic',
+    'jrpg+celtic': 'JRPG Celtic / Fantasy Adventure',
+    'jrpg+progressive': 'JRPG Progressive / Game Prog',
+    'jrpg+power-metal': 'JRPG Metal / Battle Theme',
+    'cinematic+electronic': 'Cinematic Electronic / Epic EDM',
+    'cinematic+metal': 'Cinematic Metal / Epic Metal',
+    'cinematic+ambient': 'Cinematic Ambient / Score Ambient',
+    'film-score+electronic': 'Electronic Score / Modern Trailer',
+    'trailer+orchestral': 'Trailer Epic / Hybrid Epic',
+    'trailer+electronic': 'Electronic Trailer / Modern Epic',
+
+    // 日系 J-Music 融合
+    'city-pop+future-funk': 'Future Funk / Neo City-Pop',
+    'city-pop+r&b': 'J-R&B / Japanese Soul',
+    'city-pop+lo-fi': 'Lo-Fi City-Pop / Chill City',
+    'j-rock+electronic': 'Electro J-Rock / Japanese Electro-Rock',
+    'j-rock+visual-kei': 'Visual J-Rock / Theatrical Rock',
+    'anime+orchestral': 'Anime Orchestral / Anime Epic',
+    'anime+electronic': 'Anime Electronic / J-EDM',
+    'anime+rock': 'Anime Rock / Anison',
+
+    // 多 EDM 子類型融合
+    'future-bass+hardstyle': 'Hard Future / Bass Hardstyle',
+    'future-bass+dubstep': 'Future Dub / Melodic Dubstep',
+    'dubstep+metal': 'Metal Dubstep / Brostep Metal',
+    'dubstep+orchestral': 'Orchestral Dubstep / Symphonic Bass',
+    'trance+hardstyle': 'Hard Trance / Euphoric Hard',
+    'house+afrobeat': 'Afro House / African House',
+    'techno+industrial': 'Industrial Techno / Hard Techno',
+    'techno+ambient': 'Ambient Techno / Deep Techno',
+
+    // Dark / Horror 融合
+    'darksynth+horror': 'Horror Synth / Dark Cinematic',
+    'darksynth+metal': 'Dark Synth Metal / Cyber Metal',
+    'dark-ambient+cinematic': 'Dark Cinematic / Horror Score',
+    'industrial+horror': 'Industrial Horror / Dark Industrial',
+    'gothic+electronic': 'Gothic Electronic / Dark Wave',
+    'gothic+orchestral': 'Gothic Orchestral / Dark Romantic'
 };
 
 // 計算融合兼容性
@@ -6123,6 +6215,286 @@ function initFusionPresets() {
     });
 }
 
+// ===== 風格探索器：發現尚未命名的音樂風格 =====
+
+// 風格探索器數據庫
+const STYLE_EXPLORER_DATA = {
+    // 基礎風格池
+    genres: [
+        'Pop', 'Rock', 'Hip-Hop', 'Electronic', 'R&B', 'Jazz', 'Classical', 'Folk',
+        'Metal', 'Punk', 'Indie', 'Soul', 'Funk', 'Reggae', 'Country', 'Blues',
+        'Ambient', 'House', 'Techno', 'Trance', 'Dubstep', 'Trap', 'Lo-Fi'
+    ],
+
+    // 文化/地域元素
+    cultures: [
+        { name: '日本 Visual-Kei', style: 'Japanese Visual-Kei', emoji: '🇯🇵' },
+        { name: '韓國 K-Pop', style: 'Korean K-Pop', emoji: '🇰🇷' },
+        { name: '中國傳統', style: 'Chinese Traditional', emoji: '🇨🇳' },
+        { name: '粵式 Cantonese', style: 'Cantonese Opera', emoji: '🎭' },
+        { name: '台灣原住民', style: 'Taiwanese Indigenous', emoji: '🌺' },
+        { name: '印度 Bollywood', style: 'Indian Bollywood', emoji: '🇮🇳' },
+        { name: '非洲 Afrobeat', style: 'African Afrobeat', emoji: '🌍' },
+        { name: '拉丁 Latin', style: 'Latin', emoji: '💃' },
+        { name: '巴西 Baile Funk', style: 'Brazilian Baile Funk', emoji: '🇧🇷' },
+        { name: '凱爾特 Celtic', style: 'Celtic', emoji: '🍀' },
+        { name: '阿拉伯 Arabic', style: 'Arabic', emoji: '🕌' },
+        { name: '北歐 Nordic', style: 'Nordic Folk', emoji: '🇳🇴' }
+    ],
+
+    // 時代元素
+    eras: [
+        { name: '80s Retro', style: 'Synthwave 80s', emoji: '📼' },
+        { name: '90s Rave', style: '90s Rave', emoji: '💿' },
+        { name: '70s Disco', style: '70s Disco', emoji: '🪩' },
+        { name: '60s Psychedelic', style: '60s Psychedelic', emoji: '🌈' },
+        { name: 'Y2K Futurism', style: 'Y2K Futurism', emoji: '💾' },
+        { name: 'Baroque', style: 'Baroque Classical', emoji: '🎻' },
+        { name: 'Medieval', style: 'Medieval', emoji: '🏰' },
+        { name: 'Future 2050', style: 'Futuristic Sci-Fi', emoji: '🚀' }
+    ],
+
+    // 極端/實驗元素
+    extreme: [
+        { name: 'Glitch', style: 'Glitch', emoji: '🔀' },
+        { name: 'Noise', style: 'Noise', emoji: '📢' },
+        { name: 'Horror', style: 'Horror Dark', emoji: '👻' },
+        { name: 'Industrial', style: 'Industrial', emoji: '⚙️' },
+        { name: 'Witch House', style: 'Witch House', emoji: '🔮' },
+        { name: 'Hyperpop', style: 'Hyperpop', emoji: '🌀' },
+        { name: 'Anti-Drop', style: 'Anti-Drop', emoji: '⏸️' },
+        { name: 'ASMR', style: 'ASMR Whisper', emoji: '🎧' },
+        { name: 'Hardstyle', style: 'Hardstyle', emoji: '💥' },
+        { name: 'Jersey Club', style: 'Jersey Club', emoji: '🎪' }
+    ],
+
+    // 修飾詞
+    modifiers: [
+        'Ethereal', 'Dark', 'Dreamy', 'Aggressive', 'Melancholic', 'Euphoric',
+        'Minimalist', 'Maximalist', 'Atmospheric', 'Cinematic', 'Lo-Fi', 'Hi-Fi',
+        'Organic', 'Synthetic', 'Raw', 'Polished', 'Chaotic', 'Serene'
+    ],
+
+    // 創意名稱後綴
+    suffixes: [
+        '-core', '-wave', '-step', '-hop', '-punk', '-gaze', '-beat', '-tronica',
+        '-metal', '-pop', '-rock', '-jazz', '-soul', '-funk', '-ambient'
+    ]
+};
+
+// 風格名稱生成器
+const STYLE_NAME_GENERATORS = {
+    random: () => {
+        const prefixes = ['Neo', 'Post', 'Proto', 'Hyper', 'Ultra', 'Meta', 'Micro', 'Macro', 'Anti', 'Pseudo'];
+        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const genre1 = STYLE_EXPLORER_DATA.genres[Math.floor(Math.random() * STYLE_EXPLORER_DATA.genres.length)];
+        const genre2 = STYLE_EXPLORER_DATA.genres[Math.floor(Math.random() * STYLE_EXPLORER_DATA.genres.length)];
+        const suffix = STYLE_EXPLORER_DATA.suffixes[Math.floor(Math.random() * STYLE_EXPLORER_DATA.suffixes.length)];
+        const modifier = STYLE_EXPLORER_DATA.modifiers[Math.floor(Math.random() * STYLE_EXPLORER_DATA.modifiers.length)];
+
+        return {
+            name: `${prefix}-${genre1}${suffix}`,
+            formula: `${genre1} × ${genre2} × ${modifier}`,
+            description: `融合 ${genre1} 的旋律結構與 ${genre2} 的節奏特色，加入 ${modifier.toLowerCase()} 氛圍修飾，創造出前所未見的聲音景觀。`,
+            tags: [genre1, genre2, modifier],
+            tagType: 'random'
+        };
+    },
+
+    'cross-culture': () => {
+        const culture1 = STYLE_EXPLORER_DATA.cultures[Math.floor(Math.random() * STYLE_EXPLORER_DATA.cultures.length)];
+        const culture2 = STYLE_EXPLORER_DATA.cultures[Math.floor(Math.random() * STYLE_EXPLORER_DATA.cultures.length)];
+        const genre = STYLE_EXPLORER_DATA.genres[Math.floor(Math.random() * STYLE_EXPLORER_DATA.genres.length)];
+
+        // 避免選到相同文化
+        if (culture1.name === culture2.name) {
+            return STYLE_NAME_GENERATORS['cross-culture']();
+        }
+
+        const names = [
+            `${culture1.name.split(' ')[0]}-${culture2.name.split(' ')[0]} ${genre}`,
+            `${culture1.emoji}${culture2.emoji} Fusion`,
+            `Trans-Pacific ${genre}`
+        ];
+
+        return {
+            name: names[Math.floor(Math.random() * names.length)],
+            formula: `${culture1.style} × ${culture2.style} × ${genre}`,
+            description: `將 ${culture1.name} 的傳統音樂元素與 ${culture2.name} 的文化特色融合，並以 ${genre} 作為現代載體，打破地域界限的音樂實驗。`,
+            tags: [culture1.name, culture2.name, genre],
+            tagType: 'culture'
+        };
+    },
+
+    'time-travel': () => {
+        const era1 = STYLE_EXPLORER_DATA.eras[Math.floor(Math.random() * STYLE_EXPLORER_DATA.eras.length)];
+        const era2 = STYLE_EXPLORER_DATA.eras[Math.floor(Math.random() * STYLE_EXPLORER_DATA.eras.length)];
+        const genre = STYLE_EXPLORER_DATA.genres[Math.floor(Math.random() * STYLE_EXPLORER_DATA.genres.length)];
+
+        if (era1.name === era2.name) {
+            return STYLE_NAME_GENERATORS['time-travel']();
+        }
+
+        return {
+            name: `${era1.name} meets ${era2.name}`,
+            formula: `${era1.style} × ${era2.style} × Modern ${genre}`,
+            description: `穿越時空的音樂實驗：將 ${era1.name} 的美學與 ${era2.name} 的技術碰撞，透過現代 ${genre} 的製作手法重新詮釋。${era1.emoji} → ${era2.emoji}`,
+            tags: [era1.name, era2.name, `Modern ${genre}`],
+            tagType: 'era'
+        };
+    },
+
+    extreme: () => {
+        const extreme1 = STYLE_EXPLORER_DATA.extreme[Math.floor(Math.random() * STYLE_EXPLORER_DATA.extreme.length)];
+        const extreme2 = STYLE_EXPLORER_DATA.extreme[Math.floor(Math.random() * STYLE_EXPLORER_DATA.extreme.length)];
+        const genre = STYLE_EXPLORER_DATA.genres[Math.floor(Math.random() * STYLE_EXPLORER_DATA.genres.length)];
+
+        if (extreme1.name === extreme2.name) {
+            return STYLE_NAME_GENERATORS.extreme();
+        }
+
+        const modifier = STYLE_EXPLORER_DATA.modifiers[Math.floor(Math.random() * STYLE_EXPLORER_DATA.modifiers.length)];
+
+        return {
+            name: `${extreme1.emoji} ${extreme1.name}-${extreme2.name} ${extreme2.emoji}`,
+            formula: `${extreme1.style} × ${extreme2.style} × ${modifier} ${genre}`,
+            description: `極端實驗性融合：結合 ${extreme1.name} 的破壞性美學與 ${extreme2.name} 的前衛技術，挑戰聽覺極限的聲音藝術。適合勇於探索的創作者。`,
+            tags: [extreme1.name, extreme2.name, modifier],
+            tagType: 'extreme'
+        };
+    }
+};
+
+// 風格探索器狀態
+let currentExploredStyle = null;
+let explorerHistory = [];
+
+// 初始化風格探索器
+function initStyleExplorer() {
+    const generateBtn = document.getElementById('explorer-generate-btn');
+    const applyBtn = document.getElementById('explorer-apply-btn');
+    const modeTabs = document.querySelectorAll('.explorer-tab');
+
+    if (!generateBtn) return;
+
+    let currentMode = 'random';
+
+    // 模式切換
+    modeTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            modeTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentMode = tab.dataset.mode;
+        });
+    });
+
+    // 生成新風格
+    generateBtn.addEventListener('click', () => {
+        const generator = STYLE_NAME_GENERATORS[currentMode] || STYLE_NAME_GENERATORS.random;
+        currentExploredStyle = generator();
+        displayExploredStyle(currentExploredStyle);
+        applyBtn.disabled = false;
+
+        // 添加到歷史
+        addToExplorerHistory(currentExploredStyle);
+    });
+
+    // 套用風格
+    applyBtn.addEventListener('click', () => {
+        if (!currentExploredStyle) return;
+        applyExploredStyle(currentExploredStyle);
+    });
+
+    // 載入歷史
+    loadExplorerHistory();
+}
+
+// 顯示探索到的風格
+function displayExploredStyle(style) {
+    const resultDiv = document.getElementById('explorer-result');
+    if (!resultDiv) return;
+
+    const tagClass = style.tagType === 'culture' ? 'culture' :
+                     style.tagType === 'era' ? 'era' :
+                     style.tagType === 'extreme' ? 'extreme' : '';
+
+    resultDiv.innerHTML = `
+        <div class="explorer-generated">
+            <div class="explorer-style-name">${style.name}</div>
+            <div class="explorer-style-formula">${style.formula}</div>
+            <div class="explorer-style-description">${style.description}</div>
+            <div class="explorer-style-tags">
+                ${style.tags.map(tag => `<span class="explorer-style-tag ${tagClass}">${tag}</span>`).join('')}
+            </div>
+        </div>
+    `;
+}
+
+// 套用探索到的風格
+function applyExploredStyle(style) {
+    // 將公式填入 Style Prompt
+    const labStylePrompt = document.getElementById('lab-style-prompt');
+    if (labStylePrompt) {
+        const currentValue = labStylePrompt.value;
+        const newValue = currentValue
+            ? `${currentValue}, ${style.formula}`
+            : style.formula;
+        labStylePrompt.value = newValue;
+    }
+
+    showToast(`已套用探索風格：${style.name}`, 'success');
+}
+
+// 添加到探索歷史
+function addToExplorerHistory(style) {
+    explorerHistory.unshift(style);
+    if (explorerHistory.length > 10) {
+        explorerHistory.pop();
+    }
+
+    // 保存到 localStorage
+    try {
+        localStorage.setItem('explorerHistory', JSON.stringify(explorerHistory));
+    } catch (e) {
+        console.warn('無法保存探索歷史');
+    }
+
+    updateExplorerHistoryDisplay();
+}
+
+// 載入探索歷史
+function loadExplorerHistory() {
+    try {
+        const saved = localStorage.getItem('explorerHistory');
+        if (saved) {
+            explorerHistory = JSON.parse(saved);
+            updateExplorerHistoryDisplay();
+        }
+    } catch (e) {
+        console.warn('無法載入探索歷史');
+    }
+}
+
+// 更新歷史顯示
+function updateExplorerHistoryDisplay() {
+    const historyItems = document.getElementById('history-items');
+    if (!historyItems) return;
+
+    historyItems.innerHTML = explorerHistory.map((style, index) => `
+        <span class="history-item" data-index="${index}" title="${style.formula}">${style.name}</span>
+    `).join('');
+
+    // 綁定點擊事件
+    historyItems.querySelectorAll('.history-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const index = parseInt(item.dataset.index);
+            currentExploredStyle = explorerHistory[index];
+            displayExploredStyle(currentExploredStyle);
+            document.getElementById('explorer-apply-btn').disabled = false;
+        });
+    });
+}
+
 init();
 initKeyboardShortcuts();
 initAutoStylePrompt();
@@ -6139,6 +6511,221 @@ initStyleCombo();
 initShareLyrics();
 initProAudioLab();
 initQuickMode();
+initStyleExplorer();
+initMyFavorites();
+
+// ===== 我的收藏功能 =====
+let myFavorites = [];
+
+function initMyFavorites() {
+    const saveBtn = document.getElementById('save-current-combo');
+    if (!saveBtn) return;
+
+    // 載入收藏
+    loadFavorites();
+
+    // 保存當前組合
+    saveBtn.addEventListener('click', () => {
+        const genre = document.getElementById('lab-genre')?.value;
+        const subgenre = document.getElementById('lab-subgenre')?.value;
+        const mood = document.getElementById('lab-mood')?.value;
+        const tempo = document.getElementById('lab-tempo')?.value;
+        const vocal = document.getElementById('lab-vocal')?.value;
+        const instrument = document.getElementById('lab-instrument')?.value;
+
+        // 至少選擇一個風格
+        if (!genre && !subgenre) {
+            showToast('請至少選擇一個風格', 'error');
+            return;
+        }
+
+        // 生成名稱
+        let name = '';
+        if (genre && subgenre) {
+            const fusionName = getFusionName(genre, subgenre);
+            name = fusionName || `${genre} × ${subgenre}`;
+        } else {
+            name = genre || subgenre;
+        }
+
+        // 創建收藏項目
+        const favorite = {
+            id: Date.now(),
+            name: name,
+            genre: genre,
+            subgenre: subgenre,
+            mood: mood,
+            tempo: tempo,
+            vocal: vocal,
+            instrument: instrument,
+            timestamp: new Date().toISOString()
+        };
+
+        // 檢查是否重複
+        const isDuplicate = myFavorites.some(f =>
+            f.genre === genre && f.subgenre === subgenre &&
+            f.mood === mood && f.tempo === tempo
+        );
+
+        if (isDuplicate) {
+            showToast('此組合已在收藏中', 'warning');
+            return;
+        }
+
+        // 添加到收藏
+        myFavorites.unshift(favorite);
+        if (myFavorites.length > 20) {
+            myFavorites.pop();
+        }
+
+        // 保存並更新顯示
+        saveFavorites();
+        renderFavorites();
+
+        showToast(`已收藏：${name}`, 'success');
+    });
+}
+
+// 載入收藏
+function loadFavorites() {
+    try {
+        const saved = localStorage.getItem('myFavorites');
+        if (saved) {
+            myFavorites = JSON.parse(saved);
+            renderFavorites();
+        }
+    } catch (e) {
+        console.warn('無法載入收藏');
+    }
+}
+
+// 保存收藏
+function saveFavorites() {
+    try {
+        localStorage.setItem('myFavorites', JSON.stringify(myFavorites));
+    } catch (e) {
+        console.warn('無法保存收藏');
+    }
+}
+
+// 渲染收藏列表
+function renderFavorites() {
+    const grid = document.getElementById('favorites-grid');
+    const emptyMsg = document.getElementById('favorites-empty');
+    if (!grid) return;
+
+    if (myFavorites.length === 0) {
+        grid.innerHTML = `
+            <div class="favorites-empty" id="favorites-empty">
+                <span class="empty-icon">💫</span>
+                <span class="empty-text">還沒有收藏</span>
+                <span class="empty-hint">選擇風格後點擊「保存當前組合」</span>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = myFavorites.map(fav => `
+        <div class="favorite-item" data-id="${fav.id}">
+            <div class="favorite-item-header">
+                <span class="favorite-item-name">${fav.name}</span>
+                <button class="favorite-item-delete" data-id="${fav.id}" title="刪除">✕</button>
+            </div>
+            <div class="favorite-item-tags">
+                ${fav.genre ? `<span class="favorite-tag genre">${fav.genre}</span>` : ''}
+                ${fav.subgenre ? `<span class="favorite-tag genre">${fav.subgenre}</span>` : ''}
+                ${fav.mood ? `<span class="favorite-tag mood">${fav.mood}</span>` : ''}
+                ${fav.tempo ? `<span class="favorite-tag tempo">${fav.tempo}</span>` : ''}
+                ${fav.vocal ? `<span class="favorite-tag vocal">${shortenText(fav.vocal, 10)}</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+
+    // 綁定點擊事件 - 套用收藏
+    grid.querySelectorAll('.favorite-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            if (e.target.classList.contains('favorite-item-delete')) return;
+            const id = parseInt(item.dataset.id);
+            const fav = myFavorites.find(f => f.id === id);
+            if (fav) applyFavorite(fav);
+        });
+    });
+
+    // 綁定刪除按鈕
+    grid.querySelectorAll('.favorite-item-delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = parseInt(btn.dataset.id);
+            deleteFavorite(id);
+        });
+    });
+}
+
+// 套用收藏的組合
+function applyFavorite(fav) {
+    if (fav.genre) {
+        const genreSelect = document.getElementById('lab-genre');
+        if (genreSelect) {
+            genreSelect.value = fav.genre;
+            genreSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+    if (fav.subgenre) {
+        const subSelect = document.getElementById('lab-subgenre');
+        if (subSelect) {
+            subSelect.value = fav.subgenre;
+            subSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+    if (fav.mood) {
+        const moodSelect = document.getElementById('lab-mood');
+        if (moodSelect) {
+            moodSelect.value = fav.mood;
+            moodSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+    if (fav.tempo) {
+        const tempoSelect = document.getElementById('lab-tempo');
+        if (tempoSelect) {
+            tempoSelect.value = fav.tempo;
+            tempoSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+    if (fav.vocal) {
+        const vocalSelect = document.getElementById('lab-vocal');
+        if (vocalSelect) {
+            vocalSelect.value = fav.vocal;
+            vocalSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+    if (fav.instrument) {
+        const instSelect = document.getElementById('lab-instrument');
+        if (instSelect) {
+            instSelect.value = fav.instrument;
+            instSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+
+    showToast(`已套用收藏：${fav.name}`, 'success');
+}
+
+// 刪除收藏
+function deleteFavorite(id) {
+    const index = myFavorites.findIndex(f => f.id === id);
+    if (index > -1) {
+        const name = myFavorites[index].name;
+        myFavorites.splice(index, 1);
+        saveFavorites();
+        renderFavorites();
+        showToast(`已刪除收藏：${name}`, 'info');
+    }
+}
+
+// 輔助函數：縮短文字
+function shortenText(text, maxLen) {
+    if (text.length <= maxLen) return text;
+    return text.substring(0, maxLen) + '...';
+}
 
 // ===== 快速模式 =====
 function initQuickMode() {
