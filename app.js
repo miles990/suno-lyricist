@@ -3164,6 +3164,11 @@ async function generateLyrics() {
         return;
     }
 
+    // 保存到最近使用的主題
+    if (typeof window.saveRecentTheme === 'function') {
+        window.saveRecentTheme(theme);
+    }
+
     // 收集基本選項
     const genre = elements.songGenre.value;
     const mood = elements.songMood.value;
@@ -5951,6 +5956,11 @@ function initQuickMode() {
                 toggleAiMode('auto');
             }
 
+            // 保存到最近使用的主題
+            if (typeof window.saveRecentTheme === 'function') {
+                window.saveRecentTheme(theme);
+            }
+
             // 添加按鈕動畫
             quickGenerateBtn.classList.add('generating');
             quickGenerateBtn.querySelector('.quick-btn-text').textContent = '生成中...';
@@ -6139,4 +6149,82 @@ function initQuickMode() {
             elements.songTheme.value = quickThemeInput.value;
         }
     }
+
+    // ===== 最近使用的主題 =====
+    const RECENT_THEMES_KEY = 'suno-lyricist-recent-themes';
+    const MAX_RECENT_THEMES = 5;
+
+    function loadRecentThemes() {
+        try {
+            const stored = localStorage.getItem(RECENT_THEMES_KEY);
+            return stored ? JSON.parse(stored) : [];
+        } catch {
+            return [];
+        }
+    }
+
+    function saveRecentTheme(theme) {
+        if (!theme || theme.trim().length < 2) return;
+
+        const themes = loadRecentThemes();
+        const normalizedTheme = theme.trim();
+
+        // 移除重複的（如果存在）
+        const filtered = themes.filter(t => t !== normalizedTheme);
+
+        // 添加到開頭
+        filtered.unshift(normalizedTheme);
+
+        // 限制數量
+        const limited = filtered.slice(0, MAX_RECENT_THEMES);
+
+        localStorage.setItem(RECENT_THEMES_KEY, JSON.stringify(limited));
+        renderRecentThemes();
+    }
+
+    function renderRecentThemes() {
+        const container = document.getElementById('recent-themes-container');
+        const chipsContainer = document.getElementById('recent-themes-chips');
+
+        if (!container || !chipsContainer) return;
+
+        const themes = loadRecentThemes();
+
+        if (themes.length === 0) {
+            container.classList.add('hidden');
+            return;
+        }
+
+        // 清空並重新生成
+        chipsContainer.innerHTML = '';
+
+        themes.forEach(theme => {
+            const chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'quick-chip';
+            chip.dataset.theme = theme;
+            // 截斷顯示，最多 15 字
+            chip.textContent = theme.length > 15 ? theme.slice(0, 15) + '...' : theme;
+            chip.title = theme; // 完整主題作為 tooltip
+
+            chip.addEventListener('click', () => {
+                if (quickThemeInput) {
+                    quickThemeInput.value = theme;
+                    quickThemeInput.focus();
+                    analyzeQuickTheme(theme);
+                    showToast(`已選擇：${chip.textContent}`, 'success');
+                }
+            });
+
+            chipsContainer.appendChild(chip);
+        });
+
+        container.classList.remove('hidden');
+    }
+
+    // 初始化時渲染最近主題
+    renderRecentThemes();
+
+    // 將 saveRecentTheme 暴露到外部，供生成時調用
+    window.saveRecentTheme = saveRecentTheme;
 }

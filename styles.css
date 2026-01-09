@@ -5388,6 +5388,46 @@ textarea,
     text-align: center;
 }
 
+/* Recent Themes */
+.recent-themes {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.08), rgba(255, 152, 0, 0.08));
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    border-radius: 12px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.recent-themes.hidden {
+    display: none;
+}
+
+.recent-themes .quick-suggestions-label {
+    font-weight: 500;
+    color: #ff9800;
+}
+
+body.dark-mode .recent-themes .quick-suggestions-label {
+    color: #ffb74d;
+}
+
+.recent-themes .quick-chip {
+    background: rgba(255, 193, 7, 0.15);
+    border-color: rgba(255, 193, 7, 0.3);
+    font-size: 0.8rem;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recent-themes .quick-chip:hover {
+    background: #ff9800;
+    border-color: #ff9800;
+    color: white;
+}
+
 .quick-suggestions-label {
     color: var(--text-secondary);
     font-size: 0.9rem;
