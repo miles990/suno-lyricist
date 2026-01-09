@@ -66,6 +66,21 @@ status: resolved
 - 解決「空白焦慮」問題
 - 降低新用戶創作門檻
 
+### 智能主題即時分析器（涌現改進）
+- 用戶輸入主題時即時分析情緒、風格、氛圍
+- 300ms 防抖優化性能
+- 中英文關鍵詞映射：
+  - 情緒：浪漫、憂傷、勵志、歡樂、復古、神秘、熱血、清新
+  - 風格：Pop、R&B、Rock、Hip-Hop、Electronic、Ballad、Folk、Indie
+  - 氛圍：能量滿滿、放鬆治癒、浪漫甜蜜、深沉內省、自由奔放、懷舊復古
+- 讓「AI 會自動選擇」更透明，提升用戶信心
+
+### 最近使用主題記錄
+- 自動記錄最近 5 個使用的主題
+- localStorage 持久化存儲
+- 橙色漸層背景區分於熱門主題
+- 主題過長自動截斷，hover 顯示完整內容
+
 ## 相關檔案
 - `.claude/memory/discoveries/2026-01-09-simplicity-insight.md`
 
@@ -73,3 +88,6 @@ status: resolved
 1. `feat: 新增快速模式 UI（Less is More）`
 2. `style: 突出核心按鈕設計`
 3. `feat: 快速模式新增熱門主題建議`
+4. `fix: 修復風格融合分析不顯示的問題`
+5. `feat: 新增智能主題即時分析器（Quick Mode）`
+6. `feat: 新增最近使用主題記錄功能（Quick Mode）`
