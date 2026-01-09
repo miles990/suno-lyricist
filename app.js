@@ -2849,6 +2849,8 @@ function randomizeSelect(select) {
     if (options.length > 0) {
         const randomOpt = options[Math.floor(Math.random() * options.length)];
         select.value = randomOpt.value;
+        // 觸發 change 事件以更新融合分析
+        select.dispatchEvent(new Event('change', { bubbles: true }));
     }
 }
 
@@ -5880,6 +5882,9 @@ function initProAudioLab() {
     if (labSubgenre) {
         labSubgenre.addEventListener('change', updateFusionAnalysis);
     }
+
+    // 初始化時更新融合分析（處理已有值的情況）
+    updateFusionAnalysis();
 }
 
 init();
