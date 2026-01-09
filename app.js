@@ -5628,31 +5628,223 @@ function initShareLyrics() {
 
 // ===== 第二十四階段：Pro Audio Lab (風格融合 + 音質優化) =====
 
-// 風格融合兼容性矩陣
+// 風格融合兼容性矩陣（擴展版 v2.0）
 const FUSION_COMPATIBILITY = {
-    'pop': { compatible: ['synth-pop', 'indie-pop', 'r&b', 'electronic', 'rock', 'hip-hop'], experimental: ['jazz', 'classical', 'metal'] },
-    'rock': { compatible: ['indie-rock', 'punk', 'grunge', 'metal', 'pop', 'blues'], experimental: ['jazz', 'electronic', 'classical'] },
-    'hip-hop': { compatible: ['trap', 'drill', 'r&b', 'pop', 'electronic', 'jazz'], experimental: ['rock', 'country', 'classical'] },
-    'electronic': { compatible: ['pop', 'hip-hop', 'techno', 'house', 'ambient', 'synthwave'], experimental: ['jazz', 'classical', 'folk'] },
-    'jazz': { compatible: ['r&b', 'funk', 'soul', 'blues', 'classical'], experimental: ['hip-hop', 'electronic', 'rock'] },
-    'r&b': { compatible: ['pop', 'hip-hop', 'jazz', 'soul', 'funk'], experimental: ['rock', 'electronic', 'country'] },
-    'folk': { compatible: ['country', 'indie-folk', 'acoustic', 'americana'], experimental: ['electronic', 'hip-hop', 'metal'] },
-    'classical': { compatible: ['orchestral', 'cinematic', 'ambient'], experimental: ['electronic', 'metal', 'hip-hop'] }
+    // 主流流行
+    'pop': { compatible: ['synth-pop', 'indie-pop', 'r&b', 'electronic', 'rock', 'hip-hop', 'dance', 'k-pop'], experimental: ['jazz', 'classical', 'metal', 'reggae', 'latin'] },
+    'k-pop': { compatible: ['pop', 'hip-hop', 'electronic', 'r&b', 'dance'], experimental: ['rock', 'jazz', 'latin'] },
+    'synth-pop': { compatible: ['pop', 'electronic', 'new-wave', 'dance', 'synthwave'], experimental: ['rock', 'hip-hop', 'jazz'] },
+    'hyperpop': { compatible: ['electronic', 'pop', 'hip-hop', 'experimental', 'glitch'], experimental: ['metal', 'classical', 'ambient'] },
+
+    // 搖滾家族
+    'rock': { compatible: ['indie-rock', 'punk', 'grunge', 'metal', 'pop', 'blues', 'alternative'], experimental: ['jazz', 'electronic', 'classical', 'hip-hop'] },
+    'punk': { compatible: ['rock', 'hardcore', 'pop-punk', 'ska', 'grunge'], experimental: ['electronic', 'hip-hop', 'folk'] },
+    'metal': { compatible: ['rock', 'hardcore', 'progressive', 'symphonic', 'industrial'], experimental: ['electronic', 'classical', 'jazz'] },
+    'grunge': { compatible: ['rock', 'punk', 'alternative', 'indie-rock'], experimental: ['electronic', 'folk', 'blues'] },
+    'post-rock': { compatible: ['ambient', 'shoegaze', 'experimental', 'indie-rock'], experimental: ['electronic', 'classical', 'jazz'] },
+    'indie-rock': { compatible: ['rock', 'indie-pop', 'alternative', 'post-punk', 'shoegaze'], experimental: ['electronic', 'folk', 'jazz'] },
+
+    // 嘻哈家族
+    'hip-hop': { compatible: ['trap', 'drill', 'r&b', 'pop', 'electronic', 'jazz', 'boom-bap'], experimental: ['rock', 'country', 'classical', 'reggae'] },
+    'trap': { compatible: ['hip-hop', 'electronic', 'drill', 'r&b', 'pop'], experimental: ['rock', 'latin', 'metal'] },
+    'drill': { compatible: ['hip-hop', 'trap', 'grime', 'r&b'], experimental: ['electronic', 'rock', 'afrobeat'] },
+    'phonk': { compatible: ['hip-hop', 'trap', 'electronic', 'memphis'], experimental: ['metal', 'synthwave', 'horror'] },
+    'boom-bap': { compatible: ['hip-hop', 'jazz', 'funk', 'soul'], experimental: ['rock', 'electronic', 'latin'] },
+
+    // 電子音樂家族
+    'electronic': { compatible: ['pop', 'hip-hop', 'techno', 'house', 'ambient', 'synthwave', 'edm'], experimental: ['jazz', 'classical', 'folk', 'metal'] },
+    'house': { compatible: ['techno', 'electronic', 'disco', 'funk', 'pop', 'garage'], experimental: ['hip-hop', 'jazz', 'latin'] },
+    'techno': { compatible: ['house', 'electronic', 'industrial', 'ambient', 'minimal'], experimental: ['rock', 'classical', 'jazz'] },
+    'trance': { compatible: ['electronic', 'techno', 'ambient', 'progressive', 'psytrance'], experimental: ['classical', 'metal', 'world'] },
+    'dubstep': { compatible: ['electronic', 'trap', 'dnb', 'grime', 'bass'], experimental: ['metal', 'orchestral', 'hip-hop'] },
+    'future-bass': { compatible: ['electronic', 'pop', 'trap', 'r&b', 'synthwave'], experimental: ['jazz', 'classical', 'hip-hop'] },
+    'synthwave': { compatible: ['electronic', 'synth-pop', 'retro', 'new-wave', 'cinematic'], experimental: ['metal', 'hip-hop', 'rock'] },
+    'lo-fi': { compatible: ['hip-hop', 'jazz', 'ambient', 'chill', 'indie'], experimental: ['electronic', 'folk', 'classical'] },
+    'dnb': { compatible: ['electronic', 'jungle', 'bass', 'liquid', 'techstep'], experimental: ['jazz', 'metal', 'orchestral'] },
+    'ambient': { compatible: ['electronic', 'new-age', 'post-rock', 'classical', 'drone'], experimental: ['metal', 'hip-hop', 'folk'] },
+
+    // R&B/靈魂樂家族
+    'r&b': { compatible: ['pop', 'hip-hop', 'jazz', 'soul', 'funk', 'neo-soul'], experimental: ['rock', 'electronic', 'country', 'latin'] },
+    'rnb': { compatible: ['pop', 'hip-hop', 'jazz', 'soul', 'funk', 'neo-soul'], experimental: ['rock', 'electronic', 'country', 'latin'] },
+    'neo-soul': { compatible: ['r&b', 'soul', 'jazz', 'hip-hop', 'funk'], experimental: ['electronic', 'folk', 'rock'] },
+    'soul': { compatible: ['r&b', 'funk', 'gospel', 'jazz', 'blues'], experimental: ['electronic', 'rock', 'hip-hop'] },
+    'funk': { compatible: ['soul', 'r&b', 'disco', 'jazz', 'hip-hop'], experimental: ['rock', 'electronic', 'latin'] },
+
+    // 爵士家族
+    'jazz': { compatible: ['r&b', 'funk', 'soul', 'blues', 'classical', 'bossa-nova', 'swing'], experimental: ['hip-hop', 'electronic', 'rock', 'metal'] },
+    'smooth-jazz': { compatible: ['jazz', 'r&b', 'funk', 'soul', 'adult-contemporary'], experimental: ['electronic', 'pop', 'latin'] },
+    'jazz-fusion': { compatible: ['jazz', 'rock', 'funk', 'electronic', 'progressive'], experimental: ['metal', 'hip-hop', 'world'] },
+
+    // 民謠/鄉村家族
+    'folk': { compatible: ['country', 'indie-folk', 'acoustic', 'americana', 'celtic'], experimental: ['electronic', 'hip-hop', 'metal', 'psychedelic'] },
+    'indie-folk': { compatible: ['folk', 'indie-rock', 'acoustic', 'singer-songwriter'], experimental: ['electronic', 'ambient', 'experimental'] },
+    'country': { compatible: ['folk', 'americana', 'bluegrass', 'rock', 'pop'], experimental: ['electronic', 'hip-hop', 'r&b'] },
+
+    // 拉丁/世界音樂
+    'latin': { compatible: ['reggaeton', 'salsa', 'bossa-nova', 'pop', 'hip-hop'], experimental: ['electronic', 'rock', 'jazz'] },
+    'reggaeton': { compatible: ['latin', 'hip-hop', 'pop', 'dancehall', 'trap'], experimental: ['rock', 'electronic', 'r&b'] },
+    'afrobeat': { compatible: ['funk', 'jazz', 'highlife', 'world', 'hip-hop'], experimental: ['electronic', 'rock', 'pop'] },
+    'reggae': { compatible: ['dub', 'dancehall', 'ska', 'roots', 'world'], experimental: ['electronic', 'hip-hop', 'rock'] },
+    'bossa-nova': { compatible: ['jazz', 'latin', 'samba', 'lounge', 'acoustic'], experimental: ['electronic', 'hip-hop', 'pop'] },
+
+    // 古典/電影配樂
+    'classical': { compatible: ['orchestral', 'cinematic', 'ambient', 'neo-classical', 'baroque'], experimental: ['electronic', 'metal', 'hip-hop', 'rock'] },
+    'cinematic': { compatible: ['orchestral', 'classical', 'ambient', 'epic', 'trailer'], experimental: ['electronic', 'metal', 'rock'] },
+    'orchestral': { compatible: ['classical', 'cinematic', 'film-score', 'epic', 'symphonic'], experimental: ['metal', 'electronic', 'hip-hop'] },
+
+    // 其他/實驗性
+    'experimental': { compatible: ['avant-garde', 'noise', 'glitch', 'art-rock', 'industrial'], experimental: ['pop', 'hip-hop', 'classical', 'folk'] },
+    'industrial': { compatible: ['metal', 'electronic', 'rock', 'noise', 'ebm'], experimental: ['hip-hop', 'classical', 'ambient'] },
+    'shoegaze': { compatible: ['dream-pop', 'post-rock', 'indie-rock', 'ambient', 'psychedelic'], experimental: ['electronic', 'metal', 'folk'] }
 };
 
-// 融合風格名稱建議
+// 融合風格名稱建議（擴展版 v2.0 - 100+ 融合組合）
 const FUSION_NAMES = {
+    // Pop 融合
     'pop+electronic': 'Electropop / Dance-Pop',
     'pop+hip-hop': 'Pop-Rap / Urban Pop',
-    'pop+rock': 'Pop-Rock',
+    'pop+rock': 'Pop-Rock / Power Pop',
     'pop+r&b': 'Pop R&B / Contemporary R&B',
-    'rock+electronic': 'Electro-Rock / Industrial',
+    'pop+k-pop': 'K-Pop / Korean Pop',
+    'pop+latin': 'Latin Pop / Tropical Pop',
+    'pop+country': 'Country Pop / Nashville Pop',
+    'pop+jazz': 'Jazz Pop / Vocal Jazz',
+    'pop+funk': 'Funk Pop / Disco-Pop',
+    'pop+indie': 'Indie Pop / Chamber Pop',
+    'pop+metal': 'Pop Metal / Hair Metal',
+    'pop+reggaeton': 'Reggaeton Pop / Urban Latin',
+
+    // Rock 融合
+    'rock+electronic': 'Electro-Rock / Industrial Rock',
     'rock+hip-hop': 'Rap-Rock / Nu-Metal',
+    'rock+jazz': 'Jazz Rock / Fusion',
+    'rock+folk': 'Folk Rock / Americana Rock',
+    'rock+metal': 'Hard Rock / Heavy Rock',
+    'rock+punk': 'Punk Rock / Pop-Punk',
+    'rock+blues': 'Blues Rock / Southern Rock',
+    'rock+country': 'Country Rock / Alt-Country',
+    'rock+classical': 'Symphonic Rock / Prog Rock',
+    'rock+reggae': 'Reggae Rock / Ska-Punk',
+    'rock+funk': 'Funk Rock / Dance Rock',
+
+    // Hip-Hop 融合
     'hip-hop+electronic': 'Electro-Hop / EDM-Trap',
-    'hip-hop+jazz': 'Jazz-Hop / Hip-Hop Jazz',
+    'hip-hop+jazz': 'Jazz-Hop / Trip-Hop',
+    'hip-hop+r&b': 'Hip-Hop Soul / Urban',
+    'hip-hop+rock': 'Rap-Rock / Nu-Metal',
+    'hip-hop+latin': 'Latin Trap / Reggaeton Hip-Hop',
+    'hip-hop+afrobeat': 'Afro-Hip-Hop / Afro-Trap',
+    'hip-hop+soul': 'Soul Hip-Hop / Neo-Boom-Bap',
+    'hip-hop+funk': 'G-Funk / Funk Rap',
+    'hip-hop+reggae': 'Dancehall Hip-Hop / Ragga',
+    'hip-hop+country': 'Country Rap / Hick-Hop',
+    'hip-hop+classical': 'Classical Hip-Hop / Orchestral Rap',
+
+    // Electronic 融合
     'electronic+classical': 'Neoclassical / Electronic Orchestral',
+    'electronic+jazz': 'Nu-Jazz / Electro-Jazz',
+    'electronic+folk': 'Folktronica / Organic Electronic',
+    'electronic+rock': 'Electro-Rock / Synth-Rock',
+    'electronic+metal': 'Industrial Metal / Cyber Metal',
+    'electronic+ambient': 'Ambient Electronic / Downtempo',
+    'electronic+hip-hop': 'IDM / Glitch-Hop',
+    'electronic+world': 'World Electronic / Ethnic EDM',
+    'electronic+pop': 'Synthpop / Electropop',
+    'electronic+latin': 'Latin Electronic / Tropical House',
+
+    // Jazz 融合
     'jazz+electronic': 'Nu-Jazz / Electro-Jazz',
-    'folk+electronic': 'Folktronica / Organic Electronic'
+    'jazz+hip-hop': 'Jazz-Hop / Abstract Hip-Hop',
+    'jazz+rock': 'Jazz-Rock / Fusion',
+    'jazz+funk': 'Jazz-Funk / Acid Jazz',
+    'jazz+soul': 'Jazz-Soul / Smooth Jazz',
+    'jazz+latin': 'Latin Jazz / Afro-Cuban Jazz',
+    'jazz+classical': 'Third Stream / Chamber Jazz',
+    'jazz+r&b': 'Neo-Soul / Contemporary Jazz',
+    'jazz+bossa-nova': 'Bossa Nova / Brazilian Jazz',
+
+    // R&B/Soul 融合
+    'r&b+pop': 'Pop R&B / Contemporary R&B',
+    'r&b+hip-hop': 'Hip-Hop Soul / Urban',
+    'r&b+jazz': 'Jazz R&B / Neo-Soul',
+    'r&b+electronic': 'Electronic R&B / Alt-R&B',
+    'r&b+funk': 'Funk R&B / Modern Soul',
+    'r&b+latin': 'Latin R&B / Spanish R&B',
+    'soul+funk': 'Funk Soul / Classic Soul',
+    'soul+jazz': 'Soul Jazz / Jazzy Soul',
+    'soul+gospel': 'Gospel Soul / Spiritual',
+
+    // Folk/Country 融合
+    'folk+rock': 'Folk Rock / Americana',
+    'folk+electronic': 'Folktronica / Indietronica',
+    'folk+pop': 'Folk Pop / Indie Folk',
+    'folk+jazz': 'Folk Jazz / Acoustic Jazz',
+    'folk+classical': 'Chamber Folk / Art Folk',
+    'country+rock': 'Country Rock / Southern Rock',
+    'country+pop': 'Country Pop / Crossover',
+    'country+hip-hop': 'Country Rap / Hick-Hop',
+    'country+folk': 'Folk Country / Americana',
+    'country+blues': 'Country Blues / Roots',
+
+    // Latin/World 融合
+    'latin+pop': 'Latin Pop / Pop Latino',
+    'latin+electronic': 'Latin Electronic / Electronica Latina',
+    'latin+hip-hop': 'Latin Hip-Hop / Reggaeton',
+    'latin+jazz': 'Latin Jazz / Afro-Cuban',
+    'reggaeton+trap': 'Latin Trap / Trapeton',
+    'reggaeton+pop': 'Reggaeton Pop / Urban Pop',
+    'afrobeat+electronic': 'Afro-Electronic / Afro House',
+    'afrobeat+hip-hop': 'Afro-Trap / Afro-Swing',
+    'reggae+electronic': 'Dub / Dubstep',
+    'reggae+hip-hop': 'Dancehall / Ragga',
+
+    // Classical 融合
+    'classical+electronic': 'Electroacoustic / Ambient Classical',
+    'classical+rock': 'Symphonic Rock / Art Rock',
+    'classical+metal': 'Symphonic Metal / Orchestral Metal',
+    'classical+jazz': 'Third Stream / Classical Jazz',
+    'classical+ambient': 'Neoclassical / Modern Classical',
+    'orchestral+electronic': 'Cinematic Electronic / Epic Electronic',
+    'orchestral+metal': 'Symphonic Metal / Epic Metal',
+    'cinematic+electronic': 'Trailer Music / Epic Electronic',
+
+    // 實驗性融合
+    'experimental+electronic': 'IDM / Glitch',
+    'experimental+rock': 'Art Rock / Noise Rock',
+    'experimental+hip-hop': 'Abstract Hip-Hop / Avant-Rap',
+    'experimental+jazz': 'Avant-Garde Jazz / Free Jazz',
+    'industrial+electronic': 'EBM / Dark Electro',
+    'industrial+metal': 'Industrial Metal / Cyber Metal',
+    'shoegaze+electronic': 'Dream Pop / Ethereal Wave',
+    'shoegaze+post-rock': 'Post-Shoegaze / Ambient Rock',
+
+    // Techno/House 融合
+    'techno+ambient': 'Ambient Techno / Chill Techno',
+    'techno+industrial': 'Industrial Techno / Hard Techno',
+    'house+disco': 'Disco House / Nu-Disco',
+    'house+funk': 'Funky House / Jackin House',
+    'house+latin': 'Latin House / Tropical House',
+    'trance+ambient': 'Ambient Trance / Progressive',
+    'trance+rock': 'Trance Rock / Epic Trance',
+    'dubstep+metal': 'Brostep / Metalstep',
+    'dnb+jazz': 'Jazz & Bass / Jazzy DNB',
+    'dnb+metal': 'Drum & Bass Metal / Breakcore',
+
+    // Synthwave 融合
+    'synthwave+rock': 'Synth Rock / Retrowave Rock',
+    'synthwave+metal': 'Darkwave / Cybermetal',
+    'synthwave+pop': 'Retrowave / 80s Revival',
+    'synthwave+horror': 'Darksynth / Horror Synth',
+
+    // 特殊融合
+    'lo-fi+jazz': 'Lo-Fi Jazz / Chillhop',
+    'lo-fi+hip-hop': 'Lo-Fi Hip-Hop / Chillhop',
+    'phonk+trap': 'Phonk Trap / Memphis Phonk',
+    'phonk+electronic': 'Drift Phonk / House Phonk',
+    'k-pop+electronic': 'K-Electronic / Korean EDM',
+    'k-pop+hip-hop': 'K-Hip-Hop / Korean Urban',
+    'hyperpop+electronic': 'Hyperpop / Glitchcore',
+    'hyperpop+hip-hop': 'Digicore / Glitch Rap'
 };
 
 // 計算融合兼容性
@@ -5888,8 +6080,47 @@ function initProAudioLab() {
         labSubgenre.addEventListener('change', updateFusionAnalysis);
     }
 
+    // 初始化熱門融合預設按鈕
+    initFusionPresets();
+
     // 初始化時更新融合分析（處理已有值的情況）
     updateFusionAnalysis();
+}
+
+// 熱門融合預設功能
+function initFusionPresets() {
+    const presetsGrid = document.getElementById('fusion-presets-grid');
+    if (!presetsGrid) return;
+
+    const presetBtns = presetsGrid.querySelectorAll('.fusion-preset-btn');
+    presetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const genre = btn.dataset.genre;
+            const subgenre = btn.dataset.subgenre;
+            const name = btn.dataset.name;
+
+            // 設置主風格
+            const labGenre = document.getElementById('lab-genre');
+            if (labGenre) {
+                labGenre.value = genre;
+                labGenre.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            // 設置副風格
+            const labSubgenre = document.getElementById('lab-subgenre');
+            if (labSubgenre) {
+                labSubgenre.value = subgenre;
+                labSubgenre.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            // 更新按鈕狀態
+            presetBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // 顯示提示
+            showToast(`已套用 ${name} 融合預設`, 'success');
+        });
+    });
 }
 
 init();

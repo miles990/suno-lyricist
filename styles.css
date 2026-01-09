@@ -4695,6 +4695,119 @@ textarea,
 
 /* ===== Pro Audio Lab Styles ===== */
 
+/* 熱門融合預設 */
+.fusion-presets-panel {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.fusion-presets-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.fusion-presets-header h3 {
+    font-size: 1.1rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.fusion-presets-hint {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    background: var(--bg-input);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+}
+
+.fusion-presets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+
+.fusion-preset-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 0.5rem;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    gap: 0.25rem;
+}
+
+.fusion-preset-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    border-color: var(--primary);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+}
+
+.fusion-preset-btn.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    border-color: transparent;
+    color: white;
+}
+
+.fusion-preset-btn.active .preset-name,
+.fusion-preset-btn.active .preset-combo {
+    color: white;
+}
+
+.fusion-preset-btn.experimental {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+.fusion-preset-btn.experimental:hover {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(239, 68, 68, 0.2) 100%);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    border-color: var(--warning);
+}
+
+.fusion-preset-btn.experimental::after {
+    content: '實驗';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 0.6rem;
+    padding: 0.1rem 0.3rem;
+    background: var(--warning);
+    color: white;
+    border-radius: 4px;
+}
+
+.fusion-preset-btn {
+    position: relative;
+}
+
+.preset-icon {
+    font-size: 1.5rem;
+}
+
+.preset-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.preset-combo {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
 /* 風格融合分析 */
 .fusion-analysis {
     background: var(--bg-card);
@@ -5142,9 +5255,23 @@ textarea,
 
 /* Light theme adjustments */
 [data-theme="light"] .fusion-analysis,
-[data-theme="light"] .pro-audio-panel {
+[data-theme="light"] .pro-audio-panel,
+[data-theme="light"] .fusion-presets-panel {
     background: white;
     border-color: #e2e8f0;
+}
+
+[data-theme="light"] .fusion-preset-btn {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(236, 72, 153, 0.08) 100%);
+    border-color: rgba(139, 92, 246, 0.15);
+}
+
+[data-theme="light"] .fusion-preset-btn:hover {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+}
+
+[data-theme="light"] .fusion-preset-btn.experimental {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(239, 68, 68, 0.08) 100%);
 }
 
 [data-theme="light"] .mix-preset-btn,
@@ -5166,6 +5293,26 @@ textarea,
 
 /* 響應式調整 */
 @media (max-width: 768px) {
+    .fusion-presets-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .fusion-preset-btn {
+        padding: 0.5rem 0.25rem;
+    }
+
+    .preset-icon {
+        font-size: 1.25rem;
+    }
+
+    .preset-name {
+        font-size: 0.75rem;
+    }
+
+    .preset-combo {
+        font-size: 0.6rem;
+    }
+
     .mix-presets {
         grid-template-columns: repeat(2, 1fr);
     }
