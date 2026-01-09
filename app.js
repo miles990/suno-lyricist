@@ -5983,6 +5983,9 @@ function initQuickMode() {
             quickThemeInput.value = inspiration;
             quickThemeInput.focus();
 
+            // 觸發主題分析
+            analyzeQuickTheme(inspiration);
+
             showToast(`靈感：${inspiration}`, 'success');
         });
     }
@@ -5997,9 +6000,118 @@ function initQuickMode() {
                     quickThemeInput.value = theme;
                     quickThemeInput.focus();
                     showToast(`已選擇：${chip.textContent.trim()}`, 'success');
+                    // 觸發主題分析
+                    analyzeQuickTheme(theme);
                 }
             });
         });
+    }
+
+    // 智能主題分析器
+    const themePreview = document.getElementById('quick-theme-preview');
+    const previewMood = document.getElementById('preview-mood');
+    const previewGenre = document.getElementById('preview-genre');
+    const previewVibe = document.getElementById('preview-vibe');
+
+    if (quickThemeInput && themePreview) {
+        let debounceTimer = null;
+
+        quickThemeInput.addEventListener('input', (e) => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                analyzeQuickTheme(e.target.value);
+            }, 300); // 300ms 防抖
+        });
+    }
+
+    function analyzeQuickTheme(theme) {
+        if (!themePreview || !previewMood || !previewGenre || !previewVibe) return;
+
+        if (!theme || theme.trim().length < 2) {
+            themePreview.classList.add('hidden');
+            return;
+        }
+
+        const analysis = getThemeAnalysis(theme);
+
+        // 更新預覽值
+        previewMood.textContent = analysis.mood;
+        previewGenre.textContent = analysis.genre;
+        previewVibe.textContent = analysis.vibe;
+
+        // 顯示預覽
+        themePreview.classList.remove('hidden');
+
+        // 添加高亮動畫
+        [previewMood, previewGenre, previewVibe].forEach(el => {
+            el.classList.add('highlight');
+            setTimeout(() => el.classList.remove('highlight'), 500);
+        });
+    }
+
+    function getThemeAnalysis(theme) {
+        const lowerTheme = theme.toLowerCase();
+
+        // 情緒關鍵詞映射
+        const moodKeywords = {
+            '浪漫': ['愛', '戀', '浪漫', '心動', '甜蜜', 'love', '邂逅', '約會', '情人', '擁抱', '牽手'],
+            '憂傷': ['失戀', '離別', '思念', '孤獨', '眼淚', '傷心', '心碎', '分手', '想念', '遺忘', '放下'],
+            '勵志': ['夢想', '努力', '奮鬥', '勇氣', '堅持', '成功', '未來', '希望', '追逐', '飛翔', '突破'],
+            '歡樂': ['派對', '狂歡', '快樂', '慶祝', '朋友', '歡笑', '陽光', '青春', '自由', '跳舞'],
+            '復古': ['回憶', '過去', '時光', '記憶', '老歌', '懷舊', '曾經', '從前', '童年'],
+            '神秘': ['夜', '月', '星', '深夜', '黑暗', '秘密', '迷幻', '夢境', '幻想'],
+            '熱血': ['戰鬥', '挑戰', '冒險', '熱情', '燃燒', '力量', '征服', '英雄', '電競', '遊戲'],
+            '清新': ['夏日', '海灘', '微風', '花', '草', '自然', '森林', '陽光', '早晨', '咖啡']
+        };
+
+        // 風格關鍵詞映射
+        const genreKeywords = {
+            'Pop': ['流行', '戀愛', '青春', '校園', '甜蜜', '陽光', '夏天'],
+            'R&B': ['深夜', '感性', '性感', '慵懶', '都市', '爵士'],
+            'Rock': ['搖滾', '熱血', '反叛', '力量', '自由', '吶喊', '電吉他'],
+            'Hip-Hop': ['街頭', 'Rap', '嘻哈', '態度', '說唱', '節拍', '城市'],
+            'Electronic': ['電音', '派對', '舞曲', '迷幻', 'EDM', '夜店', '狂歡', '電子'],
+            'Ballad': ['思念', '離別', '傷心', '情歌', '抒情', '回憶', '心碎'],
+            'Folk': ['故事', '旅行', '民謠', '吉他', '自然', '森林', '流浪'],
+            'Indie': ['文藝', '小眾', '獨立', '藝術', '實驗', '另類']
+        };
+
+        // 氛圍關鍵詞映射
+        const vibeKeywords = {
+            '能量滿滿': ['派對', '狂歡', '跳舞', '興奮', '熱血', '燃燒', '衝刺'],
+            '放鬆治癒': ['放鬆', '治癒', '平靜', '安靜', '舒服', '療癒', '放下'],
+            '浪漫甜蜜': ['愛', '戀', '浪漫', '甜蜜', '心動', '約會', '牽手'],
+            '深沉內省': ['思考', '人生', '意義', '深夜', '孤獨', '內心', '靈魂'],
+            '自由奔放': ['自由', '飛翔', '冒險', '旅行', '無拘', '天空', '風'],
+            '懷舊復古': ['回憶', '過去', '曾經', '時光', '老歌', '童年', '青春']
+        };
+
+        // 匹配函數
+        function findBestMatch(keywords, text) {
+            let bestMatch = null;
+            let maxScore = 0;
+
+            for (const [category, words] of Object.entries(keywords)) {
+                let score = 0;
+                for (const word of words) {
+                    if (text.includes(word)) {
+                        score++;
+                    }
+                }
+                if (score > maxScore) {
+                    maxScore = score;
+                    bestMatch = category;
+                }
+            }
+            return bestMatch;
+        }
+
+        // 計算最佳匹配
+        const mood = findBestMatch(moodKeywords, lowerTheme) || '多元';
+        const genre = findBestMatch(genreKeywords, lowerTheme) || 'Pop';
+        const vibe = findBestMatch(vibeKeywords, lowerTheme) || '隨心所欲';
+
+        return { mood, genre, vibe };
     }
 
     function switchToQuickMode() {
